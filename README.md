@@ -1,4 +1,4 @@
-# GUI
+# GBManalyzer
 
 GBManalyzer source code
 
