@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QMainWindow, QApplication, QLabel, QAction, QSpinBox,QFileDialog, QMessageBox
+from PyQt5.QtWidgets import QMainWindow, QApplication, QLabel, QAction, QScrollBar, QFileDialog, QMessageBox
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap, QImage
@@ -45,11 +45,21 @@ class UI(QMainWindow):
         self.dicom_T1 = self.findChild(QAction, "actionDICOM")
         self.nii_T1 = self.findChild(QAction, "actionNIfTI")        
         self.nii_T1 = self.findChild(QAction, "actionNIfTI")
-        self.scrollbar_T1 = self.findChild(QSpinBox, "spinbox") #Para asociar código a la scrollbar de T1
+        self.scrollbar_T1 = self.findChild(QScrollBar, "verticalScrollBar") 
+        self.scrollbar_T1C = self.findChild(QScrollBar, "verticalScrollBar_2")
+        self.scrollbar_T2 = self.findChild(QScrollBar, "verticalScrollBar_3")
+        self.scrollbar_FLAIR = self.findChild(QScrollBar, "verticalScrollBar_4")
+        self.scrollbar_T1.hide()    # Escondo las scrollbar para que no se vean cuando no hay nada cargado
+        self.scrollbar_T1C.hide()
+        self.scrollbar_T2.hide()
+        self.scrollbar_FLAIR.hide()
 
         # Cargar imagenes
         self.dicom_T1.triggered.connect(self.clicker)
         self.nii_T1.triggered.connect(self.clicker)
+
+        # Conectar scrollbar a cambio de valor
+        self.scrollbar_T1.valueChanged.connect(self.change_image)
 
         # Mostrar la app
         self.show()
@@ -62,8 +72,11 @@ class UI(QMainWindow):
                 if dcm_check(fname):                                        # Validar que la carpeta contenga solo archivos .dcm
                     file_path, aux_directory = dcm_to_nii(fname)            # Conversión .dcm a .nii
                     ants_img = ants.image_read(file_path, reorient='IAL')   # Lectura de la imagen con ants
-                    np_imgs = ants.ANTsImage.numpy(ants_img)                # Conversión imagenes a numpy (necesario para graficar)
-                    pixmap = self.ndarray_to_qpixmap(np_imgs[10])           # Conversión de array a qpixmap
+                    self.np_imgs = ants.ANTsImage.numpy(ants_img)           # Conversión imagenes a numpy (necesario para graficar)
+                    self.scrollbar_T1.setMinimum(0)                         # Seteo min y max recorrido de la scrollbar
+                    self.scrollbar_T1.setMaximum(ants_img.shape[0]-1)
+                    self.scrollbar_T1.show()                                # Muestro la scrollbar una vez que se cargan la imagenes
+                    pixmap = self.ndarray_to_qpixmap(self.np_imgs[0])       # Conversión de array a qpixmap
                     self.label_T1.setPixmap(pixmap)                         # Graficar en "label" 
                     shutil.rmtree(aux_directory)                            # Eliminación de la carpeta creada en dcm_to_nii
                 else:
@@ -71,8 +84,11 @@ class UI(QMainWindow):
         elif self.sender() == self.nii_T1:                                  # Misma lógica que el de .dcm pero sin conversión 
             fname = QFileDialog.getOpenFileName(self, "Open File", " ", "NifTI Files (*.nii *nii.gz)")
             ants_img = ants.image_read(fname[0], reorient='IAL')
-            np_imgs = ants.ANTsImage.numpy(ants_img)
-            pixmap = self.ndarray_to_qpixmap(np_imgs[10])
+            self.np_imgs = ants.ANTsImage.numpy(ants_img)
+            self.scrollbar_T1.setMinimum(0)
+            self.scrollbar_T1.setMaximum(ants_img.shape[0]-1)
+            self.scrollbar_T1.show()
+            pixmap = self.ndarray_to_qpixmap(self.np_imgs[0])
             self.label_T1.setPixmap(pixmap)
 
     def ndarray_to_qpixmap(self, array):
@@ -82,6 +98,11 @@ class UI(QMainWindow):
         q_image = QImage(bytes(image_data.data), width, height, width, QImage.Format_Grayscale8)    # Crear un QImage desde los datos de la imagen
         qpixmap = QPixmap.fromImage(q_image).scaled(self.label_T1.size(), Qt.KeepAspectRatio)       # Convertir QImage a QPixmap
         return qpixmap
+    
+    def change_image(self):
+        current_value = self.scrollbar_T1.value()
+        pixmap = self.ndarray_to_qpixmap(self.np_imgs[current_value])
+        self.label_T1.setPixmap(pixmap)
 
 #Initialize the app
 app = QApplication(sys.argv)

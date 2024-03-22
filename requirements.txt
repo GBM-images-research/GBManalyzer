@@ -2,5 +2,6 @@ python
 PyQt5
 dicom2nifti
 ants
+numpy
 
 	
