@@ -210,46 +210,6 @@ border-color: rgb(255, 255, 255);</string>
      <set>Qt::AlignCenter</set>
     </property>
    </widget>
-   <widget class="QSpinBox" name="spinBox">
-    <property name="geometry">
-     <rect>
-      <x>350</x>
-      <y>220</y>
-      <width>41</width>
-      <height>41</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QSpinBox" name="spinBox_2">
-    <property name="geometry">
-     <rect>
-      <x>350</x>
-      <y>480</y>
-      <width>41</width>
-      <height>41</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QSpinBox" name="spinBox_3">
-    <property name="geometry">
-     <rect>
-      <x>700</x>
-      <y>220</y>
-      <width>41</width>
-      <height>41</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QSpinBox" name="spinBox_4">
-    <property name="geometry">
-     <rect>
-      <x>700</x>
-      <y>480</y>
-      <width>41</width>
-      <height>41</height>
-     </rect>
-    </property>
-   </widget>
    <widget class="QWidget" name="verticalLayoutWidget">
     <property name="geometry">
      <rect>
@@ -532,6 +492,58 @@ border-color: rgb(255, 255, 255);</string>
      </item>
     </layout>
    </widget>
+   <widget class="QScrollBar" name="verticalScrollBar">
+    <property name="geometry">
+     <rect>
+      <x>350</x>
+      <y>70</y>
+      <width>16</width>
+      <height>160</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Vertical</enum>
+    </property>
+   </widget>
+   <widget class="QScrollBar" name="verticalScrollBar_2">
+    <property name="geometry">
+     <rect>
+      <x>700</x>
+      <y>70</y>
+      <width>16</width>
+      <height>160</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Vertical</enum>
+    </property>
+   </widget>
+   <widget class="QScrollBar" name="verticalScrollBar_3">
+    <property name="geometry">
+     <rect>
+      <x>350</x>
+      <y>320</y>
+      <width>16</width>
+      <height>160</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Vertical</enum>
+    </property>
+   </widget>
+   <widget class="QScrollBar" name="verticalScrollBar_4">
+    <property name="geometry">
+     <rect>
+      <x>700</x>
+      <y>320</y>
+      <width>16</width>
+      <height>160</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Vertical</enum>
+    </property>
+   </widget>
    <zorder>label_4</zorder>
    <zorder>label</zorder>
    <zorder>label_2</zorder>
@@ -540,13 +552,13 @@ border-color: rgb(255, 255, 255);</string>
    <zorder>label_6</zorder>
    <zorder>label_7</zorder>
    <zorder>label_8</zorder>
-   <zorder>spinBox</zorder>
-   <zorder>spinBox_2</zorder>
-   <zorder>spinBox_3</zorder>
-   <zorder>spinBox_4</zorder>
    <zorder>verticalLayoutWidget</zorder>
    <zorder>verticalLayoutWidget_2</zorder>
    <zorder>verticalLayoutWidget_3</zorder>
+   <zorder>verticalScrollBar</zorder>
+   <zorder>verticalScrollBar_2</zorder>
+   <zorder>verticalScrollBar_3</zorder>
+   <zorder>verticalScrollBar_4</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">

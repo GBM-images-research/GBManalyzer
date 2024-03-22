@@ -44,7 +44,7 @@ class UI(QMainWindow):
         super(UI, self).__init__()
     
         # Load ui file
-        uic.loadUi("C:\\Users\\Pablo\\Desktop\\PF\\GUI\\GUI\\GUIv1.ui", self)
+        uic.loadUi("C:\\Users\\Pablo\\Desktop\\PF\\GUI\\GBMAnalyzer\\GUIv1.ui", self)
 
         # Window name
         self.setWindowTitle("GBManalyzer")

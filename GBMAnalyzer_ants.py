@@ -1,11 +1,11 @@
-from PyQt5.QtWidgets import QMainWindow, QApplication, QLabel, QAction, QFileDialog, QSizeGrip, QMessageBox
+from PyQt5.QtWidgets import QMainWindow, QApplication, QLabel, QAction, QSpinBox,QFileDialog, QMessageBox
 from PyQt5 import uic
-from PyQt5.QtCore import Qt, QSize
+from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap, QImage
 import sys
 import os
+import shutil
 import dicom2nifti
-import nibabel as nib
 import numpy as np
 import ants
 
@@ -17,101 +17,71 @@ def dcm_check(carpeta):
 
 def dcm_to_nii(fname):
 
-    output_path = os.getcwd()
-    aux_directory = os.path.join(output_path, "NIfTI files")
+    output_path = os.getcwd()                                   #Se fija el directorio actual       
+    aux_directory = os.path.join(output_path, "NIfTI files")    #Se crea una carpeta temporal para guardar las imagenes convertidas
     if not os.path.exists(aux_directory):
         os.makedirs(aux_directory)
-    dicom2nifti.dicom_series_to_nifti(fname, os.path.join(aux_directory, "t1.nii"))
-    aux_directory = os.path.join(aux_directory, "t1.nii")
-    print(aux_directory)
+    dicom2nifti.dicom_series_to_nifti(fname, os.path.join(aux_directory, "t1.nii")) #Conversión a .nii, en este caso solo de T1
+    file_path = os.path.join(aux_directory, "t1.nii")           
 
-    return aux_directory
-
-def reorient_image(nifti_img):
-    # Obtener la matriz de datos de la imagen
-    data = nifti_img.get_fdata()
-
-    # Aplicar la orientación
-    data_reoriented, aff = nib.orientations.apply_orientation(data, nifti_img.affine, target_orientation='RAS')
-
-    # Crear una nueva imagen NIfTI con los datos reorientados
-    img_reoriented = nib.Nifti1Image(data_reoriented, aff)
-
-    return img_reoriented
+    return file_path, aux_directory     #Además del path del archivo convertido se exporta el del directorio para eliminarlo post carga de imagenes
 
 class UI(QMainWindow):
     def __init__(self):
         super(UI, self).__init__()
     
-        # Load ui file
-        uic.loadUi("C:\\Users\\Pablo\\Desktop\\PF\\GUI\\GUI\\GUIv1.ui", self)
+        # Se carga el archivo .ui con la data de los objetos 
+        uic.loadUi("C:\\Users\\Pablo\\Desktop\\PF\\GUI\\GBMAnalyzer\\GUIv1.ui", self)
 
-        # Window name
+        # Nombre de la ventana
         self.setWindowTitle("GBManalyzer")
-        # Independizarse de la barra de menú de pyqt5 (ver videos Magno Efren)
-        #self.setWindowFlag(Qt.FramelessWindowHint)
-        #SizeGrip
-        #self.gripSize = 10
-        #self.grip = QSizeGrip(self)
-        #self.grip.resize(self.gripSize, self.gripSize)
 
         # Widgets 
         self.label_T1 = self.findChild(QLabel, "label")
-        self.label_T1.setScaledContents(True)  # Para ajustar la imagen automáticamente al QLabel
+        self.label_T1.setScaledContents(True)                   #Las imagenes se deforman para ajustarse perfectamente al QLabel
         self.label_T1C = self.findChild(QLabel, "label_2")
         self.label_T2 = self.findChild(QLabel, "label_3")
         self.label_FLAIR = self.findChild(QLabel, "label_4")
         self.dicom_T1 = self.findChild(QAction, "actionDICOM")
         self.nii_T1 = self.findChild(QAction, "actionNIfTI")        
         self.nii_T1 = self.findChild(QAction, "actionNIfTI")
+        self.scrollbar_T1 = self.findChild(QSpinBox, "spinbox") #Para asociar código a la scrollbar de T1
 
-        # Load images
+        # Cargar imagenes
         self.dicom_T1.triggered.connect(self.clicker)
         self.nii_T1.triggered.connect(self.clicker)
 
-
-        #Show the app
+        # Mostrar la app
         self.show()
 
     def clicker(self):
-        # Open Directory Dialog
+        # Abrir el DirectoryDialog para seleccionar la imagen
         if self.sender() == self.dicom_T1:
-            #fname = QFileDialog.getOpenFileName(self, "Open File", " ", "DICOM Files (*.dcm)")
             fname = QFileDialog.getExistingDirectory(self, "Open File", " ", QFileDialog.ShowDirsOnly)
             if fname:
-                # Validar que la carpeta contenga solo archivos .dcm
-                if dcm_check(fname):
-                    aux_directory = dcm_to_nii(fname)
-                    ants_image = ants.image_read(aux_directory, reorient='IAL')
-                    img_np = ants_image.numpy() 
-                    self.display_image(img_np)
-                    #os.rmdir(aux_directory)
+                if dcm_check(fname):                                        # Validar que la carpeta contenga solo archivos .dcm
+                    file_path, aux_directory = dcm_to_nii(fname)            # Conversión .dcm a .nii
+                    ants_img = ants.image_read(file_path, reorient='IAL')   # Lectura de la imagen con ants
+                    np_imgs = ants.ANTsImage.numpy(ants_img)                # Conversión imagenes a numpy (necesario para graficar)
+                    pixmap = self.ndarray_to_qpixmap(np_imgs[10])           # Conversión de array a qpixmap
+                    self.label_T1.setPixmap(pixmap)                         # Graficar en "label" 
+                    shutil.rmtree(aux_directory)                            # Eliminación de la carpeta creada en dcm_to_nii
                 else:
                     QMessageBox.warning(self, "Directorio no válido", "El directorio no contiene archivos .dcm")
-        elif self.sender() == self.nii_T1:
+        elif self.sender() == self.nii_T1:                                  # Misma lógica que el de .dcm pero sin conversión 
             fname = QFileDialog.getOpenFileName(self, "Open File", " ", "NifTI Files (*.nii *nii.gz)")
-            ants_image = ants.image_read(fname[0], reorient='IAL')
-            img_np = ants_image.numpy()
-            self.display_image(img_np)
+            ants_img = ants.image_read(fname[0], reorient='IAL')
+            np_imgs = ants.ANTsImage.numpy(ants_img)
+            pixmap = self.ndarray_to_qpixmap(np_imgs[10])
+            self.label_T1.setPixmap(pixmap)
 
-    def display_image(self, img_np):
-        # Convertir los datos de la imagen NumPy a bytes
-        img_bytes = img_np.tobytes()  
-        
-        # Obtener dimensiones de la imagen
-        height, width = img_np.shape[:2]  
-        
-        # Crear QImage desde img_np
-        qimage = QImage(img_bytes, width, height, width, QImage.Format_Grayscale8) 
-        
-        # Convertir QImage a QPixmap
-        pixmap = QPixmap.fromImage(qimage)  
-        
-        # Escalar la imagen para que se ajuste al QLabel
-        scaled_pixmap = pixmap.scaled(self.label_T1.width(), self.label_T1.height(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
-        
-        # Mostrar la imagen en el QLabel
-        self.label_T1.setPixmap(scaled_pixmap)
+    def ndarray_to_qpixmap(self, array):
+        normalized_array = (array - array.min()) / (array.max() - array.min()) * 255                # Normalizar el rango de valores de la imagen a 0-255
+        image_data = normalized_array.astype(np.uint8)                                              # Convertir la matriz a un tipo de datos adecuado para QImage
+        height, width = image_data.shape                                                            # Obtener el alto y ancho de la imagen
+        q_image = QImage(bytes(image_data.data), width, height, width, QImage.Format_Grayscale8)    # Crear un QImage desde los datos de la imagen
+        qpixmap = QPixmap.fromImage(q_image).scaled(self.label_T1.size(), Qt.KeepAspectRatio)       # Convertir QImage a QPixmap
+        return qpixmap
 
 #Initialize the app
 app = QApplication(sys.argv)
