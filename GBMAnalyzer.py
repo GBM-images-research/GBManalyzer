@@ -1,7 +1,10 @@
+# Importar las clases y módulos necesarios de PyQt5 para crear la interfaz de usuario
 from PyQt5.QtWidgets import QMainWindow, QApplication, QLabel, QAction, QScrollBar, QFileDialog, QMessageBox
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap, QImage
+
+# Importar módulos estándar de Python
 import sys
 import os
 import shutil
@@ -9,104 +12,125 @@ import dicom2nifti
 import numpy as np
 import ants
 
+# Función para verificar si una carpeta contiene archivos DICOM
 def dcm_check(carpeta):
     for archivo in os.listdir(carpeta):
         if archivo.endswith(".dcm"):
             return True
     return False
 
-def dcm_to_nii(fname):
-
-    output_path = os.getcwd()                                   #Se fija el directorio actual       
-    aux_directory = os.path.join(output_path, "NIfTI files")    #Se crea una carpeta temporal para guardar las imagenes convertidas
+# Función para convertir archivos DICOM a NIfTI
+def dcm_to_nii(fname, output_name):
+    output_path = os.getcwd()
+    aux_directory = os.path.join(output_path, "NIfTI files")
     if not os.path.exists(aux_directory):
         os.makedirs(aux_directory)
-    dicom2nifti.dicom_series_to_nifti(fname, os.path.join(aux_directory, "t1.nii")) #Conversión a .nii, en este caso solo de T1
-    file_path = os.path.join(aux_directory, "t1.nii")           
+    dicom2nifti.dicom_series_to_nifti(fname, os.path.join(aux_directory, output_name))
+    file_path = os.path.join(aux_directory, output_name)
+    return file_path, aux_directory
 
-    return file_path, aux_directory     #Además del path del archivo convertido se exporta el del directorio para eliminarlo post carga de imagenes
-
+# Clase para la interfaz de usuario
 class UI(QMainWindow):
     def __init__(self):
         super(UI, self).__init__()
-    
-        # Se carga el archivo .ui con la data de los objetos 
-        uic.loadUi("C:\\Users\\Pablo\\Desktop\\PF\\GUI\\GBMAnalyzer\\GUIv1.ui", self)
-
-        # Nombre de la ventana
+        # Cargar la interfaz de usuario desde el archivo .ui
+        uic.loadUi("/Users/Maxy/Desktop/GBM/Herramienta_CAD/GBManalyzer/GUIv1.ui", self)
         self.setWindowTitle("GBManalyzer")
 
-        # Widgets 
-        self.label_T1 = self.findChild(QLabel, "label")
-        self.label_T1.setScaledContents(True)                   #Las imagenes se deforman para ajustarse perfectamente al QLabel
-        self.label_T1C = self.findChild(QLabel, "label_2")
-        self.label_T2 = self.findChild(QLabel, "label_3")
-        self.label_FLAIR = self.findChild(QLabel, "label_4")
-        self.dicom_T1 = self.findChild(QAction, "actionDICOM")
-        self.nii_T1 = self.findChild(QAction, "actionNIfTI")        
-        self.nii_T1 = self.findChild(QAction, "actionNIfTI")
-        self.scrollbar_T1 = self.findChild(QScrollBar, "verticalScrollBar") 
-        self.scrollbar_T1C = self.findChild(QScrollBar, "verticalScrollBar_2")
-        self.scrollbar_T2 = self.findChild(QScrollBar, "verticalScrollBar_3")
-        self.scrollbar_FLAIR = self.findChild(QScrollBar, "verticalScrollBar_4")
-        self.scrollbar_T1.hide()    # Escondo las scrollbar para que no se vean cuando no hay nada cargado
-        self.scrollbar_T1C.hide()
-        self.scrollbar_T2.hide()
-        self.scrollbar_FLAIR.hide()
+        '''
+        Inicializar listas para almacenar etiquetas, acciones y barras de desplazamiento, hacemos un manejo de numeros con excepcion de
+        T1 porque los numeros para labels,actions_dicom, actions_nifti y scrollbars no contienen al final un _1, en cambio las otras
+        modalidades tienen _2, _3 y _4
+        ''' 
+        self.labels = [self.findChild(QLabel, "label")] + [self.findChild(QLabel, f"label_{i}") for i in range(2, 5)]
+        self.actions_dicom = [self.findChild(QAction, f"actionDICOM_{i}") if i > 1 else self.findChild(QAction, "actionDICOM") for i in range(1, 5)]
+        self.actions_nifti = [self.findChild(QAction, f"actionNIfTI_{i}") if i > 1 else self.findChild(QAction, "actionNIfTI") for i in range(1, 5)]
+        self.scrollbars = [self.findChild(QScrollBar, f"verticalScrollBar_{i}") if i > 1 else self.findChild(QScrollBar, "verticalScrollBar") for i in range(1, 5)]
 
-        # Cargar imagenes
-        self.dicom_T1.triggered.connect(self.clicker)
-        self.nii_T1.triggered.connect(self.clicker)
+        # Conectar acciones a los métodos correspondientes
+        for i, action in enumerate(self.actions_dicom):
+            action.triggered.connect(lambda _, index=i+1: self.clicker(index, is_dicom=True))
+        for i, action in enumerate(self.actions_nifti):
+            action.triggered.connect(lambda _, index=i+1: self.clicker(index, is_dicom=False))
+            
+        # Inicializar lista para almacenar imágenes numpy
+        self.np_imgs = [None] * 4  # Se inicializa con 4 elementos para las 4 modalidades
 
-        # Conectar scrollbar a cambio de valor
-        self.scrollbar_T1.valueChanged.connect(self.change_image)
+        # Ocultar las barras de desplazamiento hasta que se cargue una imagen
+        for scrollbar in self.scrollbars:
+            scrollbar.hide()
 
-        # Mostrar la app
+        # Conectar barras de desplazamiento al método para cambiar la imagen mostrada
+        for scrollbar in self.scrollbars:
+            scrollbar.valueChanged.connect(self.change_image)
+
+        # Mostrar la ventana
         self.show()
 
-    def clicker(self):
-        # Abrir el DirectoryDialog para seleccionar la imagen
-        if self.sender() == self.dicom_T1:
+    # Método para manejar el clic en las acciones para cargar imágenes
+    def clicker(self, index, is_dicom):
+        if is_dicom:
+            # Obtener la carpeta que contiene los archivos DICOM
             fname = QFileDialog.getExistingDirectory(self, "Open File", " ", QFileDialog.ShowDirsOnly)
             if fname:
-                if dcm_check(fname):                                        # Validar que la carpeta contenga solo archivos .dcm
-                    file_path, aux_directory = dcm_to_nii(fname)            # Conversión .dcm a .nii
-                    ants_img = ants.image_read(file_path, reorient='IAL')   # Lectura de la imagen con ants
-                    self.np_imgs = ants.ANTsImage.numpy(ants_img)           # Conversión imagenes a numpy (necesario para graficar)
-                    self.scrollbar_T1.setMinimum(0)                         # Seteo min y max recorrido de la scrollbar
-                    self.scrollbar_T1.setMaximum(ants_img.shape[0]-1)
-                    self.scrollbar_T1.show()                                # Muestro la scrollbar una vez que se cargan la imagenes
-                    pixmap = self.ndarray_to_qpixmap(self.np_imgs[0])       # Conversión de array a qpixmap
-                    self.label_T1.setPixmap(pixmap)                         # Graficar en "label" 
-                    shutil.rmtree(aux_directory)                            # Eliminación de la carpeta creada en dcm_to_nii
+                if dcm_check(fname):
+                    # Convertir los archivos DICOM a NIfTI
+                    output_name = f"t{index}.nii"
+                    file_path, aux_directory = dcm_to_nii(fname, output_name)
+                    ants_img = ants.image_read(file_path, reorient='IAL')
+                    # Almacenar la imagen como un array numpy
+                    self.np_imgs[index - 1] = ants.ANTsImage.numpy(ants_img)
+                    # Configurar la barra de desplazamiento para la imagen
+                    scrollbar = self.scrollbars[index - 1]
+                    scrollbar.setMinimum(0)
+                    scrollbar.setMaximum(ants_img.shape[0] - 1)
+                    scrollbar.show()
+                    # Mostrar la primera imagen en la etiqueta correspondiente
+                    pixmap = self.ndarray_to_qpixmap(self.np_imgs[index - 1][0])
+                    self.labels[index - 1].setPixmap(pixmap)
+                    # Eliminar el directorio temporal creado
+                    shutil.rmtree(aux_directory)
                 else:
                     QMessageBox.warning(self, "Directorio no válido", "El directorio no contiene archivos .dcm")
-        elif self.sender() == self.nii_T1:                                  # Misma lógica que el de .dcm pero sin conversión 
+        else:
+            # Obtener el archivo NIfTI
             fname = QFileDialog.getOpenFileName(self, "Open File", " ", "NifTI Files (*.nii *nii.gz)")
-            ants_img = ants.image_read(fname[0], reorient='IAL')
-            self.np_imgs = ants.ANTsImage.numpy(ants_img)
-            self.scrollbar_T1.setMinimum(0)
-            self.scrollbar_T1.setMaximum(ants_img.shape[0]-1)
-            self.scrollbar_T1.show()
-            pixmap = self.ndarray_to_qpixmap(self.np_imgs[0])
-            self.label_T1.setPixmap(pixmap)
+            if fname[0]:  # Comprobar si se seleccionó un archivo
+                ants_img = ants.image_read(fname[0], reorient='IAL')
+                # Almacenar la imagen como un array numpy
+                self.np_imgs[index - 1] = ants.ANTsImage.numpy(ants_img)
+                # Configurar la barra de desplazamiento para la imagen
+                scrollbar = self.scrollbars[index - 1]
+                scrollbar.setMinimum(0)
+                scrollbar.setMaximum(ants_img.shape[0] - 1)
+                scrollbar.show()
+                # Mostrar la primera imagen en la etiqueta correspondiente
+                pixmap = self.ndarray_to_qpixmap(self.np_imgs[index - 1][0])
+                self.labels[index - 1].setPixmap(pixmap)
 
-    def ndarray_to_qpixmap(self, array):
-        normalized_array = (array - array.min()) / (array.max() - array.min()) * 255                # Normalizar el rango de valores de la imagen a 0-255
-        image_data = normalized_array.astype(np.uint8)                                              # Convertir la matriz a un tipo de datos adecuado para QImage
-        height, width = image_data.shape                                                            # Obtener el alto y ancho de la imagen
-        q_image = QImage(bytes(image_data.data), width, height, width, QImage.Format_Grayscale8)    # Crear un QImage desde los datos de la imagen
-        qpixmap = QPixmap.fromImage(q_image).scaled(self.label_T1.size(), Qt.KeepAspectRatio)       # Convertir QImage a QPixmap
-        return qpixmap
-    
+    # Método para cambiar la imagen mostrada cuando se desplaza la barra
     def change_image(self):
-        current_value = self.scrollbar_T1.value()
-        pixmap = self.ndarray_to_qpixmap(self.np_imgs[current_value])
-        self.label_T1.setPixmap(pixmap)
+        sender = self.sender()
+        if sender in self.scrollbars:
+            index = self.scrollbars.index(sender)
+            if self.np_imgs[index] is not None:
+                current_value = sender.value()
+                pixmap = self.ndarray_to_qpixmap(self.np_imgs[index][current_value])
+                self.labels[index].setPixmap(pixmap)
+            else:
+                print(f"No se han cargado imágenes para la modalidad {index + 1}")
 
-#Initialize the app
+    # Método para convertir un array numpy en un QPixmap
+    def ndarray_to_qpixmap(self, array):
+        normalized_array = (array - array.min()) / (array.max() - array.min()) * 255
+        image_data = normalized_array.astype(np.uint8)
+        height, width = image_data.shape
+        q_image = QImage(bytes(image_data.data), width, height, width, QImage.Format_Grayscale8)
+        # Escalar la imagen para que se ajuste al tamaño de la etiqueta
+        qpixmap = QPixmap.fromImage(q_image).scaled(self.labels[0].size(), Qt.KeepAspectRatio)
+        return qpixmap
+
+
 app = QApplication(sys.argv)
 UIWindow = UI()
 app.exec_()
-
-
