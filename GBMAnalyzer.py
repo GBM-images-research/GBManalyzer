@@ -1,5 +1,5 @@
 # Importar las clases y módulos necesarios de PyQt5 para crear la interfaz de usuario
-from PyQt5.QtWidgets import QMainWindow, QApplication, QLabel, QAction, QScrollBar, QFileDialog, QMessageBox
+from PyQt5.QtWidgets import QMainWindow, QApplication, QLabel, QAction, QScrollBar, QFileDialog, QMessageBox, QWidget
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap, QImage
@@ -34,7 +34,7 @@ class UI(QMainWindow):
     def __init__(self):
         super(UI, self).__init__()
         # Cargar la interfaz de usuario desde el archivo .ui
-        uic.loadUi("/Users/Maxy/Desktop/GBM/Herramienta_CAD/GBManalyzer/GUIv1.ui", self)
+        uic.loadUi("C:\\Users\\Pablo\\Desktop\\PF\\GUI\\GBManalyzer\\GUIv1.ui", self)
         self.setWindowTitle("GBManalyzer")
 
         '''
@@ -63,6 +63,12 @@ class UI(QMainWindow):
         # Conectar barras de desplazamiento al método para cambiar la imagen mostrada
         for scrollbar in self.scrollbars:
             scrollbar.valueChanged.connect(self.change_image)
+
+        # Elegir "horizontalLayout" como widget central para que los objetos se ajusten automaticamente al cambio de tamaño de la ventana
+        central_layout = self.horizontalLayout
+        central_widget = QWidget()
+        central_widget.setLayout(central_layout)
+        self.setCentralWidget(central_widget)
 
         # Mostrar la ventana
         self.show()
