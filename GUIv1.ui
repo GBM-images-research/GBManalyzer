@@ -341,7 +341,7 @@
               <enum>QFrame::Box</enum>
              </property>
              <property name="text">
-              <string>Segementation panel</string>
+              <string>Segmentation panel</string>
              </property>
              <property name="alignment">
               <set>Qt::AlignCenter</set>
