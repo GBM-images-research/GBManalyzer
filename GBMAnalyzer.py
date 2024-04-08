@@ -1,7 +1,7 @@
 # Importar las clases y módulos necesarios de PyQt5 para crear la interfaz de usuario
 from PyQt5.QtWidgets import QMainWindow, QApplication, QLabel, QAction, QScrollBar, QFileDialog, QMessageBox, QWidget, QPushButton, QProgressDialog
 from PyQt5 import uic
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import QObject, Qt, QThread, pyqtSignal
 from PyQt5.QtGui import QPixmap, QImage
 
 # Importar módulos estándar de Python
@@ -48,10 +48,12 @@ class UI(QMainWindow):
         modalidades tienen _2, _3 y _4
         ''' 
         self.labels = [self.findChild(QLabel, "label")] + [self.findChild(QLabel, f"label_{i}") for i in range(2, 5)]
+        self.paths = [self.findChild(QLabel, f"label_{i}") for i in range(21, 25)]
         self.actions_dicom = [self.findChild(QAction, f"actionDICOM_{i}") if i > 1 else self.findChild(QAction, "actionDICOM") for i in range(1, 5)]
         self.actions_nifti = [self.findChild(QAction, f"actionNIfTI_{i}") if i > 1 else self.findChild(QAction, "actionNIfTI") for i in range(1, 5)]
         self.scrollbars = [self.findChild(QScrollBar, f"verticalScrollBar_{i}") if i > 1 else self.findChild(QScrollBar, "verticalScrollBar") for i in range(1, 5)]
         self.p_button = self.findChild(QPushButton, "pushButton")
+        self.s_button = self.findChild(QPushButton, "pushButton_2")
 
         # Conectar acciones a los métodos correspondientes
         for i, action in enumerate(self.actions_dicom):
@@ -68,10 +70,12 @@ class UI(QMainWindow):
 
         # Conectar barras de desplazamiento al método para cambiar la imagen mostrada
         for scrollbar in self.scrollbars:
-            scrollbar.valueChanged.connect(self.change_image)
+            scrollbar.valueChanged.connect(self.scroll_through_file)
 
-        # Conectar el botón pushButton a la función preprocess
+        # Hilos 
+        self.thread = {}
         self.p_button.clicked.connect(self.preprocess)
+        self.s_button.clicked.connect(self.segment)
 
         # Elegir "horizontalLayout" como widget central para que los objetos se ajusten automaticamente al cambio de tamaño de la ventana
         central_layout = self.horizontalLayout
@@ -81,6 +85,65 @@ class UI(QMainWindow):
 
         # Mostrar la ventana
         self.show()
+
+    ## FUNCIONES PRINCIPALES (EN HILOS) ##
+
+    def preprocess(self):
+
+        # Chequeo que estén todas las imagenes para hacer el preprocesamiento
+        if any(image is None for image in self.np_imgs):
+            QMessageBox.warning(self, "Imágenes faltantes", "Falta al menos una de las cuatro modalidades necesarias. Asegúrese de cargar todas y vuelva a intentarlo.")
+            return
+        # Obtener la carpeta de destino del usuario
+        output_folder = QFileDialog.getExistingDirectory(self, "Seleccionar directorio")
+        self.new_folder = os.path.join(output_folder, "Preprocessed")
+
+        if output_folder:
+            # Verificar si el directorio de salida ya existe
+            if os.path.exists(os.path.join(output_folder, "Preprocessed")):
+                respuesta = QMessageBox.question(self, "Directorio existente", "El directorio que intenta crear ya existe. ¿Desea sobrescribirlo?",
+                                                QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+                if respuesta == QMessageBox.No:
+                    return 
+                else:
+                    os.makedirs(self.new_folder, exist_ok=True)
+            else:
+                os.makedirs(self.new_folder, exist_ok=True)
+
+        self.set_progress_dialog()
+        self.thread[1] = Preprocess(self.aux_directory, self.new_folder)
+        self.thread[1].processing_finished.connect(self.update_images)
+        self.thread[1].processing_finished.connect(self.close_progress_dialog)
+        self.thread[1].start()
+
+    def segment(self):
+
+        # Chequeo que estén todas las imagenes para hacer el preprocesamiento
+        if any(image is None for image in self.np_imgs):
+            QMessageBox.warning(self, "Imágenes faltantes", "Falta al menos una de las cuatro modalidades necesarias. Asegúrese de cargar todas y vuelva a intentarlo.")
+            return
+        # Obtener la carpeta de destino del usuario
+        output_folder = QFileDialog.getExistingDirectory(self, "Seleccionar directorio")
+        self.new_folder = os.path.join(output_folder, "Preprocessed")
+
+        if output_folder:
+            # Verificar si el directorio de salida ya existe
+            if os.path.exists(os.path.join(output_folder, "Preprocessed")):
+                respuesta = QMessageBox.question(self, "Directorio existente", "El directorio que intenta crear ya existe. ¿Desea sobrescribirlo?",
+                                                QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+                if respuesta == QMessageBox.No:
+                    return 
+                else:
+                    os.makedirs(self.new_folder, exist_ok=True)
+            else:
+                os.makedirs(self.new_folder, exist_ok=True)
+
+        self.set_progress_dialog()
+        self.thread[2] = Segmentation()
+        self.thread[2].segmentation_finished.connect(self.close_progress_dialog)
+        self.thread[2].start()
+
+    ## FUNCIONES AUXILIARES ##
 
     # Método para manejar el clic en las acciones para cargar imágenes
     def set_image(self, index, is_dicom):
@@ -93,6 +156,7 @@ class UI(QMainWindow):
                     output_name = f"t{index}.nii"
                     file_path, self.aux_directory = dcm_to_nii(fname, output_name)
                     self.show_image_in_label(file_path, index)
+                    self.set_path_in_label(fname, index)
                 else:
                     QMessageBox.warning(self, "Directorio no válido", "El directorio no contiene archivos .dcm")
         else:
@@ -100,9 +164,10 @@ class UI(QMainWindow):
             fname = QFileDialog.getOpenFileName(self, "Open File", " ", "NifTI Files (*.nii *nii.gz)")
             if fname[0]:  # Comprobar si se seleccionó un archivo
                 self.show_image_in_label(fname[0], index)
+                self.set_path_in_label(fname[0], index)
 
     # Método para cambiar la imagen mostrada cuando se desplaza la barra
-    def change_image(self):
+    def scroll_through_file(self):
         sender = self.sender()
         if sender in self.scrollbars:
             index = self.scrollbars.index(sender)
@@ -113,78 +178,16 @@ class UI(QMainWindow):
             else:
                 print(f"No se han cargado imágenes para la modalidad {index + 1}")
 
-    def preprocess(self):
-        # Chequeo que estén todas las imagenes para hacer el preprocesamiento
-        if any(image is None for image in self.np_imgs):
-            QMessageBox.warning(self, "Imágenes faltantes", "Falta al menos una de las cuatro imágenes necesarias. Agréguelas y vuelva a intentar")
-            return
-        # Obtener la carpeta de destino del usuario
-        atlas_path_t1 = "C:\\Users\\Pablo\\Desktop\\PF\\GUI\\Imagenes\\sri24_spm8\\templates" #acá hay que ver si dejamos directamente el atlas en el ejecutable y lo llamamos o como hacemos
-        output_folder = QFileDialog.getExistingDirectory(self, "Seleccionar directorio")
-        new_folder = os.path.join(output_folder, "Preprocessed")
-
-        if output_folder:
-            # Verificar si el directorio de salida ya existe
-            if os.path.exists(os.path.join(output_folder, "Preprocessed")):
-                respuesta = QMessageBox.question(self, "Directorio existente", "El directorio que intenta crear ya existe. ¿Desea sobrescribirlo?",
-                                                QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-                if respuesta == QMessageBox.No:
-                    return
-                else:
-                    os.makedirs(new_folder, exist_ok=True)
-
-            # Preprocesamiento
-            t1 = Preprocessing(self.aux_directory, "t1.nii")
-            t1c = Preprocessing(self.aux_directory, "t2.nii")
-            t2 = Preprocessing(self.aux_directory, 't3.nii')
-            flair = Preprocessing(self.aux_directory, 't4.nii')
-            atlas_t1 = Preprocessing(atlas_path_t1, 'T1.nii')
-
-            # Elimino aux_directory
-            shutil.rmtree(self.aux_directory)
-
-            # CO REGISTRATION
-            template = t1.temp
-            brats_flag = False
-            t1c.coregistration(template, 'Similarity', brats_flag)
-            t2.coregistration(template, 'Similarity', brats_flag)
-            flair.coregistration(template, 'Similarity', brats_flag)
-
-            # Native space transformation
-            atlas = atlas_t1.temp
-            atlas.set_origin((239, -239, 0))
-            brats_flag = True
-            matrix = t1.coregistration(atlas, 'Similarity', brats_flag)
-
-            # Apply T1-Atlas transformation matrix to t1c, t2, flair
-            t1c.apply_transformation(atlas, matrix)
-            t2.apply_transformation(atlas, matrix)
-            flair.apply_transformation(atlas, matrix)
-
-            # T1 Brain extraction
-            prob_brain_mask = brain_extraction(t1.reg, modality="t1", verbose=True)
-
-            # GET T1 MASK
-            brain_mask_t1 = ants.get_mask(prob_brain_mask, low_thresh=0.8)
-            masked_t1 = ants.mask_image(t1.reg, brain_mask_t1)
-            masked_t1.set_origin((239, -239, 0))
-
-            # Now we have the t1 mask, we do the same for t1c, t2 and flair
-            t1c.mask_image(brain_mask_t1)
-            t2.mask_image(brain_mask_t1)
-            flair.mask_image(brain_mask_t1)
-
-            # Guardar las imágenes preprocesadas en la carpeta de salida
-            ants.image_write(masked_t1, os.path.join(new_folder, "t1.nii"))
-            ants.image_write(t1c.masked, os.path.join(new_folder, "t1c.nii"))
-            ants.image_write(t2.masked, os.path.join(new_folder, "t2.nii"))
-            ants.image_write(flair.masked, os.path.join(new_folder, "flair.nii"))
-
-            # Mostrar las imágenes preprocesadas en los QLabel
-            self.show_image_in_label(os.path.join(new_folder, "t1.nii"), 1)
-            self.show_image_in_label(os.path.join(new_folder, "t1c.nii"), 2)
-            self.show_image_in_label(os.path.join(new_folder, "t2.nii"), 3)
-            self.show_image_in_label(os.path.join(new_folder, "flair.nii"), 4)
+    def update_images(self):
+        # Mostrar las imágenes preprocesadas en los QLabel
+        self.show_image_in_label(os.path.join(self.new_folder, "t1.nii"), 1)
+        self.set_path_in_label(os.path.join(self.new_folder, "t1.nii"), 1)
+        self.show_image_in_label(os.path.join(self.new_folder, "t1c.nii"), 2)
+        self.set_path_in_label(os.path.join(self.new_folder, "t1c.nii"), 2)
+        self.show_image_in_label(os.path.join(self.new_folder, "t2.nii"), 3)
+        self.set_path_in_label(os.path.join(self.new_folder, "t2.nii"), 3)
+        self.show_image_in_label(os.path.join(self.new_folder, "flair.nii"), 4)
+        self.set_path_in_label(os.path.join(self.new_folder, "flair.nii"), 4)
 
     # Método para convertir un array numpy en un QPixmap
     def ndarray_to_qpixmap(self, array):
@@ -196,6 +199,16 @@ class UI(QMainWindow):
         qpixmap = QPixmap.fromImage(q_image).scaled(self.labels[0].size(), Qt.KeepAspectRatio)
         return qpixmap
     
+    def set_progress_dialog(self):
+        self.progress_dialog = QProgressDialog("Procesando. Aguarde unos instantes...", None, 0, 0, self)
+        self.progress_dialog.setWindowModality(Qt.WindowModal)
+        self.progress_dialog.setWindowTitle("Procesando")
+        self.progress_dialog.setMinimumDuration(0)
+        self.progress_dialog.setCancelButton(None)  # Eliminar el botón de cancelar
+        self.progress_dialog.setWindowFlag(Qt.WindowCloseButtonHint, False)  # Deshabilitar el botón de cerrar
+        self.progress_dialog.setWindowFlag(Qt.WindowContextHelpButtonHint, False)  # Eliminar el botón de ayuda
+        self.progress_dialog.show()
+
     # Mostrar imagen en un QLabel
     def show_image_in_label(self, fname, index):
         ants_img = ants.image_read(fname, reorient='IAL')
@@ -209,6 +222,89 @@ class UI(QMainWindow):
         # Mostrar la primera imagen en la etiqueta correspondiente
         pixmap = self.ndarray_to_qpixmap(self.np_imgs[index - 1][0])
         self.labels[index - 1].setPixmap(pixmap)
+
+    def set_path_in_label(self, fname, index):
+        self.paths[index - 1].setText(f"{fname}")
+
+    def close_progress_dialog(self):
+        # Cerrar el diálogo de progreso cuando el procesamiento haya terminado
+        self.progress_dialog.close()
+        QMessageBox.information(self, "Proceso exitoso", "El proceso finalizó exitosamente.")
+
+## CLASES HILOS ##
+
+class Preprocess(QThread):
+
+    processing_finished = pyqtSignal()
+    atlas_path_t1 = "C:\\Users\\Pablo\\Desktop\\PF\\GUI\\Imagenes\\sri24_spm8\\templates" #acá hay que ver si dejamos directamente el atlas en el ejecutable y lo llamamos o como hacemos
+
+    def __init__(self, aux_directory, new_folder):
+        super(Preprocess,self).__init__()
+        self.aux_directory = aux_directory
+        self.new_folder = new_folder
+
+    def run(self):
+        # Preprocesamiento
+        t1 = Preprocessing(self.aux_directory, "t1.nii")
+        t1c = Preprocessing(self.aux_directory, "t2.nii")
+        t2 = Preprocessing(self.aux_directory, 't3.nii')
+        flair = Preprocessing(self.aux_directory, 't4.nii')
+        atlas_t1 = Preprocessing(self.atlas_path_t1, 'T1.nii')
+
+        # Elimino aux_directory
+        shutil.rmtree(self.aux_directory)
+
+        # CO REGISTRATION
+        template = t1.temp
+        brats_flag = False
+        t1c.coregistration(template, 'Similarity', brats_flag)
+        t2.coregistration(template, 'Similarity', brats_flag)
+        flair.coregistration(template, 'Similarity', brats_flag)
+
+        # Native space transformation
+        atlas = atlas_t1.temp
+        atlas.set_origin((239, -239, 0))
+        brats_flag = True
+        matrix = t1.coregistration(atlas, 'Similarity', brats_flag)
+
+        # Apply T1-Atlas transformation matrix to t1c, t2, flair
+        t1c.apply_transformation(atlas, matrix)
+        t2.apply_transformation(atlas, matrix)
+        flair.apply_transformation(atlas, matrix)
+
+        # T1 Brain extraction
+        prob_brain_mask = brain_extraction(t1.reg, modality="t1", verbose=True)
+
+        # GET T1 MASK
+        brain_mask_t1 = ants.get_mask(prob_brain_mask, low_thresh=0.8)
+        masked_t1 = ants.mask_image(t1.reg, brain_mask_t1)
+        masked_t1.set_origin((239, -239, 0))
+
+        # Now we have the t1 mask, we do the same for t1c, t2 and flair
+        t1c.mask_image(brain_mask_t1)
+        t2.mask_image(brain_mask_t1)
+        flair.mask_image(brain_mask_t1)
+
+        # Guardar las imágenes preprocesadas en la carpeta de salida
+        ants.image_write(masked_t1, os.path.join(self.new_folder, "t1.nii"))
+        ants.image_write(t1c.masked, os.path.join(self.new_folder, "t1c.nii"))
+        ants.image_write(t2.masked, os.path.join(self.new_folder, "t2.nii"))
+        ants.image_write(flair.masked, os.path.join(self.new_folder, "flair.nii"))
+
+        self.processing_finished.emit()
+
+class Segmentation(QThread):
+
+    segmentation_finished = pyqtSignal()
+
+    def __init__(self):
+        super(Segmentation,self).__init__()
+
+    def run(self):
+
+        ## Acá va el código para segmentar
+
+        self.segmentation_finished.emit()
 
 app = QApplication(sys.argv)
 UIWindow = UI()
