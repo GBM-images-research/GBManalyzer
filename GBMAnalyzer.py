@@ -39,7 +39,7 @@ class UI(QMainWindow):
     def __init__(self):
         super(UI, self).__init__()
         # Cargar la interfaz de usuario desde el archivo .ui
-        uic.loadUi("C:\\Users\\Pablo\\Desktop\\PF\\GUI\\GBManalyzer\\GUIv1.ui", self)
+        uic.loadUi("/Users/Maxy/Desktop/GBM/Herramienta_CAD/GBManalyzer/GUIv1.ui", self)
         self.setWindowTitle("GBManalyzer")
 
         '''
