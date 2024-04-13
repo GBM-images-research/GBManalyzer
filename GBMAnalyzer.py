@@ -25,21 +25,28 @@ def dcm_check(carpeta):
     return False
 
 # Función para convertir archivos DICOM a NIfTI
-def dcm_to_nii(fname, output_name):
-    output_path = os.getcwd()
-    aux_directory = os.path.join(output_path, "NIfTI files")
-    if not os.path.exists(aux_directory):
-        os.makedirs(aux_directory)
-    dicom2nifti.dicom_series_to_nifti(fname, os.path.join(aux_directory, output_name))
-    file_path = os.path.join(aux_directory, output_name)
-    return file_path, aux_directory
+def x_to_nii(fname, output_name, is_dicom):
+        output_path = os.getcwd()
+        aux_directory = os.path.join(output_path, "NIfTI files")
+        if not os.path.exists(aux_directory):
+            os.makedirs(aux_directory)
+
+        if is_dicom: 
+            dicom2nifti.dicom_series_to_nifti(fname, os.path.join(aux_directory, output_name))
+        else: 
+            shutil.copy(fname, aux_directory)
+            os.rename(os.path.join(aux_directory, os.path.basename(fname)), os.path.join(aux_directory,output_name))
+
+        file_path = os.path.join(aux_directory, output_name)
+        
+        return file_path, aux_directory
 
 # Clase para la interfaz de usuario
 class UI(QMainWindow):
     def __init__(self):
         super(UI, self).__init__()
         # Cargar la interfaz de usuario desde el archivo .ui
-        uic.loadUi("/Users/Maxy/Desktop/GBM/Herramienta_CAD/GBManalyzer/GUIv1.ui", self)
+        uic.loadUi("C:\\Users\\Pablo\\Desktop\\PF\\GUI\\GBManalyzer\\GUIv1.ui", self)
         self.setWindowTitle("GBManalyzer")
 
         '''
@@ -147,14 +154,16 @@ class UI(QMainWindow):
 
     # Método para manejar el clic en las acciones para cargar imágenes
     def set_image(self, index, is_dicom):
+
+        output_name = f"t{index}.nii"
+
         if is_dicom:
             # Obtener la carpeta que contiene los archivos DICOM
             fname = QFileDialog.getExistingDirectory(self, "Open File", " ", QFileDialog.ShowDirsOnly)
             if fname:
                 if dcm_check(fname):
                     # Convertir los archivos DICOM a NIfTI
-                    output_name = f"t{index}.nii"
-                    file_path, self.aux_directory = dcm_to_nii(fname, output_name)
+                    file_path, self.aux_directory = x_to_nii(fname, output_name, is_dicom = True)
                     self.show_image_in_label(file_path, index)
                     self.set_path_in_label(fname, index)
                 else:
@@ -162,6 +171,7 @@ class UI(QMainWindow):
         else:
             # Obtener el archivo NIfTI
             fname = QFileDialog.getOpenFileName(self, "Open File", " ", "NifTI Files (*.nii *nii.gz)")
+            file_path, self.aux_directory = x_to_nii(fname[0], output_name, is_dicom = False)
             if fname[0]:  # Comprobar si se seleccionó un archivo
                 self.show_image_in_label(fname[0], index)
                 self.set_path_in_label(fname[0], index)
