@@ -8,7 +8,7 @@ import shutil
 class Preprocess(QThread):
 
     processing_finished = pyqtSignal()
-    atlas_path_t1 = "C:/Users/sarth/OneDrive/Escritorio/ITBA/Proyecto Final/CAD/sri24_spm8/templates" #acá hay que ver si dejamos directamente el atlas en el ejecutable y lo llamamos o como hacemos
+    atlas_path_t1 = "templates" #acá hay que ver si dejamos directamente el atlas en el ejecutable y lo llamamos o como hacemos
 
     def __init__(self, aux_directory, new_folder):
         super(Preprocess,self).__init__()

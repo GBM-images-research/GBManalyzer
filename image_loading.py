@@ -19,8 +19,11 @@ def x_to_nii(fname, output_name, is_dicom):
         if is_dicom: 
             dicom2nifti.dicom_series_to_nifti(fname, os.path.join(aux_directory, output_name))
         else: 
+            destination_path = os.path.join(aux_directory, output_name)
+            if os.path.exists(destination_path):
+                os.remove(destination_path)  # Eliminar el archivo existente antes de copiar y renombrar
             shutil.copy(fname, aux_directory)
-            os.rename(os.path.join(aux_directory, os.path.basename(fname)), os.path.join(aux_directory,output_name))
+            os.rename(os.path.join(aux_directory, os.path.basename(fname)), destination_path)
 
         file_path = os.path.join(aux_directory, output_name)
         
