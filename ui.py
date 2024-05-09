@@ -11,8 +11,8 @@ import ants
 
 #Importar módulos de la app
 from image_loading import *
-from preprocessing import *
-from segmentation import *
+from buttons.button_preprocess import *
+from buttons.button_segment import *
 
 # Clase para la interfaz de usuario
 
@@ -20,7 +20,8 @@ class UI(QMainWindow):
     def __init__(self):
         super(UI, self).__init__()
         # Cargar la interfaz de usuario desde el archivo .ui
-        uic.loadUi("GUIv2.ui", self)
+        #uic.loadUi("GUIv2.ui", self)
+        uic.loadUi("/Users/Maxy/Desktop/GBM/Herramienta_CAD/GBManalyzer/GUIv2.ui", self)
 
         '''
         Inicializar listas para almacenar etiquetas, acciones y barras de desplazamiento, hacemos un manejo de numeros con excepcion de
@@ -109,7 +110,7 @@ class UI(QMainWindow):
             return
         # Obtener la carpeta de destino del usuario
         output_folder = QFileDialog.getExistingDirectory(self, "Seleccionar directorio")
-        self.new_folder = os.path.join(output_folder, "Preprocessed")
+        self.preprocess_images_folder = os.path.join(output_folder, "Preprocessed")
 
         if output_folder:
             # Verificar si el directorio de salida ya existe
@@ -119,13 +120,13 @@ class UI(QMainWindow):
                 if respuesta == QMessageBox.No:
                     return 
                 else:
-                    os.makedirs(self.new_folder, exist_ok=True)
+                    os.makedirs(self.preprocess_images_folder, exist_ok=True)
             else:
-                os.makedirs(self.new_folder, exist_ok=True)
+                os.makedirs(self.preprocess_images_folder, exist_ok=True)
 
         self.set_progress_dialog()
-        self.thread[1] = Preprocess(self.aux_directory, self.new_folder)
-        self.thread[1].processing_finished.connect(self.update_images)
+        self.thread[1] = ButtonPreprocess(self.aux_directory, self.preprocess_images_folder)
+        self.thread[1].processing_finished.connect(self.update_preprocessing_images)
         self.thread[1].processing_finished.connect(self.close_progress_dialog)
         self.thread[1].start()
 
@@ -137,22 +138,23 @@ class UI(QMainWindow):
             return
         # Obtener la carpeta de destino del usuario
         output_folder = QFileDialog.getExistingDirectory(self, "Seleccionar directorio")
-        self.new_folder = os.path.join(output_folder, "Preprocessed")
+        self.segment_images_folder = os.path.join(output_folder, "Segmented")
 
         if output_folder:
             # Verificar si el directorio de salida ya existe
-            if os.path.exists(os.path.join(output_folder, "Preprocessed")):
+            if os.path.exists(os.path.join(output_folder, "Segmented")):
                 respuesta = QMessageBox.question(self, "Directorio existente", "El directorio que intenta crear ya existe. ¿Desea sobrescribirlo?",
                                                 QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
                 if respuesta == QMessageBox.No:
                     return 
                 else:
-                    os.makedirs(self.new_folder, exist_ok=True)
+                    os.makedirs(self.segment_images_folder, exist_ok=True)
             else:
-                os.makedirs(self.new_folder, exist_ok=True)
+                os.makedirs(self.segment_images_folder, exist_ok=True)
 
         self.set_progress_dialog()
-        self.thread[2] = Segmentation()
+        self.thread[2] = ButtonSegment(self.segment_images_folder, self.preprocess_images_folder)        
+        self.thread[2].segmentation_finished.connect(self.update_rgb_images)
         self.thread[2].segmentation_finished.connect(self.close_progress_dialog)
         self.thread[2].start()
 
@@ -191,12 +193,23 @@ class UI(QMainWindow):
             else:
                 print(f"No se han cargado imágenes para la modalidad {index + 1}")
 
-    def update_images(self):
+    def update_preprocessing_images(self):
         # Mostrar las imágenes preprocesadas en los QLabel
-        self.show_image_in_label(os.path.join(self.new_folder, "t1.nii"), 1)
-        self.show_image_in_label(os.path.join(self.new_folder, "t1c.nii"), 2)
-        self.show_image_in_label(os.path.join(self.new_folder, "t2.nii"), 3)
-        self.show_image_in_label(os.path.join(self.new_folder, "flair.nii"), 4)
+        self.update_img(self.preprocess_images_folder, "t1.nii", 1)
+        self.update_img(self.preprocess_images_folder, "t1c.nii", 2)
+        self.update_img(self.preprocess_images_folder, "t2.nii", 3)
+        self.update_img(self.preprocess_images_folder, "flair.nii", 4)
+
+    def update_rgb_images(self):
+        # Mostrar las imágenes preprocesadas en los QLabel
+        self.update_img(self.segment_images_folder, "rgb.nii", 1)
+        self.update_img(self.segment_images_folder, "rgb.nii", 2)
+        self.update_img(self.segment_images_folder, "rgb.nii", 3)
+        self.update_img(self.segment_images_folder, "rgb.nii", 4)
+    
+
+    def update_img(self, images_folder, filename, idx):
+        self.show_image_in_label(os.path.join(images_folder, filename), idx)
 
     # Método para convertir un array numpy en un QPixmap
     def ndarray_to_qpixmap(self, array):
