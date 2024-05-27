@@ -50,7 +50,7 @@ class Segment:
             )
         return _compute(input)
     
-    def create_model(self, path="/Users/Maxy/Desktop/GBM/SegResNet/SegResNet-GBM/Data"):
+    def create_model(self, path="models"):
         device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
         model = SegResNet(
             blocks_down=[1, 2, 2, 4],  # 4

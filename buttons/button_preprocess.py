@@ -9,7 +9,7 @@ from buttons.buttons_functions.preprocess import Preprocess
 class ButtonPreprocess(QThread):
 
     processing_finished = pyqtSignal()
-    atlas_path_t1 = "/Users/Maxy/Desktop/GBM/Herramienta_CAD/sri24_spm8/templates" #acá hay que ver si dejamos directamente el atlas en el ejecutable y lo llamamos o como hacemos
+    atlas_path_t1 = "templates" #acá hay que ver si dejamos directamente el atlas en el ejecutable y lo llamamos o como hacemos
 
     def __init__(self, aux_directory, images_folder):
         super(ButtonPreprocess,self).__init__()

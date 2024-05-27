@@ -21,7 +21,7 @@ class UI(QMainWindow):
         super(UI, self).__init__()
         # Cargar la interfaz de usuario desde el archivo .ui
         #uic.loadUi("GUIv2.ui", self)
-        uic.loadUi("/Users/Maxy/Desktop/GBM/Herramienta_CAD/GBManalyzer/GUIv2.ui", self)
+        uic.loadUi("GUIv2.ui", self)
 
         '''
         Inicializar listas para almacenar etiquetas, acciones y barras de desplazamiento, hacemos un manejo de numeros con excepcion de
@@ -46,6 +46,11 @@ class UI(QMainWindow):
         # Conectar barras de desplazamiento al método para cambiar la imagen mostrada
         for scrollbar in self.scrollbars:
             scrollbar.valueChanged.connect(self.scroll_through_file)
+
+        self.chain_button.clicked.connect(self.chain_scrollbars)
+        self.unchain_button.clicked.connect(self.unchain_scrollbars)
+        self.unchain_button.hide()
+        self.scrollbars_linked = False
 
         # Importar imagenes
 
@@ -156,6 +161,7 @@ class UI(QMainWindow):
         self.thread[2] = ButtonSegment(self.segment_images_folder, self.preprocess_images_folder)        
         self.thread[2].segmentation_finished.connect(self.update_rgb_images)
         self.thread[2].segmentation_finished.connect(self.close_progress_dialog)
+        self.thread[2].segmentation_finished.connect(self.load_segment_menu)
         self.thread[2].start()
 
     ## FUNCIONES AUXILIARES ##
@@ -195,21 +201,17 @@ class UI(QMainWindow):
 
     def update_preprocessing_images(self):
         # Mostrar las imágenes preprocesadas en los QLabel
-        self.update_img(self.preprocess_images_folder, "t1.nii", 1)
-        self.update_img(self.preprocess_images_folder, "t1c.nii", 2)
-        self.update_img(self.preprocess_images_folder, "t2.nii", 3)
-        self.update_img(self.preprocess_images_folder, "flair.nii", 4)
+        self.show_image_in_label(os.path.join(self.preprocess_images_folder, "t1.nii"), 1)
+        self.show_image_in_label(os.path.join(self.preprocess_images_folder, "t1c.nii"), 2)
+        self.show_image_in_label(os.path.join(self.preprocess_images_folder, "t2.nii"), 3)
+        self.show_image_in_label(os.path.join(self.preprocess_images_folder, "flair.nii"), 4)
 
     def update_rgb_images(self):
-        # Mostrar las imágenes preprocesadas en los QLabel
-        self.update_img(self.segment_images_folder, "rgb.nii", 1)
-        self.update_img(self.segment_images_folder, "rgb.nii", 2)
-        self.update_img(self.segment_images_folder, "rgb.nii", 3)
-        self.update_img(self.segment_images_folder, "rgb.nii", 4)
-    
-
-    def update_img(self, images_folder, filename, idx):
-        self.show_image_in_label(os.path.join(images_folder, filename), idx)
+        # Mostrar las imágenes segmentadas con el tumor superpuesto en los QLabel
+        self.show_segmented_image_in_label(os.path.join(self.preprocess_images_folder, "t1.nii"), os.path.join(self.segment_images_folder, "rgb.nii"), 1)
+        self.show_segmented_image_in_label(os.path.join(self.preprocess_images_folder, "t1c.nii"), os.path.join(self.segment_images_folder, "rgb.nii"), 2)
+        self.show_segmented_image_in_label(os.path.join(self.preprocess_images_folder, "t2.nii"), os.path.join(self.segment_images_folder, "rgb.nii"), 3)
+        self.show_segmented_image_in_label(os.path.join(self.preprocess_images_folder, "flair.nii"), os.path.join(self.segment_images_folder, "rgb.nii"), 4)
 
     # Método para convertir un array numpy en un QPixmap
     def ndarray_to_qpixmap(self, array):
@@ -245,6 +247,34 @@ class UI(QMainWindow):
         pixmap = self.ndarray_to_qpixmap(self.np_imgs[index - 1][0])
         self.labels[index - 1].setPixmap(pixmap)
 
+    def show_segmented_image_in_label(self, fname_img, fname_tumor, index):
+        tumor_img = ants.image_read(fname_tumor, reorient='IAL')
+        # Almacenar la imagen segmentada como un array numpy
+        tumor_np_img = ants.ANTsImage.numpy(tumor_img)
+        
+        # Leer la imagen original correspondiente para superponer el tumor
+        original_img = ants.image_read(fname_img, reorient='IAL')
+        original_img_np = ants.ANTsImage.numpy(original_img)
+
+        # Crear una imagen superpuesta con el tumor
+        overlay_data = original_img_np.copy()
+        overlay_data[(tumor_np_img > 1) & (tumor_np_img < 50)] = 50 # nivel de gris E
+        overlay_data[(tumor_np_img > 50) & (tumor_np_img < 100)] = 130 # nivel de gris TA
+        overlay_data[tumor_np_img > 100] = 255 # nivel de gris N
+
+        # Agregar imagen al label
+        self.np_imgs[index - 1] = overlay_data.copy()
+
+        # Configurar la barra de desplazamiento para la imagen
+        scrollbar = self.scrollbars[index - 1]
+        scrollbar.setMinimum(0)
+        scrollbar.setMaximum(self.np_imgs[index - 1].shape[0] - 1)
+        scrollbar.show()
+
+        # Mostrar la primera imagen en la etiqueta correspondiente
+        pixmap = self.ndarray_to_qpixmap(self.np_imgs[index - 1][0])
+        self.labels[index - 1].setPixmap(pixmap)
+
     def close_progress_dialog(self):
         # Cerrar el diálogo de progreso cuando el procesamiento haya terminado
         self.progress_dialog.close()
@@ -260,6 +290,48 @@ class UI(QMainWindow):
             self.open_menu.show()
             self.close_menu.hide()
 
+    def chain_scrollbars(self):
+        # Conectar todas las barras de desplazamiento al mismo método (enlace)
+        for scrollbar in self.scrollbars:
+            scrollbar.valueChanged.disconnect(self.scroll_through_file)
+            scrollbar.valueChanged.connect(self.sync_scrollbars)
+
+        # Cambiar el estado de la bandera
+        self.chain_button.hide()
+        self.unchain_button.show()
+        self.scrollbars_linked = True
+
+    def unchain_scrollbars(self):
+        # Desconectar todas las barras de desplazamiento del método de sincronización (desenlace)
+        for scrollbar in self.scrollbars:
+            scrollbar.valueChanged.disconnect(self.sync_scrollbars)
+            scrollbar.valueChanged.connect(self.scroll_through_file)
+
+        # Cambiar el estado de la bandera
+        self.unchain_button.hide()
+        self.chain_button.show()
+        self.scrollbars_linked = False
+
+    def sync_scrollbars(self):
+        # Verificar si las barras de desplazamiento están enlazadas
+        if self.scrollbars_linked:
+            # Obtener la barra de desplazamiento que disparó el evento
+            sender = self.sender()
+            # Obtener el valor actual de la barra de desplazamiento que disparó el evento
+            current_value = sender.value()
+
+            # Iterar sobre todas las barras de desplazamiento
+            for scrollbar in self.scrollbars:
+                # Si la barra de desplazamiento actual no es la que disparó el evento,
+                # establecer su valor en el mismo que el valor actual de la barra que
+                # disparó el evento
+                if scrollbar != sender:
+                    scrollbar.setValue(current_value)
+
+            # Llamar a la función para cambiar la imagen mostrada cuando se desplaza la barra
+            self.scroll_through_file()
+
+            
     def control_bt_minimizar(self):
         self.showMinimized()		
 
@@ -313,6 +385,9 @@ class UI(QMainWindow):
 
     def load_flair(self):
         self.stackedWidget.setCurrentWidget(self.import_flair)
+
+    def load_segment_menu(self):
+        self.stackedWidget.setCurrentWidget(self.segment_menu)
 
     def set_option(self, option):
         self.selected_option = option
