@@ -10,7 +10,7 @@ import numpy as np
 import ants
 
 #Importar módulos de la app
-from image_loading import *
+from utils import *
 from buttons.button_preprocess import *
 from buttons.button_segment import *
 
@@ -162,6 +162,7 @@ class UI(QMainWindow):
         self.thread[2].segmentation_finished.connect(self.update_rgb_images)
         self.thread[2].segmentation_finished.connect(self.close_progress_dialog)
         self.thread[2].segmentation_finished.connect(self.load_segment_menu)
+        self.thread[2].segmentation_finished.connect(self.show_volumes)
         self.thread[2].start()
 
     ## FUNCIONES AUXILIARES ##
@@ -250,7 +251,7 @@ class UI(QMainWindow):
     def show_segmented_image_in_label(self, fname_img, fname_tumor, index):
         tumor_img = ants.image_read(fname_tumor, reorient='IAL')
         # Almacenar la imagen segmentada como un array numpy
-        tumor_np_img = ants.ANTsImage.numpy(tumor_img)
+        self.tumor_np_img = ants.ANTsImage.numpy(tumor_img)
         
         # Leer la imagen original correspondiente para superponer el tumor
         original_img = ants.image_read(fname_img, reorient='IAL')
@@ -258,9 +259,9 @@ class UI(QMainWindow):
 
         # Crear una imagen superpuesta con el tumor
         overlay_data = original_img_np.copy()
-        overlay_data[(tumor_np_img > 1) & (tumor_np_img < 50)] = 50 # nivel de gris E
-        overlay_data[(tumor_np_img > 50) & (tumor_np_img < 100)] = 130 # nivel de gris TA
-        overlay_data[tumor_np_img > 100] = 255 # nivel de gris N
+        overlay_data[(self.tumor_np_img > 1) & (self.tumor_np_img < 50)] = 255 # nivel de gris TA
+        overlay_data[(self.tumor_np_img > 50) & (self.tumor_np_img < 100)] = 180 # nivel de gris E
+        overlay_data[self.tumor_np_img > 100] = 0 # nivel de gris N
 
         # Agregar imagen al label
         self.np_imgs[index - 1] = overlay_data.copy()
@@ -274,6 +275,16 @@ class UI(QMainWindow):
         # Mostrar la primera imagen en la etiqueta correspondiente
         pixmap = self.ndarray_to_qpixmap(self.np_imgs[index - 1][0])
         self.labels[index - 1].setPixmap(pixmap)
+
+    def show_volumes(self):
+        # Calcular los volúmenes
+        volumes = calculate_volumes(self.tumor_np_img)
+        
+        # Actualizar los labels con los valores calculados
+        self.necrosis_vol.setText(f"{volumes['N']}")
+        self.et_vol.setText(f"{volumes['TA']}")
+        self.edema_vol.setText(f"{volumes['E']}")
+        self.core_vol.setText(f"{volumes['C']}")
 
     def close_progress_dialog(self):
         # Cerrar el diálogo de progreso cuando el procesamiento haya terminado

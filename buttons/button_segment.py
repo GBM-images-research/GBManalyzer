@@ -52,9 +52,10 @@ class ButtonSegment(QThread):
 
         # Asignamos los valores de los canales a los colores correspondientes
         # Los tres canales contribuyen al color final
-        resonancia_rgb += segmentation_uint8[0] * 255  
-        resonancia_rgb += segmentation_uint8[1] * 165  
-        resonancia_rgb += segmentation_uint8[2] * 85 
+        resonancia_rgb += segmentation_uint8[0] * 255  #necrosis
+        resonancia_rgb += segmentation_uint8[1] * 165  #edema
+        resonancia_rgb += segmentation_uint8[2] * 85   #tumor activo
+
 
         # Convertir a formato NIfTI y guardar
         self.array_to_nifti(resonancia_rgb)
