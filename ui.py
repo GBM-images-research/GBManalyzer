@@ -259,9 +259,13 @@ class UI(QMainWindow):
 
         # Crear una imagen superpuesta con el tumor
         overlay_data = original_img_np.copy()
-        overlay_data[(self.tumor_np_img > 1) & (self.tumor_np_img < 50)] = 255 # nivel de gris TA
+        overlay_data[(self.tumor_np_img > 1) & (self.tumor_np_img < 50)] = 0 # nivel de gris TA
         overlay_data[(self.tumor_np_img > 50) & (self.tumor_np_img < 100)] = 180 # nivel de gris E
-        overlay_data[self.tumor_np_img > 100] = 0 # nivel de gris N
+        overlay_data[self.tumor_np_img > 100] = 255 # nivel de gris N
+
+        # Encontrar y marcar bordes del edema
+        contour = find_contour(self.tumor_np_img)
+        overlay_data[contour > 0] = 0 
 
         # Agregar imagen al label
         self.np_imgs[index - 1] = overlay_data.copy()

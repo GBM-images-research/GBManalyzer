@@ -2,6 +2,7 @@ import dicom2nifti
 import os
 import shutil
 import numpy as np
+import cv2
 
 # Función para verificar si una carpeta contiene archivos DICOM
 def dcm_check(carpeta):
@@ -51,3 +52,28 @@ def calculate_volumes(img):
     }
     
     return volumes
+
+def find_contour(img):
+    # Crear una matriz para almacenar los bordes de la misma forma que la imagen original
+    bordes_3d = np.zeros_like(img, dtype=np.uint8)
+    
+    # Iterar sobre cada slice en el eje de profundidad
+    for i in range(img.shape[2]):
+        # Seleccionar el slice actual
+        slice_img = img[:, :, i]
+        
+        # Convertir el slice a 8 bits
+        img_8bit = cv2.convertScaleAbs(slice_img, alpha=(255.0/np.max(slice_img)))
+        aux_img = np.zeros_like(img_8bit)
+        mask = (slice_img > 0)
+        aux_img[mask] = 180
+        
+        # Encontrar los bordes en el slice
+        bordes = cv2.Canny(aux_img, 100, 200)
+        
+        # Almacenar los bordes en la matriz 3D
+        bordes_3d[:, :, i] = bordes
+    
+    print(bordes_3d.shape)
+    
+    return bordes_3d
