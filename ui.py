@@ -1,5 +1,5 @@
 # Importar las clases y módulos necesarios de PyQt5 para crear la interfaz de usuario
-from PyQt5.QtWidgets import QMainWindow, QLabel, QAction, QScrollBar, QFileDialog, QMessageBox, QPushButton, QProgressDialog, QSizeGrip
+from PyQt5.QtWidgets import QMainWindow, QLabel, QAction, QScrollBar, QFileDialog, QMessageBox, QPushButton, QProgressDialog, QSizeGrip, QCheckBox
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap, QImage
@@ -29,6 +29,7 @@ class UI(QMainWindow):
         modalidades tienen _2, _3 y _4
         ''' 
         self.labels = [self.findChild(QLabel, "label")] + [self.findChild(QLabel, f"label_{i}") for i in range(2, 5)]
+        self.checkboxes = [self.findChild(QCheckBox, f"checkbox_{i}") for i in range(1, 5)]
         self.paths = [self.findChild(QLabel, f"label_{i}") for i in range(21, 25)]
         self.actions_dicom = [self.findChild(QAction, f"actionDICOM_{i}") if i > 1 else self.findChild(QAction, "actionDICOM") for i in range(1, 5)]
         self.actions_nifti = [self.findChild(QAction, f"actionNIfTI_{i}") if i > 1 else self.findChild(QAction, "actionNIfTI") for i in range(1, 5)]
@@ -46,6 +47,13 @@ class UI(QMainWindow):
         # Conectar barras de desplazamiento al método para cambiar la imagen mostrada
         for scrollbar in self.scrollbars:
             scrollbar.valueChanged.connect(self.scroll_through_file)
+
+        # Conectar el slider de contraste a la función de actualización de imágenes
+        self.contrast_slider.valueChanged.connect(self.update_images_based_on_checkboxes)
+
+        # Conectar las checkboxes a la función de actualización de imágenes
+        for checkbox in self.checkboxes:
+            checkbox.stateChanged.connect(self.update_images_based_on_checkboxes)
 
         self.chain_button.clicked.connect(self.chain_scrollbars)
         self.unchain_button.clicked.connect(self.unchain_scrollbars)
@@ -189,13 +197,20 @@ class UI(QMainWindow):
                 self.show_image_in_label(fname[0], index)
 
     # Método para cambiar la imagen mostrada cuando se desplaza la barra
+
     def scroll_through_file(self):
         sender = self.sender()
         if sender in self.scrollbars:
             index = self.scrollbars.index(sender)
             if self.np_imgs[index] is not None:
                 current_value = sender.value()
-                pixmap = self.ndarray_to_qpixmap(self.np_imgs[index][current_value])
+                current_slice = self.np_imgs[index][current_value]
+                if self.checkboxes[index].isChecked():
+                    contrast_value = self.contrast_slider.value() / 100.0
+                    mask = (self.tumor_np_img[current_value,:,:] > 0)
+                    pixmap = self.adjust_contrast_image(current_slice, contrast_value)
+                else:
+                    pixmap = self.ndarray_to_qpixmap(current_slice)
                 self.labels[index].setPixmap(pixmap)
             else:
                 print(f"No se han cargado imágenes para la modalidad {index + 1}")
@@ -345,8 +360,26 @@ class UI(QMainWindow):
 
             # Llamar a la función para cambiar la imagen mostrada cuando se desplaza la barra
             self.scroll_through_file()
+    
+    def adjust_contrast_image(self, np_img, contrast_value):
+        imagen_cv2 = cv2.cvtColor(np_img, cv2.COLOR_BGR2RGB)
+        mod_img = cv2.convertScaleAbs(imagen_cv2, alpha=contrast_value, beta=0)
+        height, width, channel = mod_img.shape
+        bytes_per_line = channel * width
+        q_image = QImage(mod_img.data, width, height, bytes_per_line, QImage.Format_RGB888)
+        pixmap = QPixmap.fromImage(q_image)
+        return pixmap
 
-            
+    def update_images_based_on_checkboxes(self):
+        contrast_value = self.contrast_slider.value() / 100.0
+        for index, checkbox in enumerate(self.checkboxes):
+            if checkbox.isChecked() and self.np_imgs[index] is not None:
+                current_value = self.scrollbars[index].value()
+                current_slice = self.np_imgs[index][current_value]
+                mask = (self.tumor_np_img[current_value,:,:] > 0)
+                pixmap = self.adjust_contrast_image(current_slice, contrast_value)
+                self.labels[index].setPixmap(pixmap)
+
     def control_bt_minimizar(self):
         self.showMinimized()		
 
