@@ -2,3 +2,8 @@ PyQt5
 dicom2nifti
 ants
 numpy
+monai
+torch
+nibabel
+antspynet
+opencv-python

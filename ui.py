@@ -60,6 +60,9 @@ class UI(QMainWindow):
         self.unchain_button.hide()
         self.scrollbars_linked = False
 
+        #Conectar Patient_info labels
+        self.patient_info_button.clicked.connect(self.load_patient_info_menu)
+
         # Importar imagenes
 
         self.selected_option = None
@@ -181,20 +184,20 @@ class UI(QMainWindow):
 
         if is_dicom:
             # Obtener la carpeta que contiene los archivos DICOM
-            fname = QFileDialog.getExistingDirectory(self, "Open File", " ", QFileDialog.ShowDirsOnly)
-            if fname:
-                if dcm_check(fname):
+            self.fname = QFileDialog.getExistingDirectory(self, "Open File", " ", QFileDialog.ShowDirsOnly)
+            if self.fname:
+                if dcm_check(self.fname):
                     # Convertir los archivos DICOM a NIfTI
-                    file_path, self.aux_directory = x_to_nii(fname, output_name, is_dicom = True)
+                    file_path, self.aux_directory = x_to_nii(self.fname, output_name, is_dicom = True)
                     self.show_image_in_label(file_path, index)
                 else:
                     QMessageBox.warning(self, "Directorio no válido", "El directorio no contiene archivos .dcm")
         else:
             # Obtener el archivo NIfTI
-            fname = QFileDialog.getOpenFileName(self, "Open File", " ", "NifTI Files (*.nii *nii.gz)")
-            file_path, self.aux_directory = x_to_nii(fname[0], output_name, is_dicom = False)
-            if fname[0]:  # Comprobar si se seleccionó un archivo
-                self.show_image_in_label(fname[0], index)
+            self.fname = QFileDialog.getOpenFileName(self, "Open File", " ", "NifTI Files (*.nii *nii.gz)")
+            file_path, self.aux_directory = x_to_nii(self.fname[0], output_name, is_dicom = False)
+            if self.fname[0]:  # Comprobar si se seleccionó un archivo
+                self.show_image_in_label(self.fname[0], index)
 
     # Método para cambiar la imagen mostrada cuando se desplaza la barra
 
@@ -304,6 +307,20 @@ class UI(QMainWindow):
         self.et_vol.setText(f"{volumes['TA']}")
         self.edema_vol.setText(f"{volumes['E']}")
         self.core_vol.setText(f"{volumes['C']}")
+    
+    def show_patient_info(self):
+        # Calcular los volúmenes
+        self.ds = pydicom.dcmread(self.fname)
+        patient_info = get_patient_info(self.ds)
+        print(patient_info['Name'])
+        # Actualizar los labels con los valores calculados
+        self.name_label.setText(f"{patient_info['Name']}")
+        self.id_label.setText(f"{patient_info['ID']}")
+        self.birth_label.setText(f"{patient_info['Birth']}")
+        self.sex_label.setText(f"{patient_info['Sex']}")
+        self.date_label.setText(f"{patient_info['Date']}")
+        self.duration_label.setText(f"{patient_info['Duration']}")
+
 
     def close_progress_dialog(self):
         # Cerrar el diálogo de progreso cuando el procesamiento haya terminado
@@ -453,3 +470,7 @@ class UI(QMainWindow):
         else:
             # Manejar caso donde no se ha seleccionado ninguna opción
             pass
+
+    def load_patient_info_menu(self):
+        self.stackedWidget.setCurrentWidget(self.patient_info_menu)
+        self.show_patient_info

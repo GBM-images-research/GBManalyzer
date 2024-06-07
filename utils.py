@@ -3,6 +3,7 @@ import os
 import shutil
 import numpy as np
 import cv2
+import pydicom
 
 # Función para verificar si una carpeta contiene archivos DICOM
 def dcm_check(carpeta):
@@ -77,3 +78,14 @@ def find_contour(img):
     print(bordes_3d.shape)
     
     return bordes_3d
+
+def get_patient_info(ds):
+    patient_info = {
+        'ID': ds.PatientID,                 #if empty= none
+        'Name': ds.PatientName,
+        'Sex': ds.PatientSex,
+        'Birth': ds.PatientBirthDate,
+        'Date': ds.StudyDate,
+        'Duration': ds.StudyTime
+    }
+    return patient_info
