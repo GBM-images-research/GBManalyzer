@@ -35,14 +35,14 @@ def x_to_nii(fname, output_name, is_dicom):
 def calculate_volumes(img):
 
     # Definir las máscaras para cada rango de niveles de gris
-    mask1 = (img > 1) & (img < 50)
-    mask2 = (img > 50) & (img < 100)
-    mask3 = (img > 100) 
+    mask_n = (img > 1) & (img < 4)
+    mask_e = (img == 1)
+    mask_ta = (img >= 4) 
     
     # Calcular el número de voxeles en cada máscara
-    volume1 = np.sum(mask1)
-    volume2 = np.sum(mask2)
-    volume3 = np.sum(mask3)
+    volume1 = np.sum(mask_n)
+    volume2 = np.sum(mask_e)
+    volume3 = np.sum(mask_ta)
     
     # Como los voxeles son de 1mm³, el volumen en mm³ es igual al número de voxeles
     volumes = {

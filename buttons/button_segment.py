@@ -31,6 +31,8 @@ class ButtonSegment(QThread):
 
         segmentation=val_output.detach().cpu().numpy()
 
+        print("post_seg:", np.unique(segmentation[0]), np.unique(segmentation[1]), np.unique(segmentation[2]))
+
         self.get_rgb_to_nifti(segmentation)
 
         self.segmentation_finished.emit()
@@ -47,15 +49,20 @@ class ButtonSegment(QThread):
         # Creamos una matriz vacía para almacenar la resonancia RGB
         resonancia_rgb = np.zeros((240, 240, 155), dtype=np.uint8)
 
+        print("pre_uint:", np.unique(segmentation[0]), np.unique(segmentation[1]), np.unique(segmentation[2]))
+
         # Convertir 'segmentation' a uint8
-        segmentation_uint8 = (segmentation * 255).astype(np.uint8)
+        segmentation_uint8 = (segmentation).astype(np.uint8)
+
+        print("post_uint:", np.unique(segmentation_uint8[0]), np.unique(segmentation_uint8[1]), np.unique(segmentation_uint8[2]))
 
         # Asignamos los valores de los canales a los colores correspondientes
         # Los tres canales contribuyen al color final
-        resonancia_rgb += segmentation_uint8[0] * 255  #necrosis
-        resonancia_rgb += segmentation_uint8[1] * 165  #edema
-        resonancia_rgb += segmentation_uint8[2] * 85   #tumor activo
+        resonancia_rgb += segmentation_uint8[0] * 2  #necrosis
+        resonancia_rgb += segmentation_uint8[1] * 1  #edema
+        resonancia_rgb += segmentation_uint8[2] * 4  #activo
 
+        print("post_color:", np.unique(resonancia_rgb))
 
         # Convertir a formato NIfTI y guardar
         self.array_to_nifti(resonancia_rgb)

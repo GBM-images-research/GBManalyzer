@@ -29,7 +29,9 @@ class UI(QMainWindow):
         modalidades tienen _2, _3 y _4
         ''' 
         self.labels = [self.findChild(QLabel, "label")] + [self.findChild(QLabel, f"label_{i}") for i in range(2, 5)]
-        self.checkboxes = [self.findChild(QCheckBox, f"checkbox_{i}") for i in range(1, 5)]
+        self.checkboxes_brightness = [self.findChild(QCheckBox, f"checkbox_{i}") for i in range(1, 5)]
+        self.checkboxes_contrast = [self.findChild(QCheckBox, f"checkbox_{i}{i}") for i in range(1, 5)]
+        print(self.checkboxes_contrast)
         self.paths = [self.findChild(QLabel, f"label_{i}") for i in range(21, 25)]
         self.actions_dicom = [self.findChild(QAction, f"actionDICOM_{i}") if i > 1 else self.findChild(QAction, "actionDICOM") for i in range(1, 5)]
         self.actions_nifti = [self.findChild(QAction, f"actionNIfTI_{i}") if i > 1 else self.findChild(QAction, "actionNIfTI") for i in range(1, 5)]
@@ -49,10 +51,19 @@ class UI(QMainWindow):
             scrollbar.valueChanged.connect(self.scroll_through_file)
 
         # Conectar el slider de contraste a la función de actualización de imágenes
-        self.contrast_slider.valueChanged.connect(self.update_images_based_on_checkboxes)
+        self.brightness_slider.valueChanged.connect(self.update_images_based_on_checkboxes)
+        self.min_contrast_slider.valueChanged.connect(self.update_images_based_on_checkboxes)
+        self.max_contrast_slider.valueChanged.connect(self.update_images_based_on_checkboxes)
+        self.min_contrast_slider.setRange(0,127)
+        self.min_contrast_slider.setValue(0)
+        self.max_contrast_slider.setRange(128,255)
+        self.max_contrast_slider.setValue(255)
 
         # Conectar las checkboxes a la función de actualización de imágenes
-        for checkbox in self.checkboxes:
+        for checkbox in self.checkboxes_brightness:
+            checkbox.stateChanged.connect(self.update_images_based_on_checkboxes)
+        
+        for checkbox in self.checkboxes_contrast:
             checkbox.stateChanged.connect(self.update_images_based_on_checkboxes)
 
         self.chain_button.clicked.connect(self.chain_scrollbars)
@@ -85,6 +96,7 @@ class UI(QMainWindow):
         self.back_button_3.clicked.connect(self.load_t1)
         self.back_button_4.clicked.connect(self.load_t1c)
         self.back_button_5.clicked.connect(self.load_t2)
+        self.back_button_6.clicked.connect(self.load_main_menu)
 
         # Hilos 
         self.thread = {}
@@ -208,10 +220,15 @@ class UI(QMainWindow):
             if self.np_imgs[index] is not None:
                 current_value = sender.value()
                 current_slice = self.np_imgs[index][current_value]
-                if self.checkboxes[index].isChecked():
-                    contrast_value = self.contrast_slider.value() / 100.0
-                    mask = (self.tumor_np_img[current_value,:,:] > 0)
-                    pixmap = self.adjust_contrast_image(current_slice, contrast_value)
+                if self.checkboxes_brightness[index].isChecked():
+                    brightness_value = self.brightness_slider.value() / 100.0
+                    pixmap = self.adjust_brightness(current_slice, current_value, brightness_value)
+
+                #if self.checkboxes_contrast[index].isChecked():
+                #    min_value = self.min_contrast_slider.value()
+                #    max_value = self.max_contrast_slider.value()  
+                #    pixmap = self.adjust_contrast(current_slice, current_value, min_value, max_value)
+
                 else:
                     pixmap = self.ndarray_to_qpixmap(current_slice)
                 self.labels[index].setPixmap(pixmap)
@@ -240,6 +257,7 @@ class UI(QMainWindow):
         q_image = QImage(bytes(image_data.data), width, height, width, QImage.Format_Grayscale8)
         # Escalar la imagen para que se ajuste al tamaño de la etiqueta
         qpixmap = QPixmap.fromImage(q_image).scaled(self.labels[0].size(), Qt.KeepAspectRatio)
+
         return qpixmap
     
     def set_progress_dialog(self):
@@ -277,9 +295,9 @@ class UI(QMainWindow):
 
         # Crear una imagen superpuesta con el tumor
         overlay_data = original_img_np.copy()
-        overlay_data[(self.tumor_np_img > 1) & (self.tumor_np_img < 50)] = 0 # nivel de gris TA
-        overlay_data[(self.tumor_np_img > 50) & (self.tumor_np_img < 100)] = 180 # nivel de gris E
-        overlay_data[self.tumor_np_img > 100] = 255 # nivel de gris N
+        overlay_data[self.tumor_np_img >= 4] = 255 # nivel de gris TA
+        overlay_data[self.tumor_np_img == 1] = 150 # nivel de gris E
+        overlay_data[(self.tumor_np_img > 1) & (self.tumor_np_img < 4)] = 0 # nivel de gris N
 
         # Encontrar y marcar bordes del edema
         contour = find_contour(self.tumor_np_img)
@@ -310,8 +328,10 @@ class UI(QMainWindow):
     
     def show_patient_info(self):
         # Calcular los volúmenes
-        self.ds = pydicom.dcmread(self.fname)
-        patient_info = get_patient_info(self.ds)
+        dicom_files = [f for f in os.listdir(self.fname) if f.lower().endswith('.dcm')]
+        dicom_path = os.path.join(self.fname, dicom_files[0])
+        self.image_slice = pydicom.dcmread(dicom_path)
+        patient_info = get_patient_info(self.image_slice)
         print(patient_info['Name'])
         # Actualizar los labels con los valores calculados
         self.name_label.setText(f"{patient_info['Name']}")
@@ -378,24 +398,63 @@ class UI(QMainWindow):
             # Llamar a la función para cambiar la imagen mostrada cuando se desplaza la barra
             self.scroll_through_file()
     
-    def adjust_contrast_image(self, np_img, contrast_value):
-        imagen_cv2 = cv2.cvtColor(np_img, cv2.COLOR_BGR2RGB)
-        mod_img = cv2.convertScaleAbs(imagen_cv2, alpha=contrast_value, beta=0)
-        height, width, channel = mod_img.shape
+    def adjust_brightness(self, np_img, current_value, brightness_value):
+        # Convertir la imagen de numpy a formato RGB
+        img_cv2 = cv2.cvtColor(np_img, cv2.COLOR_GRAY2RGB)
+        scaled_img = img_cv2.copy()
+
+        # Aplicar el ajuste de contraste a toda la imagen   
+        scaled_img = cv2.convertScaleAbs(scaled_img, alpha=brightness_value, beta=0)
+
+        # Reemplazo
+        mask = self.tumor_np_img[current_value, :, :]
+        scaled_img[mask != 0] = img_cv2[mask != 0]
+        
+        # Convertir la imagen modificada de vuelta a formato QPixmap
+        height, width, channel = scaled_img.shape
         bytes_per_line = channel * width
-        q_image = QImage(mod_img.data, width, height, bytes_per_line, QImage.Format_RGB888)
+        q_image = QImage(scaled_img.data, width, height, bytes_per_line, QImage.Format_RGB888)
+        pixmap = QPixmap.fromImage(q_image)
+        return pixmap
+    
+    def adjust_contrast(self, np_img, current_value, min_value, max_value):
+        # Convertir la imagen de numpy a formato RGB
+        img_cv2 = cv2.cvtColor(np_img, cv2.COLOR_GRAY2RGB)
+
+        # Ajustar contraste como Adjust Contrast (imadjust) de MATLAB   
+        adjusted_img = img_cv2.copy()
+        adjusted_img = cv2.convertScaleAbs(adjusted_img, alpha=0.01, beta=0)
+        adjusted_img[img_cv2 <= min_value] = 0
+        adjusted_img[img_cv2 >= max_value] = 255
+
+        # Restitución de valores correspondientes al tumor
+        mask = self.tumor_np_img[current_value, :, :]
+        adjusted_img[mask != 0] = img_cv2[mask != 0]
+        
+        # Convertir la imagen modificada de vuelta a formato QPixmap
+        height, width, channel = adjusted_img.shape
+        bytes_per_line = channel * width
+        q_image = QImage(adjusted_img.data, width, height, bytes_per_line, QImage.Format_RGB888)
         pixmap = QPixmap.fromImage(q_image)
         return pixmap
 
     def update_images_based_on_checkboxes(self):
-        contrast_value = self.contrast_slider.value() / 100.0
-        for index, checkbox in enumerate(self.checkboxes):
+        brightness_value = self.brightness_slider.value() / 100.0
+        for index, checkbox in enumerate(self.checkboxes_brightness):
             if checkbox.isChecked() and self.np_imgs[index] is not None:
                 current_value = self.scrollbars[index].value()
                 current_slice = self.np_imgs[index][current_value]
-                mask = (self.tumor_np_img[current_value,:,:] > 0)
-                pixmap = self.adjust_contrast_image(current_slice, contrast_value)
+                pixmap = self.adjust_brightness(current_slice, current_value, brightness_value)
                 self.labels[index].setPixmap(pixmap)
+        
+        #min_value = self.min_contrast_slider.value()
+        #max_value = self.max_contrast_slider.value()
+        #for index, checkbox in enumerate(self.checkboxes_contrast):
+        #    if checkbox.isChecked() and self.np_imgs[index] is not None:
+        #        current_value = self.scrollbars[index].value()
+        #        current_slice = self.np_imgs[index][current_value]
+        #        pixmap = self.adjust_contrast(current_slice, current_value, min_value, max_value)
+        #        self.labels[index].setPixmap(pixmap)
 
     def control_bt_minimizar(self):
         self.showMinimized()		
@@ -473,4 +532,4 @@ class UI(QMainWindow):
 
     def load_patient_info_menu(self):
         self.stackedWidget.setCurrentWidget(self.patient_info_menu)
-        self.show_patient_info
+        self.show_patient_info()

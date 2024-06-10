@@ -1220,7 +1220,8 @@ background-color: rgb(209, 209, 209);</string>
                         </size>
                        </property>
                        <property name="styleSheet">
-                        <string notr="true">background-color: rgb(255, 255, 255);</string>
+                        <string notr="true">background-color: rgb(0,0,0);
+color: rgb(255, 255, 255);</string>
                        </property>
                        <property name="text">
                         <string>Necrosis</string>
@@ -1256,7 +1257,7 @@ background-color: rgb(209, 209, 209);</string>
                         </size>
                        </property>
                        <property name="styleSheet">
-                        <string notr="true">background-color: rgb(130, 130, 130);</string>
+                        <string notr="true">background-color: rgb(150, 150, 150);</string>
                        </property>
                        <property name="text">
                         <string>Edema</string>
@@ -1292,8 +1293,8 @@ background-color: rgb(209, 209, 209);</string>
                         </size>
                        </property>
                        <property name="styleSheet">
-                        <string notr="true">background-color: rgb(50, 50, 50);
-color: rgb(255, 255, 255);</string>
+                        <string notr="true">background-color: rgb(255, 255, 255);
+color: rgb(0, 0, 0);</string>
                        </property>
                        <property name="text">
                         <string>Enhancing tumor</string>
@@ -1356,7 +1357,7 @@ color: rgb(255, 255, 255);</string>
                  <item>
                   <layout class="QVBoxLayout" name="verticalLayout_9">
                    <item>
-                    <widget class="QLabel" name="contrast_label">
+                    <widget class="QLabel" name="birghtness_label">
                      <property name="maximumSize">
                       <size>
                        <width>16777215</width>
@@ -1364,7 +1365,7 @@ color: rgb(255, 255, 255);</string>
                       </size>
                      </property>
                      <property name="text">
-                      <string>Adjust Contrast</string>
+                      <string>Adjust Brightness</string>
                      </property>
                      <property name="alignment">
                       <set>Qt::AlignCenter</set>
@@ -1372,7 +1373,7 @@ color: rgb(255, 255, 255);</string>
                     </widget>
                    </item>
                    <item>
-                    <widget class="QSlider" name="contrast_slider">
+                    <widget class="QSlider" name="brightness_slider">
                      <property name="maximumSize">
                       <size>
                        <width>16777215</width>
@@ -1419,6 +1420,103 @@ color: rgb(255, 255, 255);</string>
                   </layout>
                  </item>
                  <item>
+                  <layout class="QVBoxLayout" name="verticalLayout_19">
+                   <item alignment="Qt::AlignHCenter">
+                    <widget class="QLabel" name="contrast_label">
+                     <property name="text">
+                      <string>Adjust Contrast</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_9">
+                     <item alignment="Qt::AlignHCenter">
+                      <widget class="QLabel" name="label_22">
+                       <property name="minimumSize">
+                        <size>
+                         <width>30</width>
+                         <height>0</height>
+                        </size>
+                       </property>
+                       <property name="text">
+                        <string>Min</string>
+                       </property>
+                       <property name="alignment">
+                        <set>Qt::AlignCenter</set>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QSlider" name="min_contrast_slider">
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_7">
+                     <item>
+                      <widget class="QLabel" name="label_23">
+                       <property name="minimumSize">
+                        <size>
+                         <width>30</width>
+                         <height>0</height>
+                        </size>
+                       </property>
+                       <property name="text">
+                        <string>Max</string>
+                       </property>
+                       <property name="alignment">
+                        <set>Qt::AlignCenter</set>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QSlider" name="max_contrast_slider">
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_14">
+                     <item>
+                      <widget class="QCheckBox" name="checkbox_11">
+                       <property name="text">
+                        <string>T1</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QCheckBox" name="checkbox_22">
+                       <property name="text">
+                        <string>T1C</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QCheckBox" name="checkbox_33">
+                       <property name="text">
+                        <string>T2</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QCheckBox" name="checkbox_44">
+                       <property name="text">
+                        <string>FLAIR</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                  </layout>
+                 </item>
+                 <item>
                   <widget class="QPushButton" name="edit_button">
                    <property name="maximumSize">
                     <size>
@@ -1436,18 +1534,34 @@ color: rgb(255, 255, 255);</string>
                <widget class="QWidget" name="patient_info_menu">
                 <layout class="QVBoxLayout" name="verticalLayout_17">
                  <item>
+                  <widget class="QPushButton" name="back_button_6">
+                   <property name="maximumSize">
+                    <size>
+                     <width>30</width>
+                     <height>30</height>
+                    </size>
+                   </property>
+                   <property name="text">
+                    <string>&lt;</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
                   <widget class="QLabel" name="patient_label">
                    <property name="maximumSize">
                     <size>
                      <width>16777215</width>
-                     <height>242</height>
+                     <height>40</height>
                     </size>
                    </property>
                    <property name="styleSheet">
                     <string notr="true">font: 75 16pt &quot;MS Shell Dlg 2&quot;;</string>
                    </property>
                    <property name="text">
-                    <string>Patient Info</string>
+                    <string>PATIENT INFO</string>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignCenter</set>
                    </property>
                   </widget>
                  </item>
@@ -1481,7 +1595,7 @@ color: rgb(255, 255, 255);</string>
                        <item alignment="Qt::AlignHCenter">
                         <widget class="QLabel" name="label_14">
                          <property name="text">
-                          <string>ID</string>
+                          <string>Study ID</string>
                          </property>
                         </widget>
                        </item>
@@ -1495,7 +1609,7 @@ color: rgb(255, 255, 255);</string>
                        <item alignment="Qt::AlignHCenter">
                         <widget class="QLabel" name="label_11">
                          <property name="text">
-                          <string>Duration</string>
+                          <string>Study Duration</string>
                          </property>
                         </widget>
                        </item>
@@ -1503,45 +1617,81 @@ color: rgb(255, 255, 255);</string>
                      </item>
                      <item>
                       <layout class="QVBoxLayout" name="verticalLayout_18">
-                       <item alignment="Qt::AlignHCenter">
+                       <item>
                         <widget class="QLabel" name="name_label">
+                         <property name="styleSheet">
+                          <string notr="true">background-color: rgb(255, 255, 255);</string>
+                         </property>
                          <property name="text">
                           <string/>
                          </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
                         </widget>
                        </item>
-                       <item alignment="Qt::AlignHCenter">
+                       <item>
                         <widget class="QLabel" name="sex_label">
+                         <property name="styleSheet">
+                          <string notr="true">background-color: rgb(255, 255, 255);</string>
+                         </property>
                          <property name="text">
                           <string/>
                          </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
                         </widget>
                        </item>
-                       <item alignment="Qt::AlignHCenter">
+                       <item>
                         <widget class="QLabel" name="birth_label">
+                         <property name="styleSheet">
+                          <string notr="true">background-color: rgb(255, 255, 255);</string>
+                         </property>
                          <property name="text">
                           <string/>
                          </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
                         </widget>
                        </item>
-                       <item alignment="Qt::AlignHCenter">
+                       <item>
                         <widget class="QLabel" name="id_label">
+                         <property name="styleSheet">
+                          <string notr="true">background-color: rgb(255, 255, 255);</string>
+                         </property>
                          <property name="text">
                           <string/>
                          </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
                         </widget>
                        </item>
-                       <item alignment="Qt::AlignHCenter">
+                       <item>
                         <widget class="QLabel" name="date_label">
+                         <property name="styleSheet">
+                          <string notr="true">background-color: rgb(255, 255, 255);</string>
+                         </property>
                          <property name="text">
                           <string/>
                          </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
                         </widget>
                        </item>
-                       <item alignment="Qt::AlignHCenter">
+                       <item>
                         <widget class="QLabel" name="duration_label">
+                         <property name="styleSheet">
+                          <string notr="true">background-color: rgb(255, 255, 255);</string>
+                         </property>
                          <property name="text">
                           <string/>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
                          </property>
                         </widget>
                        </item>
