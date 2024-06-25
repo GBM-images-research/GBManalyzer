@@ -32,6 +32,16 @@ def x_to_nii(fname, output_name, is_dicom):
         
         return file_path, aux_directory
 
+def normalize_img(img):
+
+    img_cv2 = cv2.cvtColor(img, cv2.COLOR_GRAY2RGB)
+    min_intensity = np.min(img_cv2)
+    max_intensity = np.max(img_cv2)
+    norm_img = (img_cv2 - min_intensity) * (255.0 / (max_intensity - min_intensity))
+    scaled_img = cv2.convertScaleAbs(norm_img, alpha=1, beta=0)
+
+    return scaled_img
+
 def calculate_volumes(img):
 
     # Definir las máscaras para cada rango de niveles de gris
