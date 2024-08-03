@@ -13,6 +13,9 @@
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true"/>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
@@ -54,7 +57,7 @@
           </size>
          </property>
          <property name="styleSheet">
-          <string notr="true">background-color: rgb(198, 198, 198);</string>
+          <string notr="true">background-color: rgb(0, 0, 0);</string>
          </property>
          <property name="frameShape">
           <enum>QFrame::StyledPanel</enum>
@@ -92,6 +95,15 @@
               <height>16777215</height>
              </size>
             </property>
+            <property name="font">
+             <font>
+              <family>Arial Black</family>
+             </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">color: rgb(255, 255, 255);
+background-color: rgb(0, 0, 0);</string>
+            </property>
             <property name="text">
              <string>GBMAnalyzer</string>
             </property>
@@ -115,6 +127,9 @@
           </item>
           <item>
            <widget class="QPushButton" name="minimize_button">
+            <property name="styleSheet">
+             <string notr="true">color: rgb(255, 255, 255);</string>
+            </property>
             <property name="text">
              <string>Minimize</string>
             </property>
@@ -122,6 +137,9 @@
           </item>
           <item>
            <widget class="QPushButton" name="normal_button">
+            <property name="styleSheet">
+             <string notr="true">color: rgb(255, 255, 255);</string>
+            </property>
             <property name="text">
              <string>Normal</string>
             </property>
@@ -129,6 +147,9 @@
           </item>
           <item>
            <widget class="QPushButton" name="maximize_button">
+            <property name="styleSheet">
+             <string notr="true">color: rgb(255, 255, 255);</string>
+            </property>
             <property name="text">
              <string>Maximize</string>
             </property>
@@ -136,6 +157,9 @@
           </item>
           <item>
            <widget class="QPushButton" name="close_button">
+            <property name="styleSheet">
+             <string notr="true">color: rgb(255, 255, 255);</string>
+            </property>
             <property name="text">
              <string>Exit</string>
             </property>
@@ -146,6 +170,9 @@
        </item>
        <item>
         <widget class="QFrame" name="frame_inferior">
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(255, 255, 255);</string>
+         </property>
          <property name="frameShape">
           <enum>QFrame::StyledPanel</enum>
          </property>
@@ -185,6 +212,9 @@
               <height>0</height>
              </size>
             </property>
+            <property name="styleSheet">
+             <string notr="true">background-color: rgb(0, 0, 0);</string>
+            </property>
             <property name="frameShape">
              <enum>QFrame::StyledPanel</enum>
             </property>
@@ -218,28 +248,6 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="2" column="0">
-                  <widget class="QLabel" name="label_7">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="minimumSize">
-                    <size>
-                     <width>0</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                   <property name="text">
-                    <string>T2</string>
-                   </property>
-                   <property name="alignment">
-                    <set>Qt::AlignCenter</set>
-                   </property>
-                  </widget>
-                 </item>
                  <item row="0" column="3">
                   <layout class="QHBoxLayout" name="horizontalLayout_3">
                    <item>
@@ -249,6 +257,10 @@
                        <width>17</width>
                        <height>16777215</height>
                       </size>
+                     </property>
+                     <property name="styleSheet">
+                      <string notr="true">color: rgb(255, 255, 255);
+font: 87 8pt &quot;Arial Black&quot;;</string>
                      </property>
                      <property name="text">
                       <string>C</string>
@@ -263,6 +275,10 @@
                        <height>16777215</height>
                       </size>
                      </property>
+                     <property name="styleSheet">
+                      <string notr="true">color: rgb(255, 255, 255);
+font: 87 8pt &quot;Arial Black&quot;;</string>
+                     </property>
                      <property name="text">
                       <string>U</string>
                      </property>
@@ -270,71 +286,10 @@
                    </item>
                   </layout>
                  </item>
-                 <item row="0" column="0">
-                  <widget class="QLabel" name="label_5">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>20</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="text">
-                    <string>T1</string>
-                   </property>
-                   <property name="alignment">
-                    <set>Qt::AlignCenter</set>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="2" column="2">
-                  <widget class="QLabel" name="label_8">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>20</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="text">
-                    <string>FLAIR</string>
-                   </property>
-                   <property name="alignment">
-                    <set>Qt::AlignCenter</set>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="3" column="3">
-                  <widget class="QScrollBar" name="verticalScrollBar_4">
-                   <property name="orientation">
-                    <enum>Qt::Vertical</enum>
-                   </property>
-                  </widget>
-                 </item>
                  <item row="1" column="3">
                   <widget class="QScrollBar" name="verticalScrollBar_2">
                    <property name="orientation">
                     <enum>Qt::Vertical</enum>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="2">
-                  <widget class="QLabel" name="label_6">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>20</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="minimumSize">
-                    <size>
-                     <width>0</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                   <property name="text">
-                    <string>T1C</string>
-                   </property>
-                   <property name="alignment">
-                    <set>Qt::AlignCenter</set>
                    </property>
                   </widget>
                  </item>
@@ -357,8 +312,53 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="1" column="1">
-                  <widget class="QScrollBar" name="verticalScrollBar">
+                 <item row="3" column="2">
+                  <widget class="QLabel" name="label_4">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true">background-color: rgb(0, 0, 0);</string>
+                   </property>
+                   <property name="text">
+                    <string/>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignCenter</set>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="0" alignment="Qt::AlignLeft">
+                  <widget class="QLabel" name="label_7">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>0</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true">color: rgb(255, 255, 255);
+font: 87 8pt &quot;Arial Black&quot;;</string>
+                   </property>
+                   <property name="text">
+                    <string>T2</string>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignCenter</set>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="3">
+                  <widget class="QScrollBar" name="verticalScrollBar_4">
                    <property name="orientation">
                     <enum>Qt::Vertical</enum>
                    </property>
@@ -383,27 +383,90 @@
                    </property>
                   </widget>
                  </item>
-                 <item row="3" column="0">
-                  <widget class="QLabel" name="label_3">
+                 <item row="0" column="0">
+                  <widget class="QLabel" name="label_5">
                    <property name="sizePolicy">
-                    <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                      <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
+                     <verstretch>20</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="font">
+                    <font>
+                     <family>Arial Black</family>
+                     <pointsize>8</pointsize>
+                     <weight>10</weight>
+                     <italic>false</italic>
+                     <bold>false</bold>
+                    </font>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true">font: 87 8pt &quot;Arial Black&quot;;
+color: rgb(255, 255, 255);</string>
+                   </property>
+                   <property name="text">
+                    <string>T1</string>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="2" alignment="Qt::AlignLeft">
+                  <widget class="QLabel" name="label_8">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>20</verstretch>
                     </sizepolicy>
                    </property>
                    <property name="styleSheet">
-                    <string notr="true">background-color: rgb(0, 0, 0);</string>
+                    <string notr="true">color: rgb(255, 255, 255);
+font: 87 8pt &quot;Arial Black&quot;;</string>
                    </property>
                    <property name="text">
-                    <string/>
+                    <string>FLAIR</string>
                    </property>
                    <property name="alignment">
                     <set>Qt::AlignCenter</set>
                    </property>
                   </widget>
                  </item>
-                 <item row="3" column="2">
-                  <widget class="QLabel" name="label_4">
+                 <item row="0" column="2">
+                  <widget class="QLabel" name="label_6">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>20</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>0</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true">font: 87 8pt &quot;Arial Black&quot;;
+color: rgb(255, 255, 255);</string>
+                   </property>
+                   <property name="text">
+                    <string>T1C</string>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="1">
+                  <widget class="QScrollBar" name="verticalScrollBar">
+                   <property name="orientation">
+                    <enum>Qt::Vertical</enum>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="0">
+                  <widget class="QLabel" name="label_3">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                      <horstretch>0</horstretch>
@@ -573,6 +636,9 @@
                      <horstretch>0</horstretch>
                      <verstretch>0</verstretch>
                     </sizepolicy>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true"/>
                    </property>
                    <property name="frameShape">
                     <enum>QFrame::StyledPanel</enum>
@@ -853,7 +919,7 @@
                  <item>
                   <widget class="QLabel" name="drag_label">
                    <property name="autoFillBackground">
-                    <bool>true</bool>
+                    <bool>false</bool>
                    </property>
                    <property name="styleSheet">
                     <string notr="true"/>
@@ -1350,33 +1416,24 @@ color: rgb(0, 0, 0);</string>
                    </item>
                   </layout>
                  </item>
-                 <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
-                  <widget class="QCheckBox" name="show_tumor">
-                   <property name="text">
-                    <string>Show tumor</string>
-                   </property>
-                  </widget>
-                 </item>
                  <item>
                   <layout class="QVBoxLayout" name="verticalLayout_9">
                    <item>
-                    <widget class="QLabel" name="birghtness_label">
-                     <property name="maximumSize">
-                      <size>
-                       <width>16777215</width>
-                       <height>50</height>
-                      </size>
-                     </property>
+                    <widget class="QPushButton" name="brightness_button_show">
                      <property name="text">
                       <string>Adjust Brightness</string>
-                     </property>
-                     <property name="alignment">
-                      <set>Qt::AlignCenter</set>
                      </property>
                     </widget>
                    </item>
                    <item>
-                    <layout class="QHBoxLayout" name="horizontalLayout_8">
+                    <widget class="QPushButton" name="brightness_button_hide">
+                     <property name="text">
+                      <string>Adjust Brightness</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <layout class="QHBoxLayout" name="brightness_1">
                      <item>
                       <widget class="QSlider" name="brightness_slider">
                        <property name="orientation">
@@ -1400,7 +1457,7 @@ color: rgb(0, 0, 0);</string>
                     </layout>
                    </item>
                    <item>
-                    <layout class="QHBoxLayout" name="horizontalLayout_4">
+                    <layout class="QHBoxLayout" name="brightness_2">
                      <item>
                       <widget class="QCheckBox" name="checkbox_1">
                        <property name="text">
@@ -1435,8 +1492,15 @@ color: rgb(0, 0, 0);</string>
                  </item>
                  <item>
                   <layout class="QVBoxLayout" name="verticalLayout_19">
-                   <item alignment="Qt::AlignHCenter">
-                    <widget class="QLabel" name="contrast_label">
+                   <item>
+                    <widget class="QPushButton" name="contrast_button_show">
+                     <property name="text">
+                      <string>Adjust Contrast</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="contrast_button_hide">
                      <property name="text">
                       <string>Adjust Contrast</string>
                      </property>
@@ -1445,7 +1509,7 @@ color: rgb(0, 0, 0);</string>
                    <item>
                     <layout class="QHBoxLayout" name="horizontalLayout_9">
                      <item alignment="Qt::AlignHCenter">
-                      <widget class="QLabel" name="label_22">
+                      <widget class="QLabel" name="min_label">
                        <property name="minimumSize">
                         <size>
                          <width>30</width>
@@ -1472,7 +1536,7 @@ color: rgb(0, 0, 0);</string>
                    <item>
                     <layout class="QHBoxLayout" name="horizontalLayout_7">
                      <item>
-                      <widget class="QLabel" name="label_23">
+                      <widget class="QLabel" name="max_label">
                        <property name="minimumSize">
                         <size>
                          <width>30</width>
@@ -1530,16 +1594,10 @@ color: rgb(0, 0, 0);</string>
                    </item>
                   </layout>
                  </item>
-                 <item>
-                  <widget class="QPushButton" name="edit_button">
-                   <property name="maximumSize">
-                    <size>
-                     <width>16777215</width>
-                     <height>100</height>
-                    </size>
-                   </property>
+                 <item alignment="Qt::AlignHCenter">
+                  <widget class="QCheckBox" name="show_tumor">
                    <property name="text">
-                    <string>EDIT</string>
+                    <string>Show tumor</string>
                    </property>
                   </widget>
                  </item>
@@ -1620,13 +1678,6 @@ color: rgb(0, 0, 0);</string>
                          </property>
                         </widget>
                        </item>
-                       <item alignment="Qt::AlignHCenter">
-                        <widget class="QLabel" name="label_11">
-                         <property name="text">
-                          <string>Study Duration</string>
-                         </property>
-                        </widget>
-                       </item>
                       </layout>
                      </item>
                      <item>
@@ -1685,19 +1736,6 @@ color: rgb(0, 0, 0);</string>
                        </item>
                        <item>
                         <widget class="QLabel" name="date_label">
-                         <property name="styleSheet">
-                          <string notr="true">background-color: rgb(255, 255, 255);</string>
-                         </property>
-                         <property name="text">
-                          <string/>
-                         </property>
-                         <property name="alignment">
-                          <set>Qt::AlignCenter</set>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QLabel" name="duration_label">
                          <property name="styleSheet">
                           <string notr="true">background-color: rgb(255, 255, 255);</string>
                          </property>

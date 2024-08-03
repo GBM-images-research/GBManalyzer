@@ -31,7 +31,6 @@ class UI(QMainWindow):
         self.labels = [self.findChild(QLabel, "label")] + [self.findChild(QLabel, f"label_{i}") for i in range(2, 5)]
         self.checkboxes_brightness = [self.findChild(QCheckBox, f"checkbox_{i}") for i in range(1, 5)]
         self.checkboxes_contrast = [self.findChild(QCheckBox, f"checkbox_{i}{i}") for i in range(1, 5)]
-        print(self.checkboxes_contrast)
         self.paths = [self.findChild(QLabel, f"label_{i}") for i in range(21, 25)]
         self.actions_dicom = [self.findChild(QAction, f"actionDICOM_{i}") if i > 1 else self.findChild(QAction, "actionDICOM") for i in range(1, 5)]
         self.actions_nifti = [self.findChild(QAction, f"actionNIfTI_{i}") if i > 1 else self.findChild(QAction, "actionNIfTI") for i in range(1, 5)]
@@ -70,10 +69,19 @@ class UI(QMainWindow):
         for checkbox in self.checkboxes_contrast:
             checkbox.stateChanged.connect(self.update_images_based_on_checkboxes)
 
+        # Conectar los botones de ajuste de visualización con acciones
+        self.viz_options_setup()
+        self.brightness_button_show.clicked.connect(self.show_brightness_menu)
+        self.contrast_button_show.clicked.connect(self.show_contrast_menu)
+        self.brightness_button_hide.clicked.connect(self.hide_brightness_menu)
+        self.contrast_button_hide.clicked.connect(self.hide_contrast_menu)
+
         self.chain_button.clicked.connect(self.chain_scrollbars)
         self.unchain_button.clicked.connect(self.unchain_scrollbars)
         self.unchain_button.hide()
         self.scrollbars_linked = False
+        self.show_tumor.setChecked(False)
+        self.show_tumor.stateChanged.connect(self.onCheckboxStateChanged)
 
         #Conectar Patient_info labels
         self.patient_info_button.clicked.connect(self.load_patient_info_menu)
@@ -133,7 +141,6 @@ class UI(QMainWindow):
         self.maximize_button.clicked.connect(self.control_bt_maximizar)
         self.close_button.clicked.connect(lambda: self.close())
 
-
         # Mostrar la ventana
         self.show()
 
@@ -191,9 +198,9 @@ class UI(QMainWindow):
                 os.makedirs(self.segment_images_folder, exist_ok=True)
 
         self.set_progress_dialog()
-        self.thread[2] = ButtonSegment(self.segment_images_folder, self.preprocess_images_folder)        
-        self.thread[2].segmentation_finished.connect(self.update_rgb_images)
+        self.thread[2] = ButtonSegment(self.segment_images_folder, self.preprocess_images_folder)       
         self.thread[2].segmentation_finished.connect(self.close_progress_dialog)
+        self.thread[2].segmentation_finished.connect(self.check_checkbox)
         self.thread[2].segmentation_finished.connect(self.load_segment_menu)
         self.thread[2].segmentation_finished.connect(self.show_volumes)
         self.thread[2].start()
@@ -211,7 +218,7 @@ class UI(QMainWindow):
                 if dcm_check(self.fname):
                     # Convertir los archivos DICOM a NIfTI
                     file_path, self.aux_directory = x_to_nii(self.fname, output_name, is_dicom = True)
-                    self.show_image_in_label(file_path, index)
+                    self.set_image_in_label(file_path, index)
                 else:
                     QMessageBox.warning(self, "Directorio no válido", "El directorio no contiene archivos .dcm")
         else:
@@ -219,7 +226,7 @@ class UI(QMainWindow):
             self.fname = QFileDialog.getOpenFileName(self, "Open File", " ", "NifTI Files (*.nii *nii.gz)")
             file_path, self.aux_directory = x_to_nii(self.fname[0], output_name, is_dicom = False)
             if self.fname[0]:  # Comprobar si se seleccionó un archivo
-                self.show_image_in_label(self.fname[0], index)
+                self.set_image_in_label(self.fname[0], index)
 
     # Método para cambiar la imagen mostrada cuando se desplaza la barra
 
@@ -230,34 +237,17 @@ class UI(QMainWindow):
             if self.np_imgs[index] is not None:
                 current_value = sender.value()
                 current_slice = self.np_imgs[index][current_value]
-                if self.checkboxes_brightness[index].isChecked():
-                    brightness_value = self.brightness_slider.value() / 100.0
-                    #print(brightness_value)
-                    pixmap = self.adjust_brightness(current_slice, current_value, brightness_value)
-
-                if self.checkboxes_contrast[index].isChecked():
-                    min_value = self.min_contrast_slider.value() 
-                    max_value = self.max_contrast_slider.value() 
-                    pixmap = self.adjust_contrast(current_slice, current_value, min_value, max_value)
-
-                else:
-                    #pixmap = self.ndarray_to_qpixmap(current_slice)
-                    img_cv2 = cv2.cvtColor(current_slice, cv2.COLOR_GRAY2RGB)
-                    min_intensity = np.min(img_cv2)
-                    max_intensity = np.max(img_cv2)
-                    norm_img = (img_cv2 - min_intensity) * (255.0 / (max_intensity - min_intensity))
-                    scaled_img = cv2.convertScaleAbs(norm_img, alpha=1, beta=0)
-                    pixmap = self.convert_np_to_pixmap(scaled_img)
+                pixmap = self.pixmap_based_on_checkboxes(current_slice, current_value, index)
                 self.labels[index].setPixmap(pixmap)
             else:
                 print(f"No se han cargado imágenes para la modalidad {index + 1}")
 
     def update_preprocessing_images(self):
         # Mostrar las imágenes preprocesadas en los QLabel
-        self.show_image_in_label(os.path.join(self.preprocess_images_folder, "t1.nii"), 1)
-        self.show_image_in_label(os.path.join(self.preprocess_images_folder, "t1c.nii"), 2)
-        self.show_image_in_label(os.path.join(self.preprocess_images_folder, "t2.nii"), 3)
-        self.show_image_in_label(os.path.join(self.preprocess_images_folder, "flair.nii"), 4)
+        self.set_image_in_label(os.path.join(self.preprocess_images_folder, "t1.nii"), 1)
+        self.set_image_in_label(os.path.join(self.preprocess_images_folder, "t1c.nii"), 2)
+        self.set_image_in_label(os.path.join(self.preprocess_images_folder, "t2.nii"), 3)
+        self.set_image_in_label(os.path.join(self.preprocess_images_folder, "flair.nii"), 4)
 
     def update_rgb_images(self):
         # Mostrar las imágenes segmentadas con el tumor superpuesto en los QLabel
@@ -267,15 +257,6 @@ class UI(QMainWindow):
         self.show_segmented_image_in_label(os.path.join(self.preprocess_images_folder, "flair.nii"), os.path.join(self.segment_images_folder, "rgb.nii"), 4)
 
     # Método para convertir un array numpy en un QPixmap
-    def ndarray_to_qpixmap(self, array):
-        normalized_array = (array - array.min()) / (array.max() - array.min()) * 255
-        image_data = normalized_array.astype(np.uint8)
-        height, width = image_data.shape
-        q_image = QImage(bytes(image_data.data), width, height, width, QImage.Format_Grayscale8)
-        # Escalar la imagen para que se ajuste al tamaño de la etiqueta
-        qpixmap = QPixmap.fromImage(q_image).scaled(self.labels[0].size(), Qt.KeepAspectRatio)
-
-        return qpixmap
     
     def convert_np_to_pixmap(self, np_img):
         height, width, channel = np_img.shape
@@ -295,28 +276,24 @@ class UI(QMainWindow):
         self.progress_dialog.show()
 
     # Mostrar imagen en un QLabel
-    def show_image_in_label(self, fname, index):
+    def set_image_in_label(self, fname, img_index):
+
         ants_img = ants.image_read(fname, reorient='IAL')
         # Almacenar la imagen como un array numpy
-        self.np_imgs[index - 1] = ants.ANTsImage.numpy(ants_img)
+        self.np_imgs[img_index - 1] = ants.ANTsImage.numpy(ants_img)
         # Configurar la barra de desplazamiento para la imagen
-        scrollbar = self.scrollbars[index - 1]
+        scrollbar = self.scrollbars[img_index - 1]
         scrollbar.setMinimum(0)
-        scrollbar.setMaximum(self.np_imgs[index - 1].shape[0] - 1)
+        scrollbar.setMaximum(self.np_imgs[img_index - 1].shape[0] - 1)
         scrollbar.show()
-        # Mostrar la primera imagen en la etiqueta correspondiente
-        #pixmap = self.ndarray_to_qpixmap(self.np_imgs[index - 1][0])
-        img_cv2 = cv2.cvtColor(self.np_imgs[index - 1][0].astype(np.uint8), cv2.COLOR_GRAY2RGB)
-        min_intensity = np.min(img_cv2)
-        max_intensity = np.max(img_cv2)
-        norm_img = (img_cv2 - min_intensity) * (255.0 / (max_intensity - min_intensity))
-        scaled_img = cv2.convertScaleAbs(norm_img, alpha=1, beta=0)
-        pixmap = self.convert_np_to_pixmap(scaled_img)
-        self.labels[index - 1].setPixmap(pixmap)
+        # Mostrar la imagen corresponidente al valor de la scrollbar en la etiqueta correspondiente
+        pixmap = self.pixmap_based_on_checkboxes(self.np_imgs[img_index - 1][self.scrollbars[img_index-1].value()], self.scrollbars[img_index-1].value(), img_index-1)
+        self.labels[img_index - 1].setPixmap(pixmap)
 
-    def show_segmented_image_in_label(self, fname_img, fname_tumor, index):
+    def show_segmented_image_in_label(self, fname_img, fname_tumor, img_index):
+
+        # Leer salida de la red y convertir en np
         tumor_img = ants.image_read(fname_tumor, reorient='IAL')
-        # Almacenar la imagen segmentada como un array numpy
         self.tumor_np_img = ants.ANTsImage.numpy(tumor_img)
         
         # Leer la imagen original correspondiente para superponer el tumor
@@ -334,23 +311,78 @@ class UI(QMainWindow):
         overlay_data[contour > 0] = 0 
 
         # Agregar imagen al label
-        self.np_imgs[index - 1] = overlay_data.copy()
+        self.np_imgs[img_index - 1] = overlay_data.copy()
 
         # Configurar la barra de desplazamiento para la imagen
-        scrollbar = self.scrollbars[index - 1]
+        scrollbar = self.scrollbars[img_index - 1]
         scrollbar.setMinimum(0)
-        scrollbar.setMaximum(self.np_imgs[index - 1].shape[0] - 1)
+        scrollbar.setMaximum(self.np_imgs[img_index - 1].shape[0] - 1)
         scrollbar.show()
 
-        # Mostrar la primera imagen en la etiqueta correspondiente
-        #pixmap = self.ndarray_to_qpixmap(self.np_imgs[index - 1][0])
-        img_cv2 = cv2.cvtColor(self.np_imgs[index - 1][0].astype(np.uint8), cv2.COLOR_GRAY2RGB)
-        min_intensity = np.min(img_cv2)
-        max_intensity = np.max(img_cv2)
-        norm_img = (img_cv2 - min_intensity) * (255.0 / (max_intensity - min_intensity))
-        scaled_img = cv2.convertScaleAbs(norm_img, alpha=1, beta=0)
-        pixmap = self.convert_np_to_pixmap(scaled_img)
-        self.labels[index - 1].setPixmap(pixmap)
+        # Mostrar la imagen corresponidente al valor de la scrollbar en la etiqueta correspondiente
+        pixmap = self.pixmap_based_on_checkboxes(self.np_imgs[img_index - 1][self.scrollbars[img_index-1].value()], self.scrollbars[img_index-1].value(), img_index-1)
+        self.labels[img_index - 1].setPixmap(pixmap)
+
+    def show_image(self, np_img, current_value):
+        # Convertir la imagen de numpy a formato RGB
+        norm_img, img_cv2 = normalize_img(np_img)
+        scaled_img = norm_img.copy()
+
+        # Aplicar el ajuste de contraste a toda la imagen   
+        scaled_img = cv2.convertScaleAbs(scaled_img, alpha=1, beta=0)
+
+        # Reemplazo
+        if self.show_tumor.isChecked():
+            mask = self.tumor_np_img[current_value, :, :]
+            scaled_img[mask != 0] = img_cv2[mask != 0]
+        
+        return self.convert_np_to_pixmap(scaled_img)
+
+    def adjust_brightness(self, np_img, current_value, brightness_value):
+        # Convertir la imagen de numpy a formato RGB
+        norm_img, img_cv2 = normalize_img(np_img)
+        scaled_img = norm_img.copy()
+
+        # Aplicar el ajuste de contraste a toda la imagen   
+        scaled_img = cv2.convertScaleAbs(scaled_img, alpha=brightness_value, beta=0)
+
+        # Reemplazo
+        if self.show_tumor.isChecked():
+            mask = self.tumor_np_img[current_value, :, :]
+            scaled_img[mask != 0] = img_cv2[mask != 0]
+        
+        return self.convert_np_to_pixmap(scaled_img)
+    
+    def adjust_contrast(self, np_img, current_value, min_value, max_value):
+        # Convertir la imagen de numpy a formato RGB
+        norm_img, img_cv2 = normalize_img(np_img)
+        norm_img = np.clip(norm_img, 0, 255).astype(np.uint8)
+        
+        # Ajustar contraste como imadjust de MATLAB
+        adjusted_img = np.zeros_like(norm_img)
+        
+        # Reasignar los valores dentro de los límites especificados
+        for i in range(3):  # Iterar sobre los canales de color
+            mask_low = norm_img[:, :, i] < min_value
+            mask_high = norm_img[:, :, i] > max_value
+            mask_mid = (norm_img[:, :, i] >= min_value) & (norm_img[:, :, i] <= max_value)
+            
+            adjusted_img[mask_low, i] = 0
+            adjusted_img[mask_high, i] = 255
+            adjusted_img[mask_mid, i] = ((norm_img[mask_mid, i] - min_value) / (max_value - min_value) * 255).astype(np.uint8)
+
+        # Restitución de valores correspondientes al tumor
+        if self.show_tumor.isChecked():
+            mask = self.tumor_np_img[current_value, :, :]
+            adjusted_img[mask != 0] = img_cv2[mask != 0]
+
+        # Convertir la imagen modificada de vuelta a formato QPixmap
+        height, width, channel = adjusted_img.shape
+        bytes_per_line = channel * width
+        q_image = QImage(adjusted_img.data, width, height, bytes_per_line, QImage.Format_RGB888)
+        pixmap = QPixmap.fromImage(q_image)
+        
+        return pixmap
 
     def show_volumes(self):
         # Calcular los volúmenes
@@ -375,8 +407,6 @@ class UI(QMainWindow):
         self.birth_label.setText(f"{patient_info['Birth']}")
         self.sex_label.setText(f"{patient_info['Sex']}")
         self.date_label.setText(f"{patient_info['Date']}")
-        self.duration_label.setText(f"{patient_info['Duration']}")
-
 
     def close_progress_dialog(self):
         # Cerrar el diálogo de progreso cuando el procesamiento haya terminado
@@ -433,68 +463,33 @@ class UI(QMainWindow):
 
             # Llamar a la función para cambiar la imagen mostrada cuando se desplaza la barra
             self.scroll_through_file()
-    
-    def adjust_brightness(self, np_img, current_value, brightness_value):
-        # Convertir la imagen de numpy a formato RGB
-        img_cv2 = cv2.cvtColor(np_img, cv2.COLOR_GRAY2RGB)
-        min_intensity = np.min(img_cv2)
-        max_intensity = np.max(img_cv2)
-        norm_img = (img_cv2 - min_intensity) * (255.0 / (max_intensity - min_intensity))
-        scaled_img = norm_img.copy()
-
-        # Aplicar el ajuste de contraste a toda la imagen   
-        scaled_img = cv2.convertScaleAbs(scaled_img, alpha=brightness_value, beta=0)
-
-        # Reemplazo
-        mask = self.tumor_np_img[current_value, :, :]
-        scaled_img[mask != 0] = img_cv2[mask != 0]
-        
-        return self.convert_np_to_pixmap(scaled_img)
-    
-    def adjust_contrast(self, np_img, current_value, min_value, max_value):
-        # Convertir la imagen de numpy a formato RGB
-        img_cv2 = cv2.cvtColor(np_img, cv2.COLOR_GRAY2RGB)
-        min_intensity = np.min(img_cv2)
-        max_intensity = np.max(img_cv2)
-        norm_img = (img_cv2 - min_intensity) * (255.0 / (max_intensity - min_intensity))
-        print(print(min_intensity))
-        print(min_value)
-        print(max_value)
-        print(np.max(norm_img))
-        # Ajustar contraste como Adjust Contrast (imadjust) de MATLAB   
-        adjusted_img = norm_img.copy()
-        adjusted_img = cv2.convertScaleAbs(adjusted_img, alpha=1, beta=0)
-        adjusted_img[norm_img <= min_value] = 0
-        adjusted_img[norm_img >= max_value] = 255
-
-        # Restitución de valores correspondientes al tumor
-        mask = self.tumor_np_img[current_value, :, :]
-        adjusted_img[mask != 0] = img_cv2[mask != 0]
-        
-        # Convertir la imagen modificada de vuelta a formato QPixmap
-        height, width, channel = adjusted_img.shape
-        bytes_per_line = channel * width
-        q_image = QImage(adjusted_img.data, width, height, bytes_per_line, QImage.Format_RGB888)
-        pixmap = QPixmap.fromImage(q_image)
-        return pixmap
 
     def update_images_based_on_checkboxes(self):
-        brightness_value = self.brightness_slider.value() / 100.0
-        for index, checkbox in enumerate(self.checkboxes_brightness):
-            if checkbox.isChecked() and self.np_imgs[index] is not None:
-                current_value = self.scrollbars[index].value()
-                current_slice = self.np_imgs[index][current_value]
-                pixmap = self.adjust_brightness(current_slice, current_value, brightness_value)
-                self.labels[index].setPixmap(pixmap)
-        
-        min_value = self.min_contrast_slider.value()
-        max_value = self.max_contrast_slider.value()
-        for index, checkbox in enumerate(self.checkboxes_contrast):
-            if checkbox.isChecked() and self.np_imgs[index] is not None:
-                current_value = self.scrollbars[index].value()
-                current_slice = self.np_imgs[index][current_value]
-                pixmap = self.adjust_contrast(current_slice, current_value, min_value, max_value)
-                self.labels[index].setPixmap(pixmap)
+        for index in range(4):
+            current_value = self.scrollbars[index].value()
+            current_slice = self.np_imgs[index][current_value]
+            pixmap = self.pixmap_based_on_checkboxes(current_slice, current_value, index)
+            self.labels[index].setPixmap(pixmap)
+
+    def pixmap_based_on_checkboxes(self, current_slice, current_value, index):
+
+        if self.checkboxes_brightness[index].isChecked():
+            brightness_value = self.brightness_slider.value() / 100.0
+            return self.adjust_brightness(current_slice, current_value, brightness_value)
+
+        if self.checkboxes_contrast[index].isChecked():
+            min_value = self.min_contrast_slider.value() 
+            max_value = self.max_contrast_slider.value() 
+            return self.adjust_contrast(current_slice, current_value, min_value, max_value)
+
+        else:
+            return self.show_image(current_slice, current_value)
+
+    def onCheckboxStateChanged(self):
+        if self.show_tumor.isChecked():
+            self.update_rgb_images()
+        else:
+            self.update_preprocessing_images()
 
     def ensure_position(self):
         if self.max_contrast_slider.value() < self.min_contrast_slider.value():
@@ -503,12 +498,12 @@ class UI(QMainWindow):
     def control_bt_minimizar(self):
         self.showMinimized()		
 
-    def  control_bt_normal(self): 
+    def control_bt_normal(self): 
         self.showNormal()		
         self.normal_button.hide()
         self.maximize_button.show()
 
-    def  control_bt_maximizar(self): 
+    def control_bt_maximizar(self): 
         self.showMaximized()
         self.maximize_button.hide()
         self.normal_button.show()
@@ -600,4 +595,74 @@ class UI(QMainWindow):
 
     def disablePreprocessButton(self):
         self.p_button.setEnabled(False)
+
+    def check_checkbox(self):
+        self.show_tumor.setChecked(True)
+
+    def viz_options_setup(self):
+        self.brightness_button_show.show()
+        self.brightness_button_hide.hide()
+        self.contrast_button_show.show()
+        self.contrast_button_hide.hide()
+        self.brightness_slider.hide()
+        self.reset_brightness.hide()
+        for checkbox in self.checkboxes_brightness:
+            checkbox.hide()
+        for checkbox in self.checkboxes_contrast:
+            checkbox.hide()
+        self.min_label.hide()
+        self.max_label.hide()
+        self.min_contrast_slider.hide()
+        self.max_contrast_slider.hide()
+
+    def show_brightness_menu(self):
+        for checkbox in self.checkboxes_contrast:
+            checkbox.setChecked(False)
+            checkbox.hide()
+        self.min_label.hide()
+        self.max_label.hide()
+        self.min_contrast_slider.hide()
+        self.max_contrast_slider.hide()
+        self.brightness_slider.show()
+        self.reset_brightness.show()
+        for checkbox in self.checkboxes_brightness:
+            checkbox.show()
+        self.brightness_button_show.hide()
+        self.brightness_button_hide.show()
+
+    def show_contrast_menu(self):
+        for checkbox in self.checkboxes_brightness:
+            checkbox.setChecked(False)
+            checkbox.hide()
+        self.brightness_slider.hide()
+        self.reset_brightness.hide()   
+        self.min_label.show()
+        self.max_label.show()
+        self.min_contrast_slider.show()
+        self.max_contrast_slider.show()
+        for checkbox in self.checkboxes_contrast:
+            checkbox.show()
+        self.contrast_button_show.hide()
+        self.contrast_button_hide.show()
+        
+    def hide_brightness_menu(self):
+        for checkbox in self.checkboxes_brightness:
+            checkbox.setChecked(False)
+            checkbox.hide()
+        self.brightness_slider.hide()
+        self.reset_brightness.hide()
+        self.brightness_button_show.show()
+        self.brightness_button_hide.hide()
+
+    def hide_contrast_menu(self):
+        for checkbox in self.checkboxes_contrast:
+            checkbox.setChecked(False)
+            checkbox.hide()
+        self.min_label.hide()
+        self.max_label.hide()
+        self.min_contrast_slider.hide()
+        self.max_contrast_slider.hide()
+        self.contrast_button_show.show()
+        self.contrast_button_hide.hide()  
+
 

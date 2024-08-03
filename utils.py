@@ -38,9 +38,8 @@ def normalize_img(img):
     min_intensity = np.min(img_cv2)
     max_intensity = np.max(img_cv2)
     norm_img = (img_cv2 - min_intensity) * (255.0 / (max_intensity - min_intensity))
-    scaled_img = cv2.convertScaleAbs(norm_img, alpha=1, beta=0)
 
-    return scaled_img
+    return norm_img, img_cv2
 
 def calculate_volumes(img):
 
