@@ -1,5 +1,5 @@
 # Importar las clases y módulos necesarios de PyQt5 para crear la interfaz de usuario
-from PyQt5.QtWidgets import QMainWindow, QLabel, QAction, QScrollBar, QFileDialog, QMessageBox, QPushButton, QProgressDialog, QSizeGrip, QCheckBox
+from PyQt5.QtWidgets import QMainWindow, QLabel, QAction, QScrollBar, QFileDialog, QMessageBox, QPushButton, QProgressDialog, QSizeGrip, QCheckBox, QGraphicsView, QGraphicsScene, QGraphicsPixmapItem
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap, QImage
@@ -28,10 +28,9 @@ class UI(QMainWindow):
         T1 porque los numeros para labels,actions_dicom, actions_nifti y scrollbars no contienen al final un _1, en cambio las otras
         modalidades tienen _2, _3 y _4
         ''' 
-        self.labels = [self.findChild(QLabel, "label")] + [self.findChild(QLabel, f"label_{i}") for i in range(2, 5)]
+        self.views = [self.findChild(QGraphicsView, "label")] + [self.findChild(QGraphicsView, f"label_{i}") for i in range(2, 5)]
         self.checkboxes_brightness = [self.findChild(QCheckBox, f"checkbox_{i}") for i in range(1, 5)]
         self.checkboxes_contrast = [self.findChild(QCheckBox, f"checkbox_{i}{i}") for i in range(1, 5)]
-        self.paths = [self.findChild(QLabel, f"label_{i}") for i in range(21, 25)]
         self.actions_dicom = [self.findChild(QAction, f"actionDICOM_{i}") if i > 1 else self.findChild(QAction, "actionDICOM") for i in range(1, 5)]
         self.actions_nifti = [self.findChild(QAction, f"actionNIfTI_{i}") if i > 1 else self.findChild(QAction, "actionNIfTI") for i in range(1, 5)]
         self.scrollbars = [self.findChild(QScrollBar, f"verticalScrollBar_{i}") if i > 1 else self.findChild(QScrollBar, "verticalScrollBar") for i in range(1, 5)]
@@ -40,6 +39,8 @@ class UI(QMainWindow):
             
         # Inicializar lista para almacenar imágenes numpy
         self.np_imgs = [None] * 4  # Se inicializa con 4 elementos para las 4 modalidades
+        for view in self.views:
+            self.add_zoom_functionality(view)
 
         # Ocultar las barras de desplazamiento hasta que se cargue una imagen
         for scrollbar in self.scrollbars:
@@ -125,8 +126,11 @@ class UI(QMainWindow):
         self.setWindowOpacity(1)
 
         self.gripSize = 10                                         
-        self.grip = QSizeGrip(self)
-        self.grip.resize(self.gripSize, self.gripSize)
+        #self.grip = QSizeGrip(self)
+        #self.grip.resize(self.gripSize, self.gripSize)
+        # Inicializar el tamaño de grip
+        self.sizeGrip = QSizeGrip(self)
+        self.sizeGrip.move(self.width() - 20, self.height() - 20)  # Mueve el grip a la esquina inferior derecha
 
         self.frame_superior.mouseMoveEvent = self.move_window         
 
@@ -218,7 +222,7 @@ class UI(QMainWindow):
                 if dcm_check(self.fname):
                     # Convertir los archivos DICOM a NIfTI
                     file_path, self.aux_directory = x_to_nii(self.fname, output_name, is_dicom = True)
-                    self.set_image_in_label(file_path, index)
+                    self.set_image_in_view(file_path, index)
                 else:
                     QMessageBox.warning(self, "Directorio no válido", "El directorio no contiene archivos .dcm")
         else:
@@ -226,7 +230,7 @@ class UI(QMainWindow):
             self.fname = QFileDialog.getOpenFileName(self, "Open File", " ", "NifTI Files (*.nii *nii.gz)")
             file_path, self.aux_directory = x_to_nii(self.fname[0], output_name, is_dicom = False)
             if self.fname[0]:  # Comprobar si se seleccionó un archivo
-                self.set_image_in_label(self.fname[0], index)
+                self.set_image_in_view(self.fname[0], index)
 
     # Método para cambiar la imagen mostrada cuando se desplaza la barra
 
@@ -238,33 +242,31 @@ class UI(QMainWindow):
                 current_value = sender.value()
                 current_slice = self.np_imgs[index][current_value]
                 pixmap = self.pixmap_based_on_checkboxes(current_slice, current_value, index)
-                self.labels[index].setPixmap(pixmap)
+                self.update_graphics_view(self.views[index], pixmap)
             else:
                 print(f"No se han cargado imágenes para la modalidad {index + 1}")
 
     def update_preprocessing_images(self):
-        # Mostrar las imágenes preprocesadas en los QLabel
-        self.set_image_in_label(os.path.join(self.preprocess_images_folder, "t1.nii"), 1)
-        self.set_image_in_label(os.path.join(self.preprocess_images_folder, "t1c.nii"), 2)
-        self.set_image_in_label(os.path.join(self.preprocess_images_folder, "t2.nii"), 3)
-        self.set_image_in_label(os.path.join(self.preprocess_images_folder, "flair.nii"), 4)
+        # Mostrar las imágenes preprocesadas en los QGraphicsView
+        self.set_image_in_view(os.path.join(self.preprocess_images_folder, "t1.nii"), 1)
+        self.set_image_in_view(os.path.join(self.preprocess_images_folder, "t1c.nii"), 2)
+        self.set_image_in_view(os.path.join(self.preprocess_images_folder, "t2.nii"), 3)
+        self.set_image_in_view(os.path.join(self.preprocess_images_folder, "flair.nii"), 4)
 
     def update_rgb_images(self):
-        # Mostrar las imágenes segmentadas con el tumor superpuesto en los QLabel
-        self.show_segmented_image_in_label(os.path.join(self.preprocess_images_folder, "t1.nii"), os.path.join(self.segment_images_folder, "rgb.nii"), 1)
-        self.show_segmented_image_in_label(os.path.join(self.preprocess_images_folder, "t1c.nii"), os.path.join(self.segment_images_folder, "rgb.nii"), 2)
-        self.show_segmented_image_in_label(os.path.join(self.preprocess_images_folder, "t2.nii"), os.path.join(self.segment_images_folder, "rgb.nii"), 3)
-        self.show_segmented_image_in_label(os.path.join(self.preprocess_images_folder, "flair.nii"), os.path.join(self.segment_images_folder, "rgb.nii"), 4)
+        # Mostrar las imágenes segmentadas con el tumor superpuesto en los QGraphicsView
+        self.show_segmented_image_in_view(os.path.join(self.preprocess_images_folder, "t1.nii"), os.path.join(self.segment_images_folder, "rgb.nii"), 1)
+        self.show_segmented_image_in_view(os.path.join(self.preprocess_images_folder, "t1c.nii"), os.path.join(self.segment_images_folder, "rgb.nii"), 2)
+        self.show_segmented_image_in_view(os.path.join(self.preprocess_images_folder, "t2.nii"), os.path.join(self.segment_images_folder, "rgb.nii"), 3)
+        self.show_segmented_image_in_view(os.path.join(self.preprocess_images_folder, "flair.nii"), os.path.join(self.segment_images_folder, "rgb.nii"), 4)
 
-    # Método para convertir un array numpy en un QPixmap
-    
     def convert_np_to_pixmap(self, np_img):
         height, width, channel = np_img.shape
         bytes_per_line = channel * width
         q_image = QImage(np_img.data, width, height, bytes_per_line, QImage.Format_RGB888)
         pixmap = QPixmap.fromImage(q_image)
         return pixmap
-    
+
     def set_progress_dialog(self):
         self.progress_dialog = QProgressDialog("Procesando. Aguarde unos instantes...", None, 0, 0, self)
         self.progress_dialog.setWindowModality(Qt.WindowModal)
@@ -275,53 +277,40 @@ class UI(QMainWindow):
         self.progress_dialog.setWindowFlag(Qt.WindowContextHelpButtonHint, False)  # Eliminar el botón de ayuda
         self.progress_dialog.show()
 
-    # Mostrar imagen en un QLabel
-    def set_image_in_label(self, fname, img_index):
-
+    def set_image_in_view(self, fname, img_index):
         ants_img = ants.image_read(fname, reorient='IAL')
-        # Almacenar la imagen como un array numpy
         self.np_imgs[img_index - 1] = ants.ANTsImage.numpy(ants_img)
-        # Configurar la barra de desplazamiento para la imagen
         scrollbar = self.scrollbars[img_index - 1]
         scrollbar.setMinimum(0)
         scrollbar.setMaximum(self.np_imgs[img_index - 1].shape[0] - 1)
         scrollbar.show()
-        # Mostrar la imagen corresponidente al valor de la scrollbar en la etiqueta correspondiente
         pixmap = self.pixmap_based_on_checkboxes(self.np_imgs[img_index - 1][self.scrollbars[img_index-1].value()], self.scrollbars[img_index-1].value(), img_index-1)
-        self.labels[img_index - 1].setPixmap(pixmap)
+        self.update_graphics_view(self.views[img_index - 1], pixmap)
 
-    def show_segmented_image_in_label(self, fname_img, fname_tumor, img_index):
-
-        # Leer salida de la red y convertir en np
+    def show_segmented_image_in_view(self, fname_img, fname_tumor, img_index):
         tumor_img = ants.image_read(fname_tumor, reorient='IAL')
         self.tumor_np_img = ants.ANTsImage.numpy(tumor_img)
-        
-        # Leer la imagen original correspondiente para superponer el tumor
         original_img = ants.image_read(fname_img, reorient='IAL')
         original_img_np = ants.ANTsImage.numpy(original_img)
-
-        # Crear una imagen superpuesta con el tumor
         overlay_data = original_img_np.copy()
-        overlay_data[self.tumor_np_img >= 4] = 255 # nivel de gris TA
-        overlay_data[self.tumor_np_img == 1] = 150 # nivel de gris E
-        overlay_data[(self.tumor_np_img > 1) & (self.tumor_np_img < 4)] = 0 # nivel de gris N
-
-        # Encontrar y marcar bordes del edema
+        overlay_data[self.tumor_np_img >= 4] = 255
+        overlay_data[self.tumor_np_img == 1] = 150
+        overlay_data[(self.tumor_np_img > 1) & (self.tumor_np_img < 4)] = 0
         contour = find_contour(self.tumor_np_img)
-        overlay_data[contour > 0] = 0 
-
-        # Agregar imagen al label
+        overlay_data[contour > 0] = 0
         self.np_imgs[img_index - 1] = overlay_data.copy()
-
-        # Configurar la barra de desplazamiento para la imagen
         scrollbar = self.scrollbars[img_index - 1]
         scrollbar.setMinimum(0)
         scrollbar.setMaximum(self.np_imgs[img_index - 1].shape[0] - 1)
         scrollbar.show()
-
-        # Mostrar la imagen corresponidente al valor de la scrollbar en la etiqueta correspondiente
         pixmap = self.pixmap_based_on_checkboxes(self.np_imgs[img_index - 1][self.scrollbars[img_index-1].value()], self.scrollbars[img_index-1].value(), img_index-1)
-        self.labels[img_index - 1].setPixmap(pixmap)
+        self.update_graphics_view(self.views[img_index - 1], pixmap)
+
+    def update_graphics_view(self, view, pixmap):
+        scene = QGraphicsScene()
+        scene.addItem(QGraphicsPixmapItem(pixmap))
+        view.setScene(scene)
+        view.fitInView(scene.itemsBoundingRect(), Qt.KeepAspectRatio)
 
     def show_image(self, np_img, current_value):
         # Convertir la imagen de numpy a formato RGB
@@ -465,11 +454,12 @@ class UI(QMainWindow):
             self.scroll_through_file()
 
     def update_images_based_on_checkboxes(self):
-        for index in range(4):
-            current_value = self.scrollbars[index].value()
-            current_slice = self.np_imgs[index][current_value]
-            pixmap = self.pixmap_based_on_checkboxes(current_slice, current_value, index)
-            self.labels[index].setPixmap(pixmap)
+        for index, np_img in enumerate(self.np_imgs):
+            if np_img is not None:
+                current_value = self.scrollbars[index].value()
+                current_slice = np_img[current_value]
+                pixmap = self.pixmap_based_on_checkboxes(current_slice, current_value, index)
+                self.update_graphics_view(self.views[index], pixmap)
 
     def pixmap_based_on_checkboxes(self, current_slice, current_value, index):
 
@@ -527,9 +517,38 @@ class UI(QMainWindow):
             self.maximize_button.show()
             self.normal_button.hide()
 
+    def resizeEvent(self, event):
+        super(UI, self).resizeEvent(event)
+        self.sizeGrip.move(self.width() - 20, self.height() - 20)
+
+    def add_zoom_functionality(self, view):
+        def wheelEvent(event):
+            factor = 1.15
+            if event.angleDelta().y() > 0:
+                zoom_factor = factor
+            else:
+                zoom_factor = 1 / factor
+
+            # Obtener la posición del cursor en la escena antes del zoom
+            cursor_scene_pos = view.mapToScene(event.pos())
+
+            # Aplicar el factor de zoom
+            view.scale(zoom_factor, zoom_factor)
+
+            # Obtener la posición del cursor en la escena después del zoom
+            cursor_scene_pos_after_zoom = view.mapToScene(event.pos())
+
+            # Calcular el desplazamiento necesario para centrar el zoom en el cursor
+            delta = cursor_scene_pos - cursor_scene_pos_after_zoom
+
+            # Ajustar la vista para centrar el zoom en el cursor
+            view.translate(delta.x(), delta.y())
+
+        view.wheelEvent = wheelEvent
+
     def reset_labels(self):
         self.np_imgs = [None] * 4
-        for label in self.labels:
+        for label in self.views:
             label.clear()
         for scrollbar in self.scrollbars:
             scrollbar.hide()

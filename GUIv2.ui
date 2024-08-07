@@ -248,6 +248,39 @@ background-color: rgb(0, 0, 0);</string>
                    </property>
                   </widget>
                  </item>
+                 <item row="1" column="3">
+                  <widget class="QScrollBar" name="verticalScrollBar_2">
+                   <property name="orientation">
+                    <enum>Qt::Vertical</enum>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="2">
+                  <widget class="QLabel" name="label_6">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>20</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>0</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true">font: 87 8pt &quot;Arial Black&quot;;
+color: rgb(255, 255, 255);</string>
+                   </property>
+                   <property name="text">
+                    <string>T1C</string>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                   </property>
+                  </widget>
+                 </item>
                  <item row="0" column="3">
                   <layout class="QHBoxLayout" name="horizontalLayout_3">
                    <item>
@@ -286,51 +319,6 @@ font: 87 8pt &quot;Arial Black&quot;;</string>
                    </item>
                   </layout>
                  </item>
-                 <item row="1" column="3">
-                  <widget class="QScrollBar" name="verticalScrollBar_2">
-                   <property name="orientation">
-                    <enum>Qt::Vertical</enum>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="1" column="2">
-                  <widget class="QLabel" name="label_2">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="styleSheet">
-                    <string notr="true">background-color: rgb(0, 0, 0);</string>
-                   </property>
-                   <property name="text">
-                    <string/>
-                   </property>
-                   <property name="alignment">
-                    <set>Qt::AlignCenter</set>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="3" column="2">
-                  <widget class="QLabel" name="label_4">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="styleSheet">
-                    <string notr="true">background-color: rgb(0, 0, 0);</string>
-                   </property>
-                   <property name="text">
-                    <string/>
-                   </property>
-                   <property name="alignment">
-                    <set>Qt::AlignCenter</set>
-                   </property>
-                  </widget>
-                 </item>
                  <item row="2" column="0" alignment="Qt::AlignLeft">
                   <widget class="QLabel" name="label_7">
                    <property name="sizePolicy">
@@ -364,25 +352,6 @@ font: 87 8pt &quot;Arial Black&quot;;</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="1" column="0">
-                  <widget class="QLabel" name="label">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="styleSheet">
-                    <string notr="true">background-color: rgb(0, 0, 0);</string>
-                   </property>
-                   <property name="text">
-                    <string/>
-                   </property>
-                   <property name="alignment">
-                    <set>Qt::AlignCenter</set>
-                   </property>
-                  </widget>
-                 </item>
                  <item row="0" column="0">
                   <widget class="QLabel" name="label_5">
                    <property name="sizePolicy">
@@ -412,6 +381,13 @@ color: rgb(255, 255, 255);</string>
                    </property>
                   </widget>
                  </item>
+                 <item row="1" column="1">
+                  <widget class="QScrollBar" name="verticalScrollBar">
+                   <property name="orientation">
+                    <enum>Qt::Vertical</enum>
+                   </property>
+                  </widget>
+                 </item>
                  <item row="2" column="2" alignment="Qt::AlignLeft">
                   <widget class="QLabel" name="label_8">
                    <property name="sizePolicy">
@@ -432,57 +408,17 @@ font: 87 8pt &quot;Arial Black&quot;;</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="0" column="2">
-                  <widget class="QLabel" name="label_6">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>20</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="minimumSize">
-                    <size>
-                     <width>0</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                   <property name="styleSheet">
-                    <string notr="true">font: 87 8pt &quot;Arial Black&quot;;
-color: rgb(255, 255, 255);</string>
-                   </property>
-                   <property name="text">
-                    <string>T1C</string>
-                   </property>
-                   <property name="alignment">
-                    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-                   </property>
-                  </widget>
+                 <item row="1" column="0">
+                  <widget class="QGraphicsView" name="label"/>
                  </item>
-                 <item row="1" column="1">
-                  <widget class="QScrollBar" name="verticalScrollBar">
-                   <property name="orientation">
-                    <enum>Qt::Vertical</enum>
-                   </property>
-                  </widget>
+                 <item row="1" column="2">
+                  <widget class="QGraphicsView" name="label_2"/>
                  </item>
                  <item row="3" column="0">
-                  <widget class="QLabel" name="label_3">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="styleSheet">
-                    <string notr="true">background-color: rgb(0, 0, 0);</string>
-                   </property>
-                   <property name="text">
-                    <string/>
-                   </property>
-                   <property name="alignment">
-                    <set>Qt::AlignCenter</set>
-                   </property>
-                  </widget>
+                  <widget class="QGraphicsView" name="label_3"/>
+                 </item>
+                 <item row="3" column="2">
+                  <widget class="QGraphicsView" name="label_4"/>
                  </item>
                 </layout>
                </item>
