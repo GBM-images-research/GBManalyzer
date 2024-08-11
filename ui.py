@@ -86,7 +86,6 @@ class UI(QMainWindow):
 
         #Conectar Patient_info labels
         self.patient_info_button.clicked.connect(self.load_patient_info_menu)
-        self.reset_brightness.clicked.connect(self.resetBrightness)
         self.reset_button.hide()
 
         # Importar imagenes
@@ -104,8 +103,9 @@ class UI(QMainWindow):
         self.next_button_3.clicked.connect(self.load_flair)
         self.flair_button.clicked.connect(lambda: self.load_image(4))
         self.next_button_4.clicked.connect(self.load_main_menu)
-        self.next_button_4.clicked.connect(self.disableImportButton)
-        self.next_button_4.clicked.connect(self.showResetButton)
+        self.next_button_4.clicked.connect(self.import_button.hide)
+        self.next_button_4.clicked.connect(self.p_button.show)
+        self.next_button_4.clicked.connect(self.reset_button.show)
 
         self.back_button.clicked.connect(self.load_main_menu)
         self.back_button_2.clicked.connect(self.reset_labels)
@@ -113,7 +113,10 @@ class UI(QMainWindow):
         self.back_button_3.clicked.connect(self.load_t1)
         self.back_button_4.clicked.connect(self.load_t1c)
         self.back_button_5.clicked.connect(self.load_t2)
-        self.back_button_6.clicked.connect(self.load_main_menu)
+        #self.back_button_6.clicked.connect(self.load_main_menu)
+        self.close_patient_info.clicked.connect(self.close_patient_info_menu)
+        self.close_tools.clicked.connect(self.close_tools_menu)
+        self.tools_button.clicked.connect(self.open_tools_menu)
         self.reset_button.clicked.connect(self.reset_workflow)
 
         # Hilos 
@@ -125,20 +128,22 @@ class UI(QMainWindow):
         self.setWindowFlag(Qt.FramelessWindowHint)
         self.setWindowOpacity(1)
 
+        # Grip: redimensionar ventana
         self.gripSize = 10                                         
-        #self.grip = QSizeGrip(self)
-        #self.grip.resize(self.gripSize, self.gripSize)
-        # Inicializar el tamaño de grip
         self.sizeGrip = QSizeGrip(self)
         self.sizeGrip.move(self.width() - 20, self.height() - 20)  # Mueve el grip a la esquina inferior derecha
-
         self.frame_superior.mouseMoveEvent = self.move_window         
 
-        self.menu.hide()
+        # Setup inicial botones
+        self.menu.show()
+        self.viz_menu.hide()
         self.open_menu.clicked.connect(self.deploy_menu)
         self.close_menu.clicked.connect(self.deploy_menu)
         self.normal_button.hide()
-        self.close_menu.hide()
+        self.open_menu.hide()
+        self.p_button.hide()
+        self.s_button.hide()
+        self.tools_button.hide()
 
         self.minimize_button.clicked.connect(self.control_bt_minimizar)		
         self.normal_button.clicked.connect(self.control_bt_normal)
@@ -176,7 +181,10 @@ class UI(QMainWindow):
         self.thread[1] = ButtonPreprocess(self.aux_directory, self.preprocess_images_folder)
         self.thread[1].processing_finished.connect(self.update_preprocessing_images)
         self.thread[1].processing_finished.connect(self.close_progress_dialog)
-        self.thread[1].processing_finished.connect(self.disablePreprocessButton)
+        self.thread[1].processing_finished.connect(self.p_button.hide)
+        self.thread[1].processing_finished.connect(self.s_button.show)
+        self.thread[1].processing_finished.connect(self.tools_button.show)
+        self.thread[1].processing_finished.connect(self.load_ptools_menu)
         self.thread[1].start()
 
     def segment(self):
@@ -205,8 +213,9 @@ class UI(QMainWindow):
         self.thread[2] = ButtonSegment(self.segment_images_folder, self.preprocess_images_folder)       
         self.thread[2].segmentation_finished.connect(self.close_progress_dialog)
         self.thread[2].segmentation_finished.connect(self.check_checkbox)
-        self.thread[2].segmentation_finished.connect(self.load_segment_menu)
+        self.thread[2].segmentation_finished.connect(self.load_stools_menu)
         self.thread[2].segmentation_finished.connect(self.show_volumes)
+        self.thread[2].segmentation_finished.connect(self.s_button.hide)
         self.thread[2].start()
 
     ## FUNCIONES AUXILIARES ##
@@ -548,43 +557,82 @@ class UI(QMainWindow):
 
     def reset_labels(self):
         self.np_imgs = [None] * 4
-        for label in self.views:
-            label.clear()
+        for view in self.views:
+            if view.scene():
+                view.scene().clear()  # Limpia la escena asociada con el QGraphicsView
         for scrollbar in self.scrollbars:
             scrollbar.hide()
 
     def reset_workflow(self):
         self.reset_labels()
-        self.import_button.setEnabled(True)
-        self.p_button.setEnabled(True)
-        self.s_button.setEnabled(True)
+        self.import_button.show()
         self.reset_button.hide()
+        self.tools_button.hide()
         self.load_main_menu()
 
     def load_main_menu(self):
-        self.stackedWidget.setCurrentWidget(self.main_menu)
-
+        self.menu.setCurrentWidget(self.main_menu)
+        
     def load_import_menu(self):
-        self.stackedWidget.setCurrentWidget(self.import_menu)
+        self.menu.setCurrentWidget(self.import_menu)
 
     def load_t1(self):
-        self.stackedWidget.setCurrentWidget(self.import_t1)
+        self.menu.setCurrentWidget(self.import_t1)
 
     def load_t1c(self):
-        self.stackedWidget.setCurrentWidget(self.import_t1c)
+        self.menu.setCurrentWidget(self.import_t1c)
 
     def load_t2(self):
-        self.stackedWidget.setCurrentWidget(self.import_t2)
+        self.menu.setCurrentWidget(self.import_t2)
 
     def load_flair(self):
-        self.stackedWidget.setCurrentWidget(self.import_flair)
+        self.menu.setCurrentWidget(self.import_flair)
 
-    def load_segment_menu(self):
-        self.stackedWidget.setCurrentWidget(self.segment_menu)
+    def load_ptools_menu(self):
+        self.menu.hide()
+        self.close_menu.hide()
+        self.open_menu.show()
+        self.viz_menu.show()
+        self.label_9.hide()
+        self.label_10.hide()
+        self.label_11.hide()
+        self.label_12.hide()
+        self.label_15.hide()
+        self.label_17.hide()
+        self.label_20.hide()
+        self.label_21.hide()
+        self.label_22.hide()
+        self.show_tumor.hide()
+        self.edema_vol.hide()
+        self.et_vol.hide()
+        self.core_vol.hide()
+        self.necrosis_vol.hide()
+        self.stackedWidget.setCurrentWidget(self.tools_menu)
+
+    def load_stools_menu(self):
+        self.menu.hide()
+        self.close_menu.hide()
+        self.open_menu.show()
+        self.viz_menu.show()
+        self.label_9.show()
+        self.label_10.show()
+        self.label_11.show()
+        self.label_12.show()
+        self.label_15.show()
+        self.label_17.show()
+        self.label_20.show()
+        self.label_21.show()
+        self.label_22.show()
+        self.show_tumor.show()
+        self.edema_vol.show()
+        self.et_vol.show()
+        self.core_vol.show()
+        self.necrosis_vol.show()
+        self.stackedWidget.setCurrentWidget(self.tools_menu)
 
     def set_option(self, option):
         self.selected_option = option
-        self.stackedWidget.setCurrentWidget(self.import_t1)
+        self.menu.setCurrentWidget(self.import_t1)
         print(f"Opción seleccionada: {option}")
 
     def load_image(self, index):
@@ -600,11 +648,19 @@ class UI(QMainWindow):
             pass
 
     def load_patient_info_menu(self):
+        self.viz_menu.show()
         self.stackedWidget.setCurrentWidget(self.patient_info_menu)
         self.show_patient_info()
 
-    def showResetButton(self):
-        self.reset_button.show()
+    def close_patient_info_menu(self):
+        self.viz_menu.hide()
+    
+    def close_tools_menu(self):
+        self.viz_menu.hide()
+
+    def open_tools_menu(self):
+        self.stackedWidget.setCurrentWidget(self.tools_menu)
+        self.viz_menu.show()
 
     def resetBrightness(self):
         self.brightness_slider.setValue(100)
@@ -624,7 +680,6 @@ class UI(QMainWindow):
         self.contrast_button_show.show()
         self.contrast_button_hide.hide()
         self.brightness_slider.hide()
-        self.reset_brightness.hide()
         for checkbox in self.checkboxes_brightness:
             checkbox.hide()
         for checkbox in self.checkboxes_contrast:
@@ -643,7 +698,6 @@ class UI(QMainWindow):
         self.min_contrast_slider.hide()
         self.max_contrast_slider.hide()
         self.brightness_slider.show()
-        self.reset_brightness.show()
         for checkbox in self.checkboxes_brightness:
             checkbox.show()
         self.brightness_button_show.hide()
@@ -653,8 +707,7 @@ class UI(QMainWindow):
         for checkbox in self.checkboxes_brightness:
             checkbox.setChecked(False)
             checkbox.hide()
-        self.brightness_slider.hide()
-        self.reset_brightness.hide()   
+        self.brightness_slider.hide()  
         self.min_label.show()
         self.max_label.show()
         self.min_contrast_slider.show()
@@ -669,7 +722,6 @@ class UI(QMainWindow):
             checkbox.setChecked(False)
             checkbox.hide()
         self.brightness_slider.hide()
-        self.reset_brightness.hide()
         self.brightness_button_show.show()
         self.brightness_button_hide.hide()
 
