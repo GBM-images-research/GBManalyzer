@@ -1,7 +1,7 @@
 # Importar las clases y módulos necesarios de PyQt5 para crear la interfaz de usuario
-from PyQt5.QtWidgets import QMainWindow, QLabel, QAction, QScrollBar, QFileDialog, QMessageBox, QPushButton, QProgressDialog, QSizeGrip, QCheckBox, QGraphicsView, QGraphicsScene, QGraphicsPixmapItem
+from PyQt5.QtWidgets import QMainWindow, QAction, QScrollBar, QFileDialog, QInputDialog, QMessageBox, QPushButton, QProgressDialog, QSizeGrip, QCheckBox, QGraphicsView, QGraphicsScene, QGraphicsPixmapItem
 from PyQt5 import uic
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QPropertyAnimation, QEasingCurve
 from PyQt5.QtGui import QPixmap, QImage
 
 # Importar módulos estándar de Python
@@ -34,6 +34,7 @@ class UI(QMainWindow):
         self.actions_dicom = [self.findChild(QAction, f"actionDICOM_{i}") if i > 1 else self.findChild(QAction, "actionDICOM") for i in range(1, 5)]
         self.actions_nifti = [self.findChild(QAction, f"actionNIfTI_{i}") if i > 1 else self.findChild(QAction, "actionNIfTI") for i in range(1, 5)]
         self.scrollbars = [self.findChild(QScrollBar, f"verticalScrollBar_{i}") if i > 1 else self.findChild(QScrollBar, "verticalScrollBar") for i in range(1, 5)]
+        self.next_buttons = [self.findChild(QPushButton, "next_button")] + [self.findChild(QPushButton, f"next_button_{i}") for i in range(2,5)]
         self.p_button = self.findChild(QPushButton, "preprocess_button")
         self.s_button = self.findChild(QPushButton, "segment_button")
             
@@ -79,6 +80,7 @@ class UI(QMainWindow):
 
         self.chain_button.clicked.connect(self.chain_scrollbars)
         self.unchain_button.clicked.connect(self.unchain_scrollbars)
+        self.chain_button.hide()
         self.unchain_button.hide()
         self.scrollbars_linked = False
         self.show_tumor.setChecked(False)
@@ -105,7 +107,10 @@ class UI(QMainWindow):
         self.next_button_4.clicked.connect(self.load_main_menu)
         self.next_button_4.clicked.connect(self.import_button.hide)
         self.next_button_4.clicked.connect(self.p_button.show)
+        self.next_button_4.clicked.connect(self.patient_info_button.show)
         self.next_button_4.clicked.connect(self.reset_button.show)
+        for button in self.next_buttons:
+            button.setEnabled(False)
 
         self.back_button.clicked.connect(self.load_main_menu)
         self.back_button_2.clicked.connect(self.reset_labels)
@@ -143,6 +148,7 @@ class UI(QMainWindow):
         self.open_menu.hide()
         self.p_button.hide()
         self.s_button.hide()
+        self.patient_info_button.hide()
         self.tools_button.hide()
 
         self.minimize_button.clicked.connect(self.control_bt_minimizar)		
@@ -156,66 +162,94 @@ class UI(QMainWindow):
     ## FUNCIONES PRINCIPALES (EN HILOS) ##
 
     def preprocess(self):
-
-        # Chequeo que estén todas las imagenes para hacer el preprocesamiento
+        # Chequeo que estén todas las imágenes para hacer el preprocesamiento
         if any(image is None for image in self.np_imgs):
             QMessageBox.warning(self, "Imágenes faltantes", "Falta al menos una de las cuatro modalidades necesarias. Asegúrese de cargar todas y vuelva a intentarlo.")
             return
+
         # Obtener la carpeta de destino del usuario
         output_folder = QFileDialog.getExistingDirectory(self, "Seleccionar directorio")
-        self.preprocess_images_folder = os.path.join(output_folder, "Preprocessed")
+        
+        if not output_folder:
+            return  # Si no se selecciona un directorio, se cancela la operación
 
-        if output_folder:
-            # Verificar si el directorio de salida ya existe
-            if os.path.exists(os.path.join(output_folder, "Preprocessed")):
-                respuesta = QMessageBox.question(self, "Directorio existente", "El directorio que intenta crear ya existe. ¿Desea sobrescribirlo?",
-                                                QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-                if respuesta == QMessageBox.No:
-                    return 
-                else:
-                    os.makedirs(self.preprocess_images_folder, exist_ok=True)
+        # Pedir al usuario que ingrese un nombre para la carpeta de preprocesamiento
+        folder_name, ok = QInputDialog.getText(self, "Nombre de la carpeta", "Ingrese el nombre para la carpeta de preprocesamiento:")
+        
+        if not ok:
+            return  # Si se cancela el diálogo, se cancela la operación
+
+        if not folder_name.strip():
+            QMessageBox.warning(self, "Nombre inválido", "Debe ingresar un nombre válido para la carpeta.")
+            return
+
+        # Crear la ruta completa de la carpeta de preprocesamiento
+        self.preprocess_images_folder = os.path.join(output_folder, folder_name.strip())
+
+        # Verificar si el directorio de salida ya existe
+        if os.path.exists(self.preprocess_images_folder):
+            respuesta = QMessageBox.question(self, "Directorio existente", f"El directorio '{folder_name}' ya existe. ¿Desea sobrescribirlo?",
+                                            QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+            if respuesta == QMessageBox.No:
+                return
             else:
                 os.makedirs(self.preprocess_images_folder, exist_ok=True)
+        else:
+            os.makedirs(self.preprocess_images_folder, exist_ok=True)
 
         self.set_progress_dialog()
         self.thread[1] = ButtonPreprocess(self.aux_directory, self.preprocess_images_folder)
         self.thread[1].processing_finished.connect(self.update_preprocessing_images)
-        self.thread[1].processing_finished.connect(self.close_progress_dialog)
         self.thread[1].processing_finished.connect(self.p_button.hide)
         self.thread[1].processing_finished.connect(self.s_button.show)
         self.thread[1].processing_finished.connect(self.tools_button.show)
         self.thread[1].processing_finished.connect(self.load_ptools_menu)
+        self.thread[1].processing_finished.connect(self.close_progress_dialog)
         self.thread[1].start()
 
     def segment(self):
-
-        # Chequeo que estén todas las imagenes para hacer el preprocesamiento
+        # Chequeo que estén todas las imágenes para hacer el preprocesamiento
         if any(image is None for image in self.np_imgs):
             QMessageBox.warning(self, "Imágenes faltantes", "Falta al menos una de las cuatro modalidades necesarias. Asegúrese de cargar todas y vuelva a intentarlo.")
             return
+
         # Obtener la carpeta de destino del usuario
         output_folder = QFileDialog.getExistingDirectory(self, "Seleccionar directorio")
-        self.segment_images_folder = os.path.join(output_folder, "Segmented")
+        
+        if not output_folder:
+            return  # Si no se selecciona un directorio, se cancela la operación
 
-        if output_folder:
-            # Verificar si el directorio de salida ya existe
-            if os.path.exists(os.path.join(output_folder, "Segmented")):
-                respuesta = QMessageBox.question(self, "Directorio existente", "El directorio que intenta crear ya existe. ¿Desea sobrescribirlo?",
-                                                QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-                if respuesta == QMessageBox.No:
-                    return 
-                else:
-                    os.makedirs(self.segment_images_folder, exist_ok=True)
+        # Pedir al usuario que ingrese un nombre para la carpeta de segmentación
+        folder_name, ok = QInputDialog.getText(self, "Nombre de la carpeta", "Ingrese el nombre para la carpeta de segmentación:")
+        
+        if not ok:
+            return  # Si se cancela el diálogo, se cancela la operación
+
+        if not folder_name.strip():
+            QMessageBox.warning(self, "Nombre inválido", "Debe ingresar un nombre válido para la carpeta.")
+            return
+
+        # Crear la ruta completa de la carpeta de segmentación
+        self.segment_images_folder = os.path.join(output_folder, folder_name.strip())
+
+        # Verificar si el directorio de salida ya existe
+        if os.path.exists(self.segment_images_folder):
+            respuesta = QMessageBox.question(self, "Directorio existente", f"El directorio '{folder_name.strip()}' ya existe. ¿Desea sobrescribirlo?",
+                                            QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+            if respuesta == QMessageBox.No:
+                return
             else:
                 os.makedirs(self.segment_images_folder, exist_ok=True)
+        else:
+            os.makedirs(self.segment_images_folder, exist_ok=True)
 
         self.set_progress_dialog()
         self.thread[2] = ButtonSegment(self.segment_images_folder, self.preprocess_images_folder)       
-        self.thread[2].segmentation_finished.connect(self.close_progress_dialog)
         self.thread[2].segmentation_finished.connect(self.check_checkbox)
         self.thread[2].segmentation_finished.connect(self.load_stools_menu)
         self.thread[2].segmentation_finished.connect(self.show_volumes)
         self.thread[2].segmentation_finished.connect(self.s_button.hide)
+        self.thread[2].segmentation_finished.connect(self.close_progress_dialog)
         self.thread[2].start()
 
     ## FUNCIONES AUXILIARES ##
@@ -262,12 +296,12 @@ class UI(QMainWindow):
         self.set_image_in_view(os.path.join(self.preprocess_images_folder, "t2.nii"), 3)
         self.set_image_in_view(os.path.join(self.preprocess_images_folder, "flair.nii"), 4)
 
-    def update_rgb_images(self):
+    def update_segmented_images(self):
         # Mostrar las imágenes segmentadas con el tumor superpuesto en los QGraphicsView
-        self.show_segmented_image_in_view(os.path.join(self.preprocess_images_folder, "t1.nii"), os.path.join(self.segment_images_folder, "rgb.nii"), 1)
-        self.show_segmented_image_in_view(os.path.join(self.preprocess_images_folder, "t1c.nii"), os.path.join(self.segment_images_folder, "rgb.nii"), 2)
-        self.show_segmented_image_in_view(os.path.join(self.preprocess_images_folder, "t2.nii"), os.path.join(self.segment_images_folder, "rgb.nii"), 3)
-        self.show_segmented_image_in_view(os.path.join(self.preprocess_images_folder, "flair.nii"), os.path.join(self.segment_images_folder, "rgb.nii"), 4)
+        self.show_segmented_image_in_view(os.path.join(self.preprocess_images_folder, "t1.nii"), os.path.join(self.segment_images_folder, "tumor_pred.nii"), 1)
+        self.show_segmented_image_in_view(os.path.join(self.preprocess_images_folder, "t1c.nii"), os.path.join(self.segment_images_folder, "tumor_pred.nii"), 2)
+        self.show_segmented_image_in_view(os.path.join(self.preprocess_images_folder, "t2.nii"), os.path.join(self.segment_images_folder, "tumor_pred.nii"), 3)
+        self.show_segmented_image_in_view(os.path.join(self.preprocess_images_folder, "flair.nii"), os.path.join(self.segment_images_folder, "tumor_pred.nii"), 4)
 
     def convert_np_to_pixmap(self, np_img):
         height, width, channel = np_img.shape
@@ -412,7 +446,7 @@ class UI(QMainWindow):
         QMessageBox.information(self, "Proceso exitoso", "El proceso finalizó exitosamente.")
 
     def deploy_menu(self):
-        if self.menu.isHidden():			
+        if self.menu.isHidden():		
             self.menu.show()
             self.open_menu.hide()
             self.close_menu.show()
@@ -486,7 +520,7 @@ class UI(QMainWindow):
 
     def onCheckboxStateChanged(self):
         if self.show_tumor.isChecked():
-            self.update_rgb_images()
+            self.update_segmented_images()
         else:
             self.update_preprocessing_images()
 
@@ -557,6 +591,10 @@ class UI(QMainWindow):
 
     def reset_labels(self):
         self.np_imgs = [None] * 4
+        self.chain_button.hide()
+        self.unchain_button.hide()
+        for button in self.next_buttons:
+            button.setEnabled(False)
         for view in self.views:
             if view.scene():
                 view.scene().clear()  # Limpia la escena asociada con el QGraphicsView
@@ -564,10 +602,17 @@ class UI(QMainWindow):
             scrollbar.hide()
 
     def reset_workflow(self):
-        self.reset_labels()
+        self.hide_brightness_menu()
+        self.hide_contrast_menu()
         self.import_button.show()
+        self.p_button.hide()
+        self.s_button.hide()
+        self.patient_info_button.hide()
         self.reset_button.hide()
         self.tools_button.hide()
+        self.close_tools_menu()
+        self.close_patient_info_menu
+        self.reset_labels()
         self.load_main_menu()
 
     def load_main_menu(self):
@@ -640,11 +685,19 @@ class UI(QMainWindow):
         if self.selected_option == "DICOM":
             # Realizar acciones específicas para cargar imágenes DICOM
             self.set_image(index, is_dicom=True)
+            if self.np_imgs[index - 1] is not None:
+                self.next_buttons[index - 1].setEnabled(True)
+                if index >= 2:
+                    self.chain_button.show()
         elif self.selected_option == "NIfTI":
             # Realizar acciones específicas para cargar imágenes NIfTI
             self.set_image(index, is_dicom=False)
+            if self.np_imgs[index - 1] is not None:
+                self.next_buttons[index].setEnabled(True)
+                self.chain_button.show()
+                if index >= 2:
+                    self.chain_button.show()
         else:
-            # Manejar caso donde no se ha seleccionado ninguna opción
             pass
 
     def load_patient_info_menu(self):

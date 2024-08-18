@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1141</width>
-    <height>567</height>
+    <height>595</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -21,7 +21,7 @@
     <item>
      <widget class="QFrame" name="window">
       <property name="frameShape">
-       <enum>QFrame::StyledPanel</enum>
+       <enum>QFrame::NoFrame</enum>
       </property>
       <property name="frameShadow">
        <enum>QFrame::Raised</enum>
@@ -45,7 +45,7 @@
        <item>
         <widget class="QFrame" name="frame_superior">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
@@ -57,7 +57,20 @@
           </size>
          </property>
          <property name="styleSheet">
-          <string notr="true">background-color: rgb(0, 0, 0);</string>
+          <string notr="true">QFrame{
+background-color: rgb(38, 40, 75);
+border: 2px solid Black;
+}
+
+QLabel{
+color: rgb(255,255,255);
+background-color: rgb(0, 0, 0);
+font: 87 8pt &quot;Arial Black&quot;;
+}
+
+QPushButton:hover{
+background-color: rgb(0, 1, 16);
+}</string>
          </property>
          <property name="frameShape">
           <enum>QFrame::StyledPanel</enum>
@@ -65,12 +78,15 @@
          <property name="frameShadow">
           <enum>QFrame::Raised</enum>
          </property>
+         <property name="lineWidth">
+          <number>1</number>
+         </property>
          <layout class="QHBoxLayout" name="horizontalLayout">
           <property name="spacing">
            <number>0</number>
           </property>
           <property name="leftMargin">
-           <number>10</number>
+           <number>0</number>
           </property>
           <property name="topMargin">
            <number>0</number>
@@ -82,6 +98,32 @@
            <number>0</number>
           </property>
           <item>
+           <widget class="QPushButton" name="pushButton">
+            <property name="minimumSize">
+             <size>
+              <width>20</width>
+              <height>20</height>
+             </size>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">background-color: rgb(0, 1, 16);</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset>
+              <normaloff>Logo_Brainar.png</normaloff>Logo_Brainar.png</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>20</width>
+              <height>20</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item>
            <widget class="QLabel" name="window_name_label">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
@@ -91,18 +133,24 @@
             </property>
             <property name="maximumSize">
              <size>
-              <width>200</width>
+              <width>170</width>
               <height>16777215</height>
              </size>
             </property>
             <property name="font">
              <font>
               <family>Arial Black</family>
+              <pointsize>8</pointsize>
+              <weight>10</weight>
+              <italic>false</italic>
+              <bold>false</bold>
              </font>
             </property>
             <property name="styleSheet">
-             <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(0, 0, 0);</string>
+             <string notr="true"/>
+            </property>
+            <property name="lineWidth">
+             <number>0</number>
             </property>
             <property name="text">
              <string>GBMAnalyzer</string>
@@ -127,41 +175,141 @@ background-color: rgb(0, 0, 0);</string>
           </item>
           <item>
            <widget class="QPushButton" name="minimize_button">
+            <property name="minimumSize">
+             <size>
+              <width>30</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>20</width>
+              <height>20</height>
+             </size>
+            </property>
             <property name="styleSheet">
-             <string notr="true">color: rgb(255, 255, 255);</string>
+             <string notr="true">font: 87 10pt &quot;Arial Black&quot;;
+color: rgb(255, 255, 255);
+border-radius:15px;
+</string>
             </property>
             <property name="text">
-             <string>Minimize</string>
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset>
+              <normaloff>../../../../Downloads/image (6).png</normaloff>../../../../Downloads/image (6).png</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>18</width>
+              <height>18</height>
+             </size>
             </property>
            </widget>
           </item>
-          <item>
+          <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
            <widget class="QPushButton" name="normal_button">
+            <property name="minimumSize">
+             <size>
+              <width>30</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>20</width>
+              <height>20</height>
+             </size>
+            </property>
             <property name="styleSheet">
-             <string notr="true">color: rgb(255, 255, 255);</string>
+             <string notr="true">font: 87 10pt &quot;Arial Black&quot;;
+color: rgb(255, 255, 255);
+border-radius:15px;
+</string>
             </property>
             <property name="text">
-             <string>Normal</string>
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset>
+              <normaloff>../../../../Downloads/image (3).png</normaloff>../../../../Downloads/image (3).png</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>18</width>
+              <height>18</height>
+             </size>
             </property>
            </widget>
           </item>
-          <item>
+          <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
            <widget class="QPushButton" name="maximize_button">
+            <property name="minimumSize">
+             <size>
+              <width>30</width>
+              <height>20</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>20</width>
+              <height>20</height>
+             </size>
+            </property>
             <property name="styleSheet">
-             <string notr="true">color: rgb(255, 255, 255);</string>
+             <string notr="true">font: 87 12pt &quot;Arial Black&quot;;
+color: rgb(255, 255, 255);
+border-radius:20px;
+</string>
             </property>
             <property name="text">
-             <string>Maximize</string>
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset>
+              <normaloff>../../../../Downloads/image (4).png</normaloff>../../../../Downloads/image (4).png</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>18</width>
+              <height>18</height>
+             </size>
             </property>
            </widget>
           </item>
-          <item>
+          <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
            <widget class="QPushButton" name="close_button">
+            <property name="minimumSize">
+             <size>
+              <width>30</width>
+              <height>20</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>30</width>
+              <height>30</height>
+             </size>
+            </property>
             <property name="styleSheet">
-             <string notr="true">color: rgb(255, 255, 255);</string>
+             <string notr="true">font: 87 10pt &quot;Arial Black&quot;;
+color: rgb(255, 255, 255);
+border-radius:10px;
+</string>
             </property>
             <property name="text">
-             <string>Exit</string>
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset>
+              <normaloff>../../../../Downloads/image (5).png</normaloff>../../../../Downloads/image (5).png</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>18</width>
+              <height>18</height>
+             </size>
             </property>
            </widget>
           </item>
@@ -174,7 +322,7 @@ background-color: rgb(0, 0, 0);</string>
           <string notr="true">background-color: rgb(255, 255, 255);</string>
          </property>
          <property name="frameShape">
-          <enum>QFrame::StyledPanel</enum>
+          <enum>QFrame::NoFrame</enum>
          </property>
          <property name="frameShadow">
           <enum>QFrame::Raised</enum>
@@ -200,6 +348,18 @@ background-color: rgb(0, 0, 0);</string>
           </property>
           <item>
            <widget class="QStackedWidget" name="menu">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>0</height>
+             </size>
+            </property>
             <property name="maximumSize">
              <size>
               <width>200</width>
@@ -207,10 +367,16 @@ background-color: rgb(0, 0, 0);</string>
              </size>
             </property>
             <property name="styleSheet">
-             <string notr="true">background-color: rgb(0, 0, 0);</string>
+             <string notr="true">QWidget{
+background-color: rgb(38, 40, 75);
+}
+
+QPushButton:hover{
+background-color: rgb(0, 1, 16);
+}</string>
             </property>
             <property name="frameShape">
-             <enum>QFrame::StyledPanel</enum>
+             <enum>QFrame::NoFrame</enum>
             </property>
             <property name="lineWidth">
              <number>0</number>
@@ -229,10 +395,10 @@ background-color: rgb(0, 0, 0);</string>
                  </size>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(21, 0, 31);
-font: 87 8pt &quot;Arial Black&quot;;
-</string>
+                 <string notr="true">font: 87 10pt &quot;Arial Black&quot;;
+color: rgb(255, 255, 255);
+border-radius:10px;
+border: 1px solid White;</string>
                 </property>
                 <property name="text">
                  <string>IMPORT</string>
@@ -260,10 +426,10 @@ font: 87 8pt &quot;Arial Black&quot;;
                  </size>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true">color: rgb(255, 255, 255);
-border-color: rgb(255, 255, 255);
-background-color: rgb(21, 0, 31);
-font: 87 8pt &quot;Arial Black&quot;;</string>
+                 <string notr="true">font: 87 10pt &quot;Arial Black&quot;;
+color: rgb(255, 255, 255);
+border-radius:10px;
+border: 1px solid White;</string>
                 </property>
                 <property name="text">
                  <string>PREPROCESS</string>
@@ -279,10 +445,10 @@ font: 87 8pt &quot;Arial Black&quot;;</string>
                  </size>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(0, 0, 0);
-background-color: rgb(21, 0, 31);
-font: 87 8pt &quot;Arial Black&quot;;</string>
+                 <string notr="true">font: 87 10pt &quot;Arial Black&quot;;
+color: rgb(255, 255, 255);
+border-radius:10px;
+border: 1px solid White;</string>
                 </property>
                 <property name="text">
                  <string>SEGMENT</string>
@@ -298,10 +464,10 @@ font: 87 8pt &quot;Arial Black&quot;;</string>
                  </size>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(0, 0, 0);
-background-color: rgb(21, 0, 31);
-font: 87 8pt &quot;Arial Black&quot;;</string>
+                 <string notr="true">font: 87 10pt &quot;Arial Black&quot;;
+color: rgb(255, 255, 255);
+border-radius:10px;
+border: 1px solid White;</string>
                 </property>
                 <property name="text">
                  <string>TOOLS</string>
@@ -317,10 +483,10 @@ font: 87 8pt &quot;Arial Black&quot;;</string>
                  </size>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true">background-color: rgb(0, 0, 0);
+                 <string notr="true">font: 87 10pt &quot;Arial Black&quot;;
 color: rgb(255, 255, 255);
-background-color: rgb(21, 0, 31);
-font: 87 8pt &quot;Arial Black&quot;;</string>
+border-radius:10px;
+border: 1px solid White;</string>
                 </property>
                 <property name="text">
                  <string>PATIENT INFO</string>
@@ -331,19 +497,21 @@ font: 87 8pt &quot;Arial Black&quot;;</string>
                <widget class="QPushButton" name="reset_button">
                 <property name="maximumSize">
                  <size>
-                  <width>50</width>
-                  <height>16777215</height>
+                  <width>100</width>
+                  <height>25</height>
                  </size>
                 </property>
                 <property name="layoutDirection">
                  <enum>Qt::LeftToRight</enum>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true">color: rgb(255, 255, 255);
-font: 87 8pt &quot;Arial&quot;;</string>
+                 <string notr="true">font: 87 8pt &quot;Arial&quot;;
+color: rgb(255, 255, 255);
+border-radius:5px;
+border: 1px solid White;</string>
                 </property>
                 <property name="text">
-                 <string>RESET</string>
+                 <string> RESET </string>
                 </property>
                </widget>
               </item>
@@ -360,12 +528,17 @@ font: 87 8pt &quot;Arial&quot;;</string>
                  </size>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(21, 0, 31);
-font: 87 8pt &quot;Arial Black&quot;;</string>
+                 <string notr="true">font: 87 10pt &quot;Arial Black&quot;;
+color: rgb(255, 255, 255);
+border-radius:15px;
+</string>
                 </property>
                 <property name="text">
-                 <string>&lt;</string>
+                 <string/>
+                </property>
+                <property name="icon">
+                 <iconset>
+                  <normaloff>../../../../Downloads/image (9).png</normaloff>../../../../Downloads/image (9).png</iconset>
                 </property>
                </widget>
               </item>
@@ -381,9 +554,11 @@ font: 87 8pt &quot;Arial Black&quot;;</string>
                  <enum>Qt::NoContextMenu</enum>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(0, 0, 0);
-font: 87 8pt &quot;Arial Black&quot;;</string>
+                 <string notr="true">font: 87 12pt &quot;Arial Black&quot;;
+color: rgb(255, 255, 255);
+background-color: rgb(101, 87, 180);
+border-radius:10px;
+</string>
                 </property>
                 <property name="text">
                  <string>IMPORT</string>
@@ -408,9 +583,10 @@ font: 87 8pt &quot;Arial Black&quot;;</string>
                  </size>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(21, 0, 31);
-font: 87 8pt &quot;Arial Black&quot;;</string>
+                 <string notr="true">font: 87 10pt &quot;Arial Black&quot;;
+color: rgb(255, 255, 255);
+border-radius:10px;
+border: 1px solid White;</string>
                 </property>
                 <property name="text">
                  <string>DICOM</string>
@@ -432,10 +608,10 @@ font: 87 8pt &quot;Arial Black&quot;;</string>
                  </size>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(0, 0, 0);
-background-color: rgb(21, 0, 31);
-font: 87 8pt &quot;Arial Black&quot;;</string>
+                 <string notr="true">font: 87 10pt &quot;Arial Black&quot;;
+color: rgb(255, 255, 255);
+border-radius:10px;
+border: 1px solid White;</string>
                 </property>
                 <property name="text">
                  <string>NIfTI</string>
@@ -455,12 +631,16 @@ font: 87 8pt &quot;Arial Black&quot;;</string>
                  </size>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(21, 0, 31);
-font: 87 8pt &quot;Arial Black&quot;;</string>
+                 <string notr="true">font: 87 10pt &quot;Arial Black&quot;;
+color: rgb(255, 255, 255);
+border-radius:15px;</string>
                 </property>
                 <property name="text">
-                 <string>&lt;</string>
+                 <string/>
+                </property>
+                <property name="icon">
+                 <iconset>
+                  <normaloff>../../../../Downloads/image (9).png</normaloff>../../../../Downloads/image (9).png</iconset>
                 </property>
                </widget>
               </item>
@@ -473,9 +653,11 @@ font: 87 8pt &quot;Arial Black&quot;;</string>
                  </size>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(0, 0, 0);
-font: 87 8pt &quot;Arial Black&quot;;</string>
+                 <string notr="true">font: 87 12pt &quot;Arial Black&quot;;
+color: rgb(255, 255, 255);
+background-color: rgb(101, 87, 180);
+border-radius:10px;
+</string>
                 </property>
                 <property name="text">
                  <string>IMPORT</string>
@@ -494,13 +676,13 @@ font: 87 8pt &quot;Arial Black&quot;;</string>
                  </size>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(0, 0, 0);
-background-color: rgb(21, 0, 31);
-font: 87 8pt &quot;Arial Black&quot;;</string>
+                 <string notr="true">font: 87 16pt &quot;Arial Black&quot;;
+color: rgb(255, 255, 255);
+border-radius:10px;
+border: 1px solid White;</string>
                 </property>
                 <property name="text">
-                 <string>IMPORT T1</string>
+                 <string>T1</string>
                 </property>
                </widget>
               </item>
@@ -508,19 +690,30 @@ font: 87 8pt &quot;Arial Black&quot;;</string>
                <widget class="QPushButton" name="next_button">
                 <property name="maximumSize">
                  <size>
-                  <width>50</width>
-                  <height>16777215</height>
+                  <width>30</width>
+                  <height>30</height>
                  </size>
                 </property>
                 <property name="layoutDirection">
                  <enum>Qt::RightToLeft</enum>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true">color: rgb(255, 255, 255);
-font: 87 8pt &quot;Arial&quot;;</string>
+                 <string notr="true">font: 87 10pt &quot;Arial Black&quot;;
+color: rgb(255, 255, 255);
+border-radius:15px;</string>
                 </property>
                 <property name="text">
-                 <string>Next</string>
+                 <string/>
+                </property>
+                <property name="icon">
+                 <iconset>
+                  <normaloff>../../../../Downloads/image (11).png</normaloff>../../../../Downloads/image (11).png</iconset>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>25</width>
+                  <height>25</height>
+                 </size>
                 </property>
                </widget>
               </item>
@@ -537,12 +730,16 @@ font: 87 8pt &quot;Arial&quot;;</string>
                  </size>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(21, 0, 31);
-font: 87 8pt &quot;Arial Black&quot;;</string>
+                 <string notr="true">font: 87 10pt &quot;Arial Black&quot;;
+color: rgb(255, 255, 255);
+border-radius:15px;</string>
                 </property>
                 <property name="text">
-                 <string>&lt;</string>
+                 <string/>
+                </property>
+                <property name="icon">
+                 <iconset>
+                  <normaloff>../../../../Downloads/image (9).png</normaloff>../../../../Downloads/image (9).png</iconset>
                 </property>
                </widget>
               </item>
@@ -555,9 +752,11 @@ font: 87 8pt &quot;Arial Black&quot;;</string>
                  </size>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(0, 0, 0);
-font: 87 8pt &quot;Arial Black&quot;;</string>
+                 <string notr="true">font: 87 12pt &quot;Arial Black&quot;;
+color: rgb(255, 255, 255);
+background-color: rgb(101, 87, 180);
+border-radius:10px;
+</string>
                 </property>
                 <property name="text">
                  <string>IMPORT</string>
@@ -576,13 +775,13 @@ font: 87 8pt &quot;Arial Black&quot;;</string>
                  </size>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(0, 0, 0);
-background-color: rgb(21, 0, 31);
-font: 87 8pt &quot;Arial Black&quot;;</string>
+                 <string notr="true">font: 87 16pt &quot;Arial Black&quot;;
+color: rgb(255, 255, 255);
+border-radius:10px;
+border: 1px solid White;</string>
                 </property>
                 <property name="text">
-                 <string>IMPORT T1C</string>
+                 <string>T1C</string>
                 </property>
                </widget>
               </item>
@@ -590,8 +789,8 @@ font: 87 8pt &quot;Arial Black&quot;;</string>
                <widget class="QPushButton" name="next_button_2">
                 <property name="maximumSize">
                  <size>
-                  <width>50</width>
-                  <height>16777215</height>
+                  <width>30</width>
+                  <height>30</height>
                  </size>
                 </property>
                 <property name="focusPolicy">
@@ -601,11 +800,22 @@ font: 87 8pt &quot;Arial Black&quot;;</string>
                  <enum>Qt::RightToLeft</enum>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true">color: rgb(255, 255, 255);
-font: 87 8pt &quot;Arial&quot;;</string>
+                 <string notr="true">font: 87 10pt &quot;Arial Black&quot;;
+color: rgb(255, 255, 255);
+border-radius:15px;</string>
                 </property>
                 <property name="text">
-                 <string>Next</string>
+                 <string/>
+                </property>
+                <property name="icon">
+                 <iconset>
+                  <normaloff>../../../../Downloads/image (11).png</normaloff>../../../../Downloads/image (11).png</iconset>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>25</width>
+                  <height>25</height>
+                 </size>
                 </property>
                </widget>
               </item>
@@ -622,12 +832,16 @@ font: 87 8pt &quot;Arial&quot;;</string>
                  </size>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(21, 0, 31);
-font: 87 8pt &quot;Arial Black&quot;;</string>
+                 <string notr="true">font: 87 10pt &quot;Arial Black&quot;;
+color: rgb(255, 255, 255);
+border-radius:15px;</string>
                 </property>
                 <property name="text">
-                 <string>&lt;</string>
+                 <string/>
+                </property>
+                <property name="icon">
+                 <iconset>
+                  <normaloff>../../../../Downloads/image (9).png</normaloff>../../../../Downloads/image (9).png</iconset>
                 </property>
                </widget>
               </item>
@@ -640,9 +854,11 @@ font: 87 8pt &quot;Arial Black&quot;;</string>
                  </size>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(0, 0, 0);
-font: 87 8pt &quot;Arial Black&quot;;</string>
+                 <string notr="true">font: 87 12pt &quot;Arial Black&quot;;
+color: rgb(255, 255, 255);
+background-color: rgb(101, 87, 180);
+border-radius:10px;
+</string>
                 </property>
                 <property name="text">
                  <string>IMPORT</string>
@@ -661,13 +877,13 @@ font: 87 8pt &quot;Arial Black&quot;;</string>
                  </size>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(0, 0, 0);
-background-color: rgb(21, 0, 31);
-font: 87 8pt &quot;Arial Black&quot;;</string>
+                 <string notr="true">font: 87 16pt &quot;Arial Black&quot;;
+color: rgb(255, 255, 255);
+border-radius:10px;
+border: 1px solid White;</string>
                 </property>
                 <property name="text">
-                 <string>IMPORT T2</string>
+                 <string>T2</string>
                 </property>
                </widget>
               </item>
@@ -675,8 +891,8 @@ font: 87 8pt &quot;Arial Black&quot;;</string>
                <widget class="QPushButton" name="next_button_3">
                 <property name="maximumSize">
                  <size>
-                  <width>50</width>
-                  <height>16777215</height>
+                  <width>30</width>
+                  <height>30</height>
                  </size>
                 </property>
                 <property name="focusPolicy">
@@ -686,11 +902,22 @@ font: 87 8pt &quot;Arial Black&quot;;</string>
                  <enum>Qt::RightToLeft</enum>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true">color: rgb(255, 255, 255);
-font: 87 8pt &quot;Arial&quot;;</string>
+                 <string notr="true">font: 87 10pt &quot;Arial Black&quot;;
+color: rgb(255, 255, 255);
+border-radius:15px;</string>
                 </property>
                 <property name="text">
-                 <string>Next</string>
+                 <string/>
+                </property>
+                <property name="icon">
+                 <iconset>
+                  <normaloff>../../../../Downloads/image (11).png</normaloff>../../../../Downloads/image (11).png</iconset>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>25</width>
+                  <height>25</height>
+                 </size>
                 </property>
                </widget>
               </item>
@@ -707,12 +934,16 @@ font: 87 8pt &quot;Arial&quot;;</string>
                  </size>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(21, 0, 31);
-font: 87 8pt &quot;Arial Black&quot;;</string>
+                 <string notr="true">font: 87 10pt &quot;Arial Black&quot;;
+color: rgb(255, 255, 255);
+border-radius:15px;</string>
                 </property>
                 <property name="text">
-                 <string>&lt;</string>
+                 <string/>
+                </property>
+                <property name="icon">
+                 <iconset>
+                  <normaloff>../../../../Downloads/image (9).png</normaloff>../../../../Downloads/image (9).png</iconset>
                 </property>
                </widget>
               </item>
@@ -725,9 +956,11 @@ font: 87 8pt &quot;Arial Black&quot;;</string>
                  </size>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(0, 0, 0);
-font: 87 8pt &quot;Arial Black&quot;;</string>
+                 <string notr="true">font: 87 12pt &quot;Arial Black&quot;;
+color: rgb(255, 255, 255);
+background-color: rgb(101, 87, 180);
+border-radius:10px;
+</string>
                 </property>
                 <property name="text">
                  <string>IMPORT</string>
@@ -746,13 +979,13 @@ font: 87 8pt &quot;Arial Black&quot;;</string>
                  </size>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(0, 0, 0);
-background-color: rgb(21, 0, 31);
-font: 87 8pt &quot;Arial Black&quot;;</string>
+                 <string notr="true">font: 87 16pt &quot;Arial Black&quot;;
+color: rgb(255, 255, 255);
+border-radius:10px;
+border: 1px solid White;</string>
                 </property>
                 <property name="text">
-                 <string>IMPORT FLAIR</string>
+                 <string>FLAIR</string>
                 </property>
                </widget>
               </item>
@@ -760,8 +993,8 @@ font: 87 8pt &quot;Arial Black&quot;;</string>
                <widget class="QPushButton" name="next_button_4">
                 <property name="maximumSize">
                  <size>
-                  <width>100</width>
-                  <height>16777215</height>
+                  <width>30</width>
+                  <height>30</height>
                  </size>
                 </property>
                 <property name="focusPolicy">
@@ -771,13 +1004,22 @@ font: 87 8pt &quot;Arial Black&quot;;</string>
                  <enum>Qt::RightToLeft</enum>
                 </property>
                 <property name="styleSheet">
-                 <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(0, 0, 0);
-background-color: rgb(21, 0, 31);
-font: 87 8pt &quot;Arial Black&quot;;</string>
+                 <string notr="true">font: 87 10pt &quot;Arial Black&quot;;
+color: rgb(255, 255, 255);
+border-radius:15px;</string>
                 </property>
                 <property name="text">
-                 <string>Finish Import</string>
+                 <string/>
+                </property>
+                <property name="icon">
+                 <iconset>
+                  <normaloff>../../../../Downloads/image (10).png</normaloff>../../../../Downloads/image (10).png</iconset>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>30</width>
+                  <height>30</height>
+                 </size>
                 </property>
                </widget>
               </item>
@@ -800,10 +1042,143 @@ font: 87 8pt &quot;Arial Black&quot;;</string>
              </size>
             </property>
             <property name="styleSheet">
-             <string notr="true">background-color: rgb(0, 0, 0);</string>
+             <string notr="true">QWidget{
+background-color:rgb(0, 0, 0);
+}
+
+QPushButton:hover{
+background-color:  rgb(38, 40, 75);
+}
+
+ QScrollBar:vertical {
+	border: none;
+    background: rgb(38, 40, 75);
+    width: 14px;
+    margin: 15px 0 15px 0;
+	border-radius: 0px;
+ }
+
+/*  HANDLE BAR VERTICAL */
+QScrollBar::handle:vertical {	
+	background-color:rgb(59, 59, 90) ;
+	min-height: 30px;
+	border-radius: 7px;
+}
+QScrollBar::handle:vertical:hover{	
+	background-color: rgb(0, 1, 16);
+}
+QScrollBar::handle:vertical:pressed {	
+	background-color: rgb(0, 1, 16);
+}
+
+/* BTN TOP - SCROLLBAR */
+QScrollBar::sub-line:vertical {
+	border: none;
+	background-color: rgb(59, 59, 90);
+	height: 15px;
+	border-top-left-radius: 7px;
+	border-top-right-radius: 7px;
+	subcontrol-position: top;
+	subcontrol-origin: margin;
+}
+QScrollBar::sub-line:vertical:hover {	
+	background-color: rgb(0, 1, 16);
+}
+QScrollBar::sub-line:vertical:pressed {	
+	background-color: rgb(0, 1, 16);
+}
+
+/* BTN BOTTOM - SCROLLBAR */
+QScrollBar::add-line:vertical {
+	border: none;
+	background-color: rgb(59, 59, 90);
+	height: 15px;
+	border-bottom-left-radius: 7px;
+	border-bottom-right-radius: 7px;
+	subcontrol-position: bottom;
+	subcontrol-origin: margin;
+}
+QScrollBar::add-line:vertical:hover {	
+	background-color: rgb(0, 1, 16);
+}
+QScrollBar::add-line:vertical:pressed {	
+	background-color: rgb(0, 1, 16);
+}
+
+/* RESET ARROW */
+QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical {
+	background: none;
+}
+QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+	background: none;
+}
+
+/* HORIZONTAL SCROLLBAR - HOMEWORK */
+QScrollBar:horizontal {
+    border: none;
+    background: rgb(38, 40, 75);
+    height: 14px;
+    margin: 0 15px 0 15px;
+    border-radius: 0px;
+}
+
+/* HANDLE BAR HORIZONTAL */
+QScrollBar::handle:horizontal {
+    background-color: rgb(59, 59, 90);
+    min-width: 30px;
+    border-radius: 7px;
+}
+QScrollBar::handle:horizontal:hover {
+    background-color: rgb(0, 1, 16);
+}
+QScrollBar::handle:horizontal:pressed {
+    background-color: rgb(0, 1, 16);
+}
+
+/* BTN LEFT - SCROLLBAR */
+QScrollBar::sub-line:horizontal {
+    border: none;
+    background-color: rgb(59, 59, 90);
+    width: 15px;
+    border-top-left-radius: 7px;
+    border-bottom-left-radius: 7px;
+    subcontrol-position: left;
+    subcontrol-origin: margin;
+}
+QScrollBar::sub-line:horizontal:hover {
+    background-color: rgb(0, 1, 16);
+}
+QScrollBar::sub-line:horizontal:pressed {
+    background-color: rgb(0, 1, 16);
+}
+
+/* BTN RIGHT - SCROLLBAR */
+QScrollBar::add-line:horizontal {
+    border: none;
+    background-color: rgb(59, 59, 90);
+    width: 15px;
+    border-top-right-radius: 7px;
+    border-bottom-right-radius: 7px;
+    subcontrol-position: right;
+    subcontrol-origin: margin;
+}
+QScrollBar::add-line:horizontal:hover {
+    background-color: rgb(0, 1, 16);
+}
+QScrollBar::add-line:horizontal:pressed {
+    background-color: rgb(0, 1, 16);
+}
+
+/* RESET ARROW */
+QScrollBar::up-arrow:horizontal, QScrollBar::down-arrow:horizontal {
+    background: none;
+}
+QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {
+    background: none;
+}</string>
             </property>
             <property name="frameShape">
-             <enum>QFrame::StyledPanel</enum>
+             <enum>QFrame::NoFrame</enum>
             </property>
             <property name="frameShadow">
              <enum>QFrame::Raised</enum>
@@ -819,7 +1194,7 @@ font: 87 8pt &quot;Arial Black&quot;;</string>
               <number>10</number>
              </property>
              <property name="rightMargin">
-              <number>10</number>
+              <number>30</number>
              </property>
              <property name="bottomMargin">
               <number>10</number>
@@ -834,13 +1209,20 @@ font: 87 8pt &quot;Arial Black&quot;;</string>
                </property>
                <property name="maximumSize">
                 <size>
-                 <width>30</width>
+                 <width>60</width>
                  <height>16777215</height>
                 </size>
                </property>
                <property name="styleSheet">
-                <string notr="true">background-color: rgb(217, 217, 217);
-background-color: rgb(0, 0, 0);</string>
+                <string notr="true">QWidget{
+background-color:rgb(0, 0, 0);
+}
+
+QPushButton:hover{
+background-color:  rgb(38, 40, 75);
+}
+
+</string>
                </property>
                <property name="frameShape">
                 <enum>QFrame::StyledPanel</enum>
@@ -868,19 +1250,31 @@ background-color: rgb(0, 0, 0);</string>
                  <widget class="QPushButton" name="open_menu">
                   <property name="maximumSize">
                    <size>
-                    <width>20</width>
-                    <height>20</height>
+                    <width>30</width>
+                    <height>30</height>
                    </size>
                   </property>
                   <property name="styleSheet">
-                   <string notr="true">color: rgb(255, 255, 255);
-border-color: rgb(255, 255, 255);
-background-color: rgb(21, 0, 31);
-font: 87 8pt &quot;Arial Black&quot;;
+                   <string notr="true">font: 87 10pt &quot;Arial Black&quot;;
+color: rgb(255, 255, 255);
+border-radius:15px;
+border: 2px solid White;
+
+
 </string>
                   </property>
                   <property name="text">
-                   <string>&gt;</string>
+                   <string/>
+                  </property>
+                  <property name="icon">
+                   <iconset>
+                    <normaloff>../../../../Downloads/image (1).png</normaloff>../../../../Downloads/image (1).png</iconset>
+                  </property>
+                  <property name="iconSize">
+                   <size>
+                    <width>25</width>
+                    <height>25</height>
+                   </size>
                   </property>
                   <property name="flat">
                    <bool>true</bool>
@@ -891,18 +1285,28 @@ font: 87 8pt &quot;Arial Black&quot;;
                  <widget class="QPushButton" name="close_menu">
                   <property name="maximumSize">
                    <size>
-                    <width>20</width>
-                    <height>20</height>
+                    <width>30</width>
+                    <height>30</height>
                    </size>
                   </property>
                   <property name="styleSheet">
-                   <string notr="true">color: rgb(255, 255, 255);
-border-color: rgb(255, 255, 255);
-background-color: rgb(21, 0, 31);
-font: 87 8pt &quot;Arial Black&quot;;</string>
+                   <string notr="true">font: 87 10pt &quot;Arial Black&quot;;
+color: rgb(255, 255, 255);
+border-radius:15px;
+border: 2px solid White;</string>
                   </property>
                   <property name="text">
-                   <string>&lt;</string>
+                   <string/>
+                  </property>
+                  <property name="icon">
+                   <iconset>
+                    <normaloff>../../../../Downloads/image (2).png</normaloff>../../../../Downloads/image (2).png</iconset>
+                  </property>
+                  <property name="iconSize">
+                   <size>
+                    <width>25</width>
+                    <height>25</height>
+                   </size>
                   </property>
                   <property name="flat">
                    <bool>true</bool>
@@ -916,50 +1320,13 @@ font: 87 8pt &quot;Arial Black&quot;;</string>
               <layout class="QVBoxLayout" name="verticalLayout_3">
                <item>
                 <layout class="QGridLayout" name="gridLayout_2">
-                 <item row="3" column="1">
-                  <widget class="QScrollBar" name="verticalScrollBar_3">
-                   <property name="orientation">
-                    <enum>Qt::Vertical</enum>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="1" column="3">
-                  <widget class="QScrollBar" name="verticalScrollBar_2">
-                   <property name="orientation">
-                    <enum>Qt::Vertical</enum>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="2">
-                  <widget class="QLabel" name="label_6">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>20</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="minimumSize">
-                    <size>
-                     <width>0</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                   <property name="styleSheet">
-                    <string notr="true">font: 87 8pt &quot;Arial Black&quot;;
-color: rgb(255, 255, 255);</string>
-                   </property>
-                   <property name="text">
-                    <string>T1C</string>
-                   </property>
-                   <property name="alignment">
-                    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="1" column="2">
-                  <widget class="QGraphicsView" name="label_2"/>
-                 </item>
-                 <item row="0" column="3">
+                 <property name="topMargin">
+                  <number>20</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>20</number>
+                 </property>
+                 <item row="0" column="4">
                   <layout class="QHBoxLayout" name="horizontalLayout_3">
                    <item>
                     <widget class="QPushButton" name="chain_button">
@@ -971,10 +1338,15 @@ color: rgb(255, 255, 255);</string>
                      </property>
                      <property name="styleSheet">
                       <string notr="true">color: rgb(255, 255, 255);
+border-radius:8px;
 font: 87 8pt &quot;Arial Black&quot;;</string>
                      </property>
                      <property name="text">
-                      <string>C</string>
+                      <string/>
+                     </property>
+                     <property name="icon">
+                      <iconset>
+                       <normaloff>../../../../Downloads/image (8).png</normaloff>../../../../Downloads/image (8).png</iconset>
                      </property>
                     </widget>
                    </item>
@@ -988,16 +1360,42 @@ font: 87 8pt &quot;Arial Black&quot;;</string>
                      </property>
                      <property name="styleSheet">
                       <string notr="true">color: rgb(255, 255, 255);
+border-radius:8px;
 font: 87 8pt &quot;Arial Black&quot;;</string>
                      </property>
                      <property name="text">
-                      <string>U</string>
+                      <string/>
+                     </property>
+                     <property name="icon">
+                      <iconset>
+                       <normaloff>../../../../Downloads/image (7).png</normaloff>../../../../Downloads/image (7).png</iconset>
                      </property>
                     </widget>
                    </item>
                   </layout>
                  </item>
-                 <item row="2" column="0" alignment="Qt::AlignLeft">
+                 <item row="3" column="1">
+                  <widget class="QScrollBar" name="verticalScrollBar_3">
+                   <property name="orientation">
+                    <enum>Qt::Vertical</enum>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="1">
+                  <widget class="QScrollBar" name="verticalScrollBar">
+                   <property name="orientation">
+                    <enum>Qt::Vertical</enum>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="0">
+                  <widget class="QGraphicsView" name="label_3">
+                   <property name="frameShape">
+                    <enum>QFrame::NoFrame</enum>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="0">
                   <widget class="QLabel" name="label_7">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -1023,20 +1421,48 @@ font: 87 8pt &quot;Arial Black&quot;;</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="3" column="0">
-                  <widget class="QGraphicsView" name="label_3"/>
+                 <item row="1" column="2">
+                  <widget class="QGraphicsView" name="label_2">
+                   <property name="frameShape">
+                    <enum>QFrame::NoFrame</enum>
+                   </property>
+                  </widget>
                  </item>
-                 <item row="3" column="3">
+                 <item row="1" column="4">
+                  <widget class="QScrollBar" name="verticalScrollBar_2">
+                   <property name="orientation">
+                    <enum>Qt::Vertical</enum>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="2">
+                  <widget class="QLabel" name="label_8">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>20</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true">color: rgb(255, 255, 255);
+font: 87 8pt &quot;Arial Black&quot;;</string>
+                   </property>
+                   <property name="text">
+                    <string>FLAIR</string>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignCenter</set>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="4">
                   <widget class="QScrollBar" name="verticalScrollBar_4">
                    <property name="orientation">
                     <enum>Qt::Vertical</enum>
                    </property>
                   </widget>
                  </item>
-                 <item row="1" column="0">
-                  <widget class="QGraphicsView" name="label"/>
-                 </item>
-                 <item row="0" column="0">
+                 <item row="0" column="0" alignment="Qt::AlignHCenter">
                   <widget class="QLabel" name="label_5">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -1065,35 +1491,45 @@ color: rgb(255, 255, 255);</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="1" column="1">
-                  <widget class="QScrollBar" name="verticalScrollBar">
-                   <property name="orientation">
-                    <enum>Qt::Vertical</enum>
+                 <item row="3" column="2">
+                  <widget class="QGraphicsView" name="label_4">
+                   <property name="frameShape">
+                    <enum>QFrame::NoFrame</enum>
                    </property>
                   </widget>
                  </item>
-                 <item row="2" column="2" alignment="Qt::AlignLeft">
-                  <widget class="QLabel" name="label_8">
+                 <item row="0" column="2" alignment="Qt::AlignHCenter">
+                  <widget class="QLabel" name="label_6">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                      <horstretch>0</horstretch>
                      <verstretch>20</verstretch>
                     </sizepolicy>
                    </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>0</width>
+                     <height>20</height>
+                    </size>
+                   </property>
                    <property name="styleSheet">
-                    <string notr="true">color: rgb(255, 255, 255);
-font: 87 8pt &quot;Arial Black&quot;;</string>
+                    <string notr="true">font: 87 8pt &quot;Arial Black&quot;;
+color: rgb(255, 255, 255);</string>
                    </property>
                    <property name="text">
-                    <string>FLAIR</string>
+                    <string>T1C</string>
                    </property>
                    <property name="alignment">
-                    <set>Qt::AlignCenter</set>
+                    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
                    </property>
                   </widget>
                  </item>
-                 <item row="3" column="2">
-                  <widget class="QGraphicsView" name="label_4"/>
+                 <item row="1" column="0">
+                  <widget class="QGraphicsView" name="label">
+                   <property name="frameShape">
+                    <enum>QFrame::NoFrame</enum>
+                   </property>
+                  </widget>
                  </item>
                 </layout>
                </item>
@@ -1120,7 +1556,13 @@ font: 87 8pt &quot;Arial Black&quot;;</string>
              <enum>Qt::RightToLeft</enum>
             </property>
             <property name="styleSheet">
-             <string notr="true">background-color: rgb(0, 0, 0);</string>
+             <string notr="true">QFrame{
+background-color: rgb(0, 0, 0);
+}
+
+QPushButton:hover{
+background-color:black;
+}</string>
             </property>
             <property name="frameShape">
              <enum>QFrame::StyledPanel</enum>
@@ -1165,36 +1607,73 @@ font: 87 8pt &quot;Arial Black&quot;;</string>
                 <enum>Qt::LeftToRight</enum>
                </property>
                <property name="styleSheet">
-                <string notr="true">background-color: rgb(0, 0, 0);</string>
+                <string notr="true">QWidget{
+background-color: rgb(38, 40, 75);
+}
+
+QPushButton:hover{
+background-color: rgb(0, 1, 16);
+}</string>
                </property>
                <property name="frameShape">
-                <enum>QFrame::StyledPanel</enum>
+                <enum>QFrame::NoFrame</enum>
                </property>
                <property name="currentIndex">
                 <number>0</number>
                </property>
                <widget class="QWidget" name="tools_menu">
-                <layout class="QVBoxLayout" name="verticalLayout_7">
+                <layout class="QVBoxLayout" name="verticalLayout_4">
                  <item>
                   <widget class="QPushButton" name="close_tools">
                    <property name="maximumSize">
                     <size>
-                     <width>10</width>
-                     <height>15</height>
+                     <width>12</width>
+                     <height>12</height>
                     </size>
                    </property>
                    <property name="styleSheet">
                     <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(0, 0, 0);
+border-radius:6px;
 font: 87 8pt &quot;Arial Black&quot;;</string>
                    </property>
                    <property name="text">
-                    <string>x</string>
+                    <string/>
+                   </property>
+                   <property name="icon">
+                    <iconset>
+                     <normaloff>../../../../Downloads/image.png</normaloff>../../../../Downloads/image.png</iconset>
+                   </property>
+                   <property name="iconSize">
+                    <size>
+                     <width>12</width>
+                     <height>12</height>
+                    </size>
+                   </property>
+                   <property name="autoDefault">
+                    <bool>false</bool>
+                   </property>
+                   <property name="default">
+                    <bool>false</bool>
+                   </property>
+                   <property name="flat">
+                    <bool>false</bool>
                    </property>
                   </widget>
                  </item>
-                 <item>
+                 <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
                   <widget class="QLabel" name="label_27">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>260</width>
+                     <height>40</height>
+                    </size>
+                   </property>
                    <property name="maximumSize">
                     <size>
                      <width>16777215</width>
@@ -1202,9 +1681,11 @@ font: 87 8pt &quot;Arial Black&quot;;</string>
                     </size>
                    </property>
                    <property name="styleSheet">
-                    <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(0, 0, 0);
-font: 87 8pt &quot;Arial Black&quot;;</string>
+                    <string notr="true">font: 87 12pt &quot;Arial Black&quot;;
+color: rgb(255, 255, 255);
+background-color: rgb(101, 87, 180);
+border-radius:10px;
+</string>
                    </property>
                    <property name="text">
                     <string>TOOLS</string>
@@ -1214,297 +1695,567 @@ font: 87 8pt &quot;Arial Black&quot;;</string>
                    </property>
                   </widget>
                  </item>
+                 <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
+                  <widget class="QLabel" name="label_9">
+                   <property name="minimumSize">
+                    <size>
+                     <width>260</width>
+                     <height>30</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>260</width>
+                     <height>50</height>
+                    </size>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true">font: 87 8pt &quot;Arial Black&quot;;
+background-color: rgb(0, 1, 16);
+color: rgb(255, 255, 255);
+border-radius:15px;
+</string>
+                   </property>
+                   <property name="text">
+                    <string>VOLUME (mm3)</string>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignCenter</set>
+                   </property>
+                  </widget>
+                 </item>
                  <item>
-                  <layout class="QVBoxLayout" name="verticalLayout_4">
-                   <item>
-                    <widget class="QLabel" name="label_9">
+                  <layout class="QHBoxLayout" name="horizontalLayout_13">
+                   <property name="spacing">
+                    <number>0</number>
+                   </property>
+                   <property name="sizeConstraint">
+                    <enum>QLayout::SetNoConstraint</enum>
+                   </property>
+                   <item alignment="Qt::AlignVCenter">
+                    <widget class="QLabel" name="label_21">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="minimumSize">
+                      <size>
+                       <width>20</width>
+                       <height>20</height>
+                      </size>
+                     </property>
                      <property name="maximumSize">
                       <size>
-                       <width>16777215</width>
-                       <height>50</height>
+                       <width>20</width>
+                       <height>20</height>
                       </size>
                      </property>
                      <property name="styleSheet">
-                      <string notr="true">color: rgb(255, 255, 255);
+                      <string notr="true">font: 87 8pt &quot;Arial Black&quot;;
 background-color: rgb(0, 0, 0);
-font: 87 8pt &quot;Arial Black&quot;;</string>
+color: rgb(255, 255, 255);
+border-radius:10px;
+</string>
                      </property>
                      <property name="text">
-                      <string>Volume (mm3)</string>
+                      <string/>
+                     </property>
+                    </widget>
+                   </item>
+                   <item alignment="Qt::AlignVCenter">
+                    <widget class="QLabel" name="label_10">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="minimumSize">
+                      <size>
+                       <width>110</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>110</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="styleSheet">
+                      <string notr="true">font: 87 6pt &quot;Arial Black&quot;;
+background-color: rgb(0, 1, 16);
+color: rgb(255, 255, 255);
+border-radius:10px;
+</string>
+                     </property>
+                     <property name="text">
+                      <string>NECROSIS</string>
                      </property>
                      <property name="alignment">
                       <set>Qt::AlignCenter</set>
                      </property>
                     </widget>
                    </item>
-                   <item>
-                    <layout class="QHBoxLayout" name="horizontalLayout_13">
-                     <item>
-                      <widget class="QLabel" name="label_21">
-                       <property name="maximumSize">
-                        <size>
-                         <width>10</width>
-                         <height>16777215</height>
-                        </size>
-                       </property>
-                       <property name="styleSheet">
-                        <string notr="true">background-color: rgb(0, 0, 0);</string>
-                       </property>
-                       <property name="text">
-                        <string/>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLabel" name="label_10">
-                       <property name="maximumSize">
-                        <size>
-                         <width>16777215</width>
-                         <height>50</height>
-                        </size>
-                       </property>
-                       <property name="styleSheet">
-                        <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(0, 0, 0);
-border-color: rgb(255, 255, 255);
-font: 87 8pt &quot;Arial Black&quot;;</string>
-                       </property>
-                       <property name="text">
-                        <string>Necrosis</string>
-                       </property>
-                       <property name="alignment">
-                        <set>Qt::AlignCenter</set>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLabel" name="necrosis_vol">
-                       <property name="styleSheet">
-                        <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(0, 0, 0);
-border-color: rgb(255, 255, 255);
-font: 87 8pt &quot;Arial Black&quot;;</string>
-                       </property>
-                       <property name="text">
-                        <string/>
-                       </property>
-                       <property name="alignment">
-                        <set>Qt::AlignCenter</set>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </item>
-                   <item>
-                    <layout class="QHBoxLayout" name="horizontalLayout_11">
-                     <item>
-                      <widget class="QLabel" name="label_20">
-                       <property name="maximumSize">
-                        <size>
-                         <width>10</width>
-                         <height>16777215</height>
-                        </size>
-                       </property>
-                       <property name="styleSheet">
-                        <string notr="true">background-color: rgb(130, 130, 130);</string>
-                       </property>
-                       <property name="text">
-                        <string/>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLabel" name="label_12">
-                       <property name="maximumSize">
-                        <size>
-                         <width>16777215</width>
-                         <height>50</height>
-                        </size>
-                       </property>
-                       <property name="styleSheet">
-                        <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(0, 0, 0);
-border-color: rgb(255, 255, 255);
-font: 87 8pt &quot;Arial Black&quot;;</string>
-                       </property>
-                       <property name="text">
-                        <string>Edema</string>
-                       </property>
-                       <property name="alignment">
-                        <set>Qt::AlignCenter</set>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLabel" name="edema_vol">
-                       <property name="styleSheet">
-                        <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(0, 0, 0);
-border-color: rgb(255, 255, 255);
-font: 87 8pt &quot;Arial Black&quot;;</string>
-                       </property>
-                       <property name="text">
-                        <string/>
-                       </property>
-                       <property name="alignment">
-                        <set>Qt::AlignCenter</set>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </item>
-                   <item>
-                    <layout class="QHBoxLayout" name="horizontalLayout_10">
-                     <item>
-                      <widget class="QLabel" name="label_11">
-                       <property name="maximumSize">
-                        <size>
-                         <width>10</width>
-                         <height>16777215</height>
-                        </size>
-                       </property>
-                       <property name="styleSheet">
-                        <string notr="true">background-color: rgb(255, 255, 255);</string>
-                       </property>
-                       <property name="text">
-                        <string/>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLabel" name="label_15">
-                       <property name="maximumSize">
-                        <size>
-                         <width>16777215</width>
-                         <height>50</height>
-                        </size>
-                       </property>
-                       <property name="styleSheet">
-                        <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(0, 0, 0);
-border-color: rgb(255, 255, 255);
-font: 87 8pt &quot;Arial Black&quot;;</string>
-                       </property>
-                       <property name="text">
-                        <string>Enhancing tumor</string>
-                       </property>
-                       <property name="alignment">
-                        <set>Qt::AlignCenter</set>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLabel" name="et_vol">
-                       <property name="styleSheet">
-                        <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(0, 0, 0);
-border-color: rgb(255, 255, 255);
-font: 87 8pt &quot;Arial Black&quot;;</string>
-                       </property>
-                       <property name="text">
-                        <string/>
-                       </property>
-                       <property name="alignment">
-                        <set>Qt::AlignCenter</set>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </item>
-                   <item>
-                    <layout class="QHBoxLayout" name="horizontalLayout_5">
-                     <item>
-                      <widget class="QLabel" name="label_22">
-                       <property name="maximumSize">
-                        <size>
-                         <width>10</width>
-                         <height>16777215</height>
-                        </size>
-                       </property>
-                       <property name="styleSheet">
-                        <string notr="true">background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 0, 0, 255), stop:1 rgba(255, 255, 255, 255));</string>
-                       </property>
-                       <property name="text">
-                        <string/>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLabel" name="label_17">
-                       <property name="maximumSize">
-                        <size>
-                         <width>16777215</width>
-                         <height>50</height>
-                        </size>
-                       </property>
-                       <property name="styleSheet">
-                        <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(0, 0, 0);
-border-color: rgb(255, 255, 255);
-font: 87 8pt &quot;Arial Black&quot;;</string>
-                       </property>
-                       <property name="text">
-                        <string>Core</string>
-                       </property>
-                       <property name="alignment">
-                        <set>Qt::AlignCenter</set>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QLabel" name="core_vol">
-                       <property name="styleSheet">
-                        <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(0, 0, 0);
-border-color: rgb(255, 255, 255);
-font: 87 8pt &quot;Arial Black&quot;;</string>
-                       </property>
-                       <property name="text">
-                        <string/>
-                       </property>
-                       <property name="alignment">
-                        <set>Qt::AlignCenter</set>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
+                   <item alignment="Qt::AlignVCenter">
+                    <widget class="QLabel" name="necrosis_vol">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="minimumSize">
+                      <size>
+                       <width>110</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>110</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="styleSheet">
+                      <string notr="true">font: 87 6pt &quot;Arial Black&quot;;
+background-color: rgb(0, 1, 16);
+color: rgb(255, 255, 255);
+border-radius:10px;
+
+</string>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                    </widget>
                    </item>
                   </layout>
                  </item>
                  <item>
-                  <layout class="QVBoxLayout" name="verticalLayout_9">
-                   <item>
-                    <widget class="QPushButton" name="brightness_button_show">
+                  <layout class="QHBoxLayout" name="horizontalLayout_11">
+                   <property name="spacing">
+                    <number>0</number>
+                   </property>
+                   <property name="sizeConstraint">
+                    <enum>QLayout::SetNoConstraint</enum>
+                   </property>
+                   <item alignment="Qt::AlignVCenter">
+                    <widget class="QLabel" name="label_20">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="minimumSize">
+                      <size>
+                       <width>20</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>20</width>
+                       <height>20</height>
+                      </size>
+                     </property>
                      <property name="styleSheet">
-                      <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(21, 0, 31);
-font: 87 8pt &quot;Arial Black&quot;;</string>
+                      <string notr="true">font: 87 8pt &quot;Arial Black&quot;;
+background-color: rgb(130, 130, 130);
+color: rgb(255, 255, 255);
+border-radius:10px;
+</string>
                      </property>
                      <property name="text">
-                      <string>Adjust Brightness</string>
+                      <string/>
                      </property>
                     </widget>
                    </item>
-                   <item>
-                    <widget class="QPushButton" name="brightness_button_hide">
+                   <item alignment="Qt::AlignVCenter">
+                    <widget class="QLabel" name="label_12">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="minimumSize">
+                      <size>
+                       <width>110</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>110</width>
+                       <height>20</height>
+                      </size>
+                     </property>
                      <property name="styleSheet">
-                      <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(21, 0, 31);
-font: 87 8pt &quot;Arial Black&quot;;</string>
+                      <string notr="true">font: 87 6pt &quot;Arial Black&quot;;
+background-color: rgb(0, 1, 16);
+color: rgb(255, 255, 255);
+border-radius:10px;
+
+</string>
                      </property>
                      <property name="text">
-                      <string>Adjust Brightness</string>
+                      <string>EDEMA</string>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                    </widget>
+                   </item>
+                   <item alignment="Qt::AlignVCenter">
+                    <widget class="QLabel" name="edema_vol">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="minimumSize">
+                      <size>
+                       <width>110</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>110</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="styleSheet">
+                      <string notr="true">font: 87 6pt &quot;Arial Black&quot;;
+background-color: rgb(0, 1, 16);
+color: rgb(255, 255, 255);
+border-radius:10px;
+</string>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                 <item>
+                  <layout class="QHBoxLayout" name="horizontalLayout_10">
+                   <property name="spacing">
+                    <number>0</number>
+                   </property>
+                   <property name="sizeConstraint">
+                    <enum>QLayout::SetNoConstraint</enum>
+                   </property>
+                   <item alignment="Qt::AlignVCenter">
+                    <widget class="QLabel" name="label_11">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="minimumSize">
+                      <size>
+                       <width>20</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>20</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="styleSheet">
+                      <string notr="true">font: 87 8pt &quot;Arial Black&quot;;
+background-color:rgb(255, 255, 255);
+color: rgb(255, 255, 255);
+border-radius:10px;
+</string>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                    </widget>
+                   </item>
+                   <item alignment="Qt::AlignVCenter">
+                    <widget class="QLabel" name="label_15">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="minimumSize">
+                      <size>
+                       <width>110</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>110</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="styleSheet">
+                      <string notr="true">font: 87 6pt &quot;Arial Black&quot;;
+background-color: rgb(0, 1, 16);
+color: rgb(255, 255, 255);
+border-radius:10px;
+</string>
+                     </property>
+                     <property name="text">
+                      <string>ENHANCING TUMOR</string>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                    </widget>
+                   </item>
+                   <item alignment="Qt::AlignVCenter">
+                    <widget class="QLabel" name="et_vol">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="minimumSize">
+                      <size>
+                       <width>110</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>110</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="styleSheet">
+                      <string notr="true">font: 87 6pt &quot;Arial Black&quot;;
+background-color: rgb(0, 1, 16);
+color: rgb(255, 255, 255);
+border-radius:10px;
+</string>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                 <item>
+                  <layout class="QHBoxLayout" name="horizontalLayout_5">
+                   <property name="spacing">
+                    <number>0</number>
+                   </property>
+                   <property name="sizeConstraint">
+                    <enum>QLayout::SetNoConstraint</enum>
+                   </property>
+                   <item alignment="Qt::AlignVCenter">
+                    <widget class="QLabel" name="label_22">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="minimumSize">
+                      <size>
+                       <width>20</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>20</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="styleSheet">
+                      <string notr="true">background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 0, 0, 255), stop:1 rgba(255, 255, 255, 255));
+border-radius:10px;
+</string>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                    </widget>
+                   </item>
+                   <item alignment="Qt::AlignVCenter">
+                    <widget class="QLabel" name="label_17">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="minimumSize">
+                      <size>
+                       <width>110</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>110</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="styleSheet">
+                      <string notr="true">font: 87 6pt &quot;Arial Black&quot;;
+background-color: rgb(0, 1, 16);
+color: rgb(255, 255, 255);
+border-radius:10px;
+</string>
+                     </property>
+                     <property name="text">
+                      <string>CORE</string>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                    </widget>
+                   </item>
+                   <item alignment="Qt::AlignVCenter">
+                    <widget class="QLabel" name="core_vol">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <horstretch>110</horstretch>
+                       <verstretch>20</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="minimumSize">
+                      <size>
+                       <width>110</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                     <property name="styleSheet">
+                      <string notr="true">font: 87 6pt &quot;Arial Black&quot;;
+background-color: rgb(0, 1, 16);
+color: rgb(255, 255, 255);
+border-radius:10px;
+</string>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                 <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
+                  <widget class="QCheckBox" name="show_tumor">
+                   <property name="styleSheet">
+                    <string notr="true">font: 87 8pt &quot;Arial Black&quot;;
+color: rgb(255, 255, 255);
+border-radius:10px;
+</string>
+                   </property>
+                   <property name="text">
+                    <string>SHOW TUMOR</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <layout class="QVBoxLayout" name="verticalLayout_9">
+                   <property name="spacing">
+                    <number>0</number>
+                   </property>
+                   <property name="sizeConstraint">
+                    <enum>QLayout::SetNoConstraint</enum>
+                   </property>
+                   <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
+                    <widget class="QPushButton" name="brightness_button_show">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="minimumSize">
+                      <size>
+                       <width>160</width>
+                       <height>30</height>
+                      </size>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>160</width>
+                       <height>30</height>
+                      </size>
+                     </property>
+                     <property name="styleSheet">
+                      <string notr="true">font: 87 8pt &quot;Arial Black&quot;;
+color: rgb(255, 255, 255);
+border-radius:10px;
+border: 1px solid White;</string>
+                     </property>
+                     <property name="text">
+                      <string>ADJUST BRIGHTNESS</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
+                    <widget class="QPushButton" name="brightness_button_hide">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="minimumSize">
+                      <size>
+                       <width>160</width>
+                       <height>30</height>
+                      </size>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>160</width>
+                       <height>30</height>
+                      </size>
+                     </property>
+                     <property name="styleSheet">
+                      <string notr="true">font: 87 8pt &quot;Arial Black&quot;;
+color: rgb(255, 255, 255);
+border-radius:10px;
+border: 1px solid White;
+</string>
+                     </property>
+                     <property name="text">
+                      <string>ADJUST BRIGHTNESS</string>
                      </property>
                     </widget>
                    </item>
                    <item>
                     <layout class="QHBoxLayout" name="brightness_1">
-                     <item>
+                     <item alignment="Qt::AlignVCenter">
                       <widget class="QSlider" name="brightness_slider">
                        <property name="styleSheet">
-                        <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(21, 0, 31);
-font: 87 8pt &quot;Arial Black&quot;;</string>
+                        <string notr="true"/>
                        </property>
                        <property name="orientation">
                         <enum>Qt::Horizontal</enum>
@@ -1515,48 +2266,52 @@ font: 87 8pt &quot;Arial Black&quot;;</string>
                    </item>
                    <item>
                     <layout class="QHBoxLayout" name="brightness_2">
-                     <item>
+                     <item alignment="Qt::AlignVCenter">
                       <widget class="QCheckBox" name="checkbox_1">
                        <property name="styleSheet">
-                        <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(0, 0, 0);
-font: 87 8pt &quot;Arial Black&quot;;</string>
+                        <string notr="true">font: 87 8pt &quot;Arial Black&quot;;
+color: rgb(255, 255, 255);
+border-radius:10px;
+</string>
                        </property>
                        <property name="text">
                         <string>T1</string>
                        </property>
                       </widget>
                      </item>
-                     <item>
+                     <item alignment="Qt::AlignVCenter">
                       <widget class="QCheckBox" name="checkbox_2">
                        <property name="styleSheet">
-                        <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(0, 0, 0);
-font: 87 8pt &quot;Arial Black&quot;;</string>
+                        <string notr="true">font: 87 8pt &quot;Arial Black&quot;;
+color: rgb(255, 255, 255);
+border-radius:10px;
+</string>
                        </property>
                        <property name="text">
                         <string>T1C</string>
                        </property>
                       </widget>
                      </item>
-                     <item>
+                     <item alignment="Qt::AlignVCenter">
                       <widget class="QCheckBox" name="checkbox_3">
                        <property name="styleSheet">
-                        <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(0, 0, 0);
-font: 87 8pt &quot;Arial Black&quot;;</string>
+                        <string notr="true">font: 87 8pt &quot;Arial Black&quot;;
+color: rgb(255, 255, 255);
+border-radius:10px;
+</string>
                        </property>
                        <property name="text">
                         <string>T2</string>
                        </property>
                       </widget>
                      </item>
-                     <item>
+                     <item alignment="Qt::AlignVCenter">
                       <widget class="QCheckBox" name="checkbox_4">
                        <property name="styleSheet">
-                        <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(0, 0, 0);
-font: 87 8pt &quot;Arial Black&quot;;</string>
+                        <string notr="true">font: 87 8pt &quot;Arial Black&quot;;
+color: rgb(255, 255, 255);
+border-radius:10px;
+</string>
                        </property>
                        <property name="text">
                         <string>FLAIR</string>
@@ -1569,59 +2324,106 @@ font: 87 8pt &quot;Arial Black&quot;;</string>
                  </item>
                  <item>
                   <layout class="QVBoxLayout" name="verticalLayout_19">
-                   <item>
+                   <property name="spacing">
+                    <number>0</number>
+                   </property>
+                   <property name="sizeConstraint">
+                    <enum>QLayout::SetNoConstraint</enum>
+                   </property>
+                   <property name="bottomMargin">
+                    <number>20</number>
+                   </property>
+                   <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
                     <widget class="QPushButton" name="contrast_button_show">
+                     <property name="minimumSize">
+                      <size>
+                       <width>160</width>
+                       <height>30</height>
+                      </size>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>150</width>
+                       <height>30</height>
+                      </size>
+                     </property>
                      <property name="styleSheet">
-                      <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(21, 0, 31);
-font: 87 8pt &quot;Arial Black&quot;;</string>
+                      <string notr="true">font: 87 8pt &quot;Arial Black&quot;;
+color: rgb(255, 255, 255);
+border-radius:10px;
+border: 1px solid White;</string>
                      </property>
                      <property name="text">
-                      <string>Adjust Contrast</string>
+                      <string>ADJUST CONTRAST</string>
                      </property>
                     </widget>
                    </item>
-                   <item>
+                   <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
                     <widget class="QPushButton" name="contrast_button_hide">
+                     <property name="minimumSize">
+                      <size>
+                       <width>160</width>
+                       <height>30</height>
+                      </size>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>150</width>
+                       <height>30</height>
+                      </size>
+                     </property>
                      <property name="styleSheet">
-                      <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(21, 0, 31);
-font: 87 8pt &quot;Arial Black&quot;;</string>
+                      <string notr="true">font: 87 8pt &quot;Arial Black&quot;;
+color: rgb(255, 255, 255);
+border-radius:10px;
+border: 1px solid White;</string>
                      </property>
                      <property name="text">
-                      <string>Adjust Contrast</string>
+                      <string>ADJUST CONTRAST</string>
                      </property>
                     </widget>
                    </item>
                    <item>
                     <layout class="QHBoxLayout" name="horizontalLayout_9">
-                     <item alignment="Qt::AlignHCenter">
+                     <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
                       <widget class="QLabel" name="min_label">
                        <property name="minimumSize">
                         <size>
-                         <width>30</width>
-                         <height>0</height>
+                         <width>20</width>
+                         <height>20</height>
+                        </size>
+                       </property>
+                       <property name="maximumSize">
+                        <size>
+                         <width>20</width>
+                         <height>20</height>
                         </size>
                        </property>
                        <property name="styleSheet">
-                        <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(0, 0, 0);
-font: 87 8pt &quot;Arial Black&quot;;</string>
+                        <string notr="true">font: 87 6pt &quot;Arial Black&quot;;
+color: rgb(255, 255, 255);
+background-color: rgb(0, 1, 16);
+border-radius:10px;
+</string>
                        </property>
                        <property name="text">
-                        <string>Min</string>
+                        <string>MIN</string>
                        </property>
                        <property name="alignment">
                         <set>Qt::AlignCenter</set>
                        </property>
                       </widget>
                      </item>
-                     <item>
+                     <item alignment="Qt::AlignVCenter">
                       <widget class="QSlider" name="min_contrast_slider">
+                       <property name="minimumSize">
+                        <size>
+                         <width>0</width>
+                         <height>30</height>
+                        </size>
+                       </property>
                        <property name="styleSheet">
-                        <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(21, 0, 31);
-font: 87 8pt &quot;Arial Black&quot;;</string>
+                        <string notr="true"/>
                        </property>
                        <property name="orientation">
                         <enum>Qt::Horizontal</enum>
@@ -1632,33 +2434,45 @@ font: 87 8pt &quot;Arial Black&quot;;</string>
                    </item>
                    <item>
                     <layout class="QHBoxLayout" name="horizontalLayout_7">
-                     <item>
+                     <item alignment="Qt::AlignVCenter">
                       <widget class="QLabel" name="max_label">
                        <property name="minimumSize">
                         <size>
-                         <width>30</width>
-                         <height>0</height>
+                         <width>20</width>
+                         <height>20</height>
+                        </size>
+                       </property>
+                       <property name="maximumSize">
+                        <size>
+                         <width>20</width>
+                         <height>20</height>
                         </size>
                        </property>
                        <property name="styleSheet">
-                        <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(0, 0, 0);
-font: 87 8pt &quot;Arial Black&quot;;</string>
+                        <string notr="true">font: 87 6pt &quot;Arial Black&quot;;
+background-color: rgb(0, 1, 16);
+color: rgb(255, 255, 255);
+border-radius:10px;
+</string>
                        </property>
                        <property name="text">
-                        <string>Max</string>
+                        <string>MAX</string>
                        </property>
                        <property name="alignment">
                         <set>Qt::AlignCenter</set>
                        </property>
                       </widget>
                      </item>
-                     <item>
+                     <item alignment="Qt::AlignVCenter">
                       <widget class="QSlider" name="max_contrast_slider">
+                       <property name="minimumSize">
+                        <size>
+                         <width>0</width>
+                         <height>30</height>
+                        </size>
+                       </property>
                        <property name="styleSheet">
-                        <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(21, 0, 31);
-font: 87 8pt &quot;Arial Black&quot;;</string>
+                        <string notr="true"/>
                        </property>
                        <property name="orientation">
                         <enum>Qt::Horizontal</enum>
@@ -1669,48 +2483,52 @@ font: 87 8pt &quot;Arial Black&quot;;</string>
                    </item>
                    <item>
                     <layout class="QHBoxLayout" name="horizontalLayout_14">
-                     <item>
+                     <item alignment="Qt::AlignVCenter">
                       <widget class="QCheckBox" name="checkbox_11">
                        <property name="styleSheet">
-                        <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(0, 0, 0);
-font: 87 8pt &quot;Arial Black&quot;;</string>
+                        <string notr="true">font: 87 8pt &quot;Arial Black&quot;;
+color: rgb(255, 255, 255);
+border-radius:10px;
+</string>
                        </property>
                        <property name="text">
                         <string>T1</string>
                        </property>
                       </widget>
                      </item>
-                     <item>
+                     <item alignment="Qt::AlignVCenter">
                       <widget class="QCheckBox" name="checkbox_22">
                        <property name="styleSheet">
-                        <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(0, 0, 0);
-font: 87 8pt &quot;Arial Black&quot;;</string>
+                        <string notr="true">font: 87 8pt &quot;Arial Black&quot;;
+color: rgb(255, 255, 255);
+border-radius:10px;
+</string>
                        </property>
                        <property name="text">
                         <string>T1C</string>
                        </property>
                       </widget>
                      </item>
-                     <item>
+                     <item alignment="Qt::AlignVCenter">
                       <widget class="QCheckBox" name="checkbox_33">
                        <property name="styleSheet">
-                        <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(0, 0, 0);
-font: 87 8pt &quot;Arial Black&quot;;</string>
+                        <string notr="true">font: 87 8pt &quot;Arial Black&quot;;
+color: rgb(255, 255, 255);
+border-radius:10px;
+</string>
                        </property>
                        <property name="text">
                         <string>T2</string>
                        </property>
                       </widget>
                      </item>
-                     <item>
+                     <item alignment="Qt::AlignVCenter">
                       <widget class="QCheckBox" name="checkbox_44">
                        <property name="styleSheet">
-                        <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(0, 0, 0);
-font: 87 8pt &quot;Arial Black&quot;;</string>
+                        <string notr="true">font: 87 8pt &quot;Arial Black&quot;;
+color: rgb(255, 255, 255);
+border-radius:10px;
+</string>
                        </property>
                        <property name="text">
                         <string>FLAIR</string>
@@ -1721,18 +2539,6 @@ font: 87 8pt &quot;Arial Black&quot;;</string>
                    </item>
                   </layout>
                  </item>
-                 <item alignment="Qt::AlignHCenter">
-                  <widget class="QCheckBox" name="show_tumor">
-                   <property name="styleSheet">
-                    <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(21, 0, 31);
-font: 87 8pt &quot;Arial Black&quot;;</string>
-                   </property>
-                   <property name="text">
-                    <string>SHOW TUMOR</string>
-                   </property>
-                  </widget>
-                 </item>
                 </layout>
                </widget>
                <widget class="QWidget" name="patient_info_menu">
@@ -1741,23 +2547,38 @@ font: 87 8pt &quot;Arial Black&quot;;</string>
                   <widget class="QPushButton" name="close_patient_info">
                    <property name="maximumSize">
                     <size>
-                     <width>10</width>
-                     <height>15</height>
+                     <width>12</width>
+                     <height>12</height>
                     </size>
                    </property>
                    <property name="styleSheet">
                     <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(0, 0, 0);
-border-color: rgb(255, 255, 255);
+border-radius:6px;
 font: 87 8pt &quot;Arial Black&quot;;</string>
                    </property>
                    <property name="text">
-                    <string>x</string>
+                    <string/>
+                   </property>
+                   <property name="icon">
+                    <iconset>
+                     <normaloff>../../../../Downloads/image.png</normaloff>../../../../Downloads/image.png</iconset>
+                   </property>
+                   <property name="iconSize">
+                    <size>
+                     <width>12</width>
+                     <height>12</height>
+                    </size>
                    </property>
                   </widget>
                  </item>
                  <item>
                   <widget class="QLabel" name="patient_label">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
                    <property name="maximumSize">
                     <size>
                      <width>16777215</width>
@@ -1765,9 +2586,11 @@ font: 87 8pt &quot;Arial Black&quot;;</string>
                     </size>
                    </property>
                    <property name="styleSheet">
-                    <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(0, 0, 0);
-font: 87 8pt &quot;Arial Black&quot;;</string>
+                    <string notr="true">font: 87 12pt &quot;Arial Black&quot;;
+color: rgb(255, 255, 255);
+background-color: rgb(101, 87, 180);
+border-radius:10px;
+</string>
                    </property>
                    <property name="text">
                     <string>PATIENT INFO</string>
@@ -1783,68 +2606,182 @@ font: 87 8pt &quot;Arial Black&quot;;</string>
                     <layout class="QHBoxLayout" name="horizontalLayout_6">
                      <item>
                       <layout class="QVBoxLayout" name="verticalLayout_10">
-                       <item alignment="Qt::AlignHCenter">
+                       <property name="topMargin">
+                        <number>0</number>
+                       </property>
+                       <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
                         <widget class="QLabel" name="label_19">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="minimumSize">
+                          <size>
+                           <width>100</width>
+                           <height>40</height>
+                          </size>
+                         </property>
+                         <property name="maximumSize">
+                          <size>
+                           <width>100</width>
+                           <height>40</height>
+                          </size>
+                         </property>
                          <property name="styleSheet">
-                          <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(0, 0, 0);
-border-color: rgb(255, 255, 255);
-font: 87 8pt &quot;Arial Black&quot;;</string>
+                          <string notr="true">font: 87 8pt &quot;Arial Black&quot;;
+background-color: rgb(0, 1, 16);
+color: rgb(255, 255, 255);
+border-radius:15px;
+</string>
                          </property>
                          <property name="text">
-                          <string>Name</string>
+                          <string>NAME</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
                          </property>
                         </widget>
                        </item>
-                       <item alignment="Qt::AlignHCenter">
+                       <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
                         <widget class="QLabel" name="label_18">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="minimumSize">
+                          <size>
+                           <width>100</width>
+                           <height>40</height>
+                          </size>
+                         </property>
+                         <property name="maximumSize">
+                          <size>
+                           <width>80</width>
+                           <height>40</height>
+                          </size>
+                         </property>
                          <property name="styleSheet">
-                          <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(0, 0, 0);
-border-color: rgb(255, 255, 255);
-font: 87 8pt &quot;Arial Black&quot;;</string>
+                          <string notr="true">font: 87 8pt &quot;Arial Black&quot;;
+background-color: rgb(0, 1, 16);
+color: rgb(255, 255, 255);
+border-radius:15px;
+
+</string>
                          </property>
                          <property name="text">
-                          <string>Sex</string>
+                          <string>SEX</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
                          </property>
                         </widget>
                        </item>
-                       <item alignment="Qt::AlignHCenter">
+                       <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
                         <widget class="QLabel" name="label_16">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="minimumSize">
+                          <size>
+                           <width>100</width>
+                           <height>40</height>
+                          </size>
+                         </property>
+                         <property name="maximumSize">
+                          <size>
+                           <width>60</width>
+                           <height>40</height>
+                          </size>
+                         </property>
                          <property name="styleSheet">
-                          <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(0, 0, 0);
-border-color: rgb(255, 255, 255);
-font: 87 8pt &quot;Arial Black&quot;;</string>
+                          <string notr="true">font: 87 8pt &quot;Arial Black&quot;;
+background-color: rgb(0, 1, 16);
+color: rgb(255, 255, 255);
+border-radius:15px;
+</string>
                          </property>
                          <property name="text">
-                          <string>Birth Date</string>
+                          <string>BIRTH DATE</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
                          </property>
                         </widget>
                        </item>
-                       <item alignment="Qt::AlignHCenter">
+                       <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
                         <widget class="QLabel" name="label_14">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="minimumSize">
+                          <size>
+                           <width>100</width>
+                           <height>40</height>
+                          </size>
+                         </property>
+                         <property name="maximumSize">
+                          <size>
+                           <width>60</width>
+                           <height>40</height>
+                          </size>
+                         </property>
                          <property name="styleSheet">
-                          <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(0, 0, 0);
-border-color: rgb(255, 255, 255);
-font: 87 8pt &quot;Arial Black&quot;;</string>
+                          <string notr="true">font: 87 8pt &quot;Arial Black&quot;;
+background-color: rgb(0, 1, 16);
+color: rgb(255, 255, 255);
+border-radius:15px;
+</string>
                          </property>
                          <property name="text">
-                          <string>Study ID</string>
+                          <string>STUDY ID</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
                          </property>
                         </widget>
                        </item>
-                       <item alignment="Qt::AlignHCenter">
+                       <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
                         <widget class="QLabel" name="label_13">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="minimumSize">
+                          <size>
+                           <width>100</width>
+                           <height>40</height>
+                          </size>
+                         </property>
+                         <property name="maximumSize">
+                          <size>
+                           <width>60</width>
+                           <height>40</height>
+                          </size>
+                         </property>
                          <property name="styleSheet">
-                          <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(0, 0, 0);
-border-color: rgb(255, 255, 255);
-font: 87 8pt &quot;Arial Black&quot;;</string>
+                          <string notr="true">font: 87 8pt &quot;Arial Black&quot;;
+background-color: rgb(0, 1, 16);
+color: rgb(255, 255, 255);
+border-radius:15px;
+</string>
                          </property>
                          <property name="text">
-                          <string>Study Date</string>
+                          <string>STUDY DATE</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
                          </property>
                         </widget>
                        </item>
@@ -1852,13 +2789,32 @@ font: 87 8pt &quot;Arial Black&quot;;</string>
                      </item>
                      <item>
                       <layout class="QVBoxLayout" name="verticalLayout_18">
-                       <item>
+                       <item alignment="Qt::AlignVCenter">
                         <widget class="QLabel" name="name_label">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="minimumSize">
+                          <size>
+                           <width>80</width>
+                           <height>40</height>
+                          </size>
+                         </property>
+                         <property name="maximumSize">
+                          <size>
+                           <width>120</width>
+                           <height>40</height>
+                          </size>
+                         </property>
                          <property name="styleSheet">
-                          <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(0, 0, 0);
-border-color: rgb(255, 255, 255);
-font: 87 8pt &quot;Arial Black&quot;;</string>
+                          <string notr="true">font: 87 8pt &quot;Arial Black&quot;;
+background-color: rgb(0, 1, 16);
+color: rgb(255, 255, 255);
+border-radius:15px;
+</string>
                          </property>
                          <property name="text">
                           <string/>
@@ -1868,13 +2824,32 @@ font: 87 8pt &quot;Arial Black&quot;;</string>
                          </property>
                         </widget>
                        </item>
-                       <item>
+                       <item alignment="Qt::AlignVCenter">
                         <widget class="QLabel" name="sex_label">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="minimumSize">
+                          <size>
+                           <width>0</width>
+                           <height>40</height>
+                          </size>
+                         </property>
+                         <property name="maximumSize">
+                          <size>
+                           <width>120</width>
+                           <height>40</height>
+                          </size>
+                         </property>
                          <property name="styleSheet">
-                          <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(0, 0, 0);
-border-color: rgb(255, 255, 255);
-font: 87 8pt &quot;Arial Black&quot;;</string>
+                          <string notr="true">font: 87 8pt &quot;Arial Black&quot;;
+background-color: rgb(0, 1, 16);
+color: rgb(255, 255, 255);
+border-radius:15px;
+</string>
                          </property>
                          <property name="text">
                           <string/>
@@ -1884,13 +2859,32 @@ font: 87 8pt &quot;Arial Black&quot;;</string>
                          </property>
                         </widget>
                        </item>
-                       <item>
+                       <item alignment="Qt::AlignVCenter">
                         <widget class="QLabel" name="birth_label">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="minimumSize">
+                          <size>
+                           <width>0</width>
+                           <height>40</height>
+                          </size>
+                         </property>
+                         <property name="maximumSize">
+                          <size>
+                           <width>120</width>
+                           <height>40</height>
+                          </size>
+                         </property>
                          <property name="styleSheet">
-                          <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(0, 0, 0);
-border-color: rgb(255, 255, 255);
-font: 87 8pt &quot;Arial Black&quot;;</string>
+                          <string notr="true">font: 87 8pt &quot;Arial Black&quot;;
+background-color: rgb(0, 1, 16);
+color: rgb(255, 255, 255);
+border-radius:15px;
+</string>
                          </property>
                          <property name="text">
                           <string/>
@@ -1900,13 +2894,32 @@ font: 87 8pt &quot;Arial Black&quot;;</string>
                          </property>
                         </widget>
                        </item>
-                       <item>
+                       <item alignment="Qt::AlignVCenter">
                         <widget class="QLabel" name="id_label">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="minimumSize">
+                          <size>
+                           <width>0</width>
+                           <height>40</height>
+                          </size>
+                         </property>
+                         <property name="maximumSize">
+                          <size>
+                           <width>120</width>
+                           <height>40</height>
+                          </size>
+                         </property>
                          <property name="styleSheet">
-                          <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(0, 0, 0);
-border-color: rgb(255, 255, 255);
-font: 87 8pt &quot;Arial Black&quot;;</string>
+                          <string notr="true">font: 87 8pt &quot;Arial Black&quot;;
+background-color: rgb(0, 1, 16);
+color: rgb(255, 255, 255);
+border-radius:15px;
+</string>
                          </property>
                          <property name="text">
                           <string/>
@@ -1916,13 +2929,32 @@ font: 87 8pt &quot;Arial Black&quot;;</string>
                          </property>
                         </widget>
                        </item>
-                       <item>
+                       <item alignment="Qt::AlignVCenter">
                         <widget class="QLabel" name="date_label">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="minimumSize">
+                          <size>
+                           <width>0</width>
+                           <height>40</height>
+                          </size>
+                         </property>
+                         <property name="maximumSize">
+                          <size>
+                           <width>120</width>
+                           <height>40</height>
+                          </size>
+                         </property>
                          <property name="styleSheet">
-                          <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(0, 0, 0);
-border-color: rgb(255, 255, 255);
-font: 87 8pt &quot;Arial Black&quot;;</string>
+                          <string notr="true">font: 87 8pt &quot;Arial Black&quot;;
+background-color: rgb(0, 1, 16);
+color: rgb(255, 255, 255);
+border-radius:15px;
+</string>
                          </property>
                          <property name="text">
                           <string/>

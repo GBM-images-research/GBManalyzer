@@ -42,7 +42,7 @@ class ButtonSegment(QThread):
         nifti_img = nib.Nifti1Image(array, np.eye(4))
         
         # Guardar la imagen en un archivo
-        nib.save(nifti_img, os.path.join(self.images_folder, "rgb.nii"))
+        nib.save(nifti_img, os.path.join(self.images_folder, "tumor_pred.nii"))
 
     def get_rgb_to_nifti(self, segmentation):
 
