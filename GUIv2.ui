@@ -53,7 +53,7 @@
          <property name="minimumSize">
           <size>
            <width>0</width>
-           <height>20</height>
+           <height>30</height>
           </size>
          </property>
          <property name="styleSheet">
@@ -83,7 +83,7 @@ background-color: rgb(0, 1, 16);
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout">
           <property name="spacing">
-           <number>0</number>
+           <number>6</number>
           </property>
           <property name="leftMargin">
            <number>0</number>
@@ -101,19 +101,21 @@ background-color: rgb(0, 1, 16);
            <widget class="QPushButton" name="pushButton">
             <property name="minimumSize">
              <size>
-              <width>20</width>
-              <height>20</height>
+              <width>25</width>
+              <height>25</height>
              </size>
             </property>
             <property name="styleSheet">
-             <string notr="true">background-color: rgb(0, 1, 16);</string>
+             <string notr="true">background-color: rgb(0, 1, 16);
+border-radius:12px;
+</string>
             </property>
             <property name="text">
              <string/>
             </property>
             <property name="icon">
              <iconset>
-              <normaloff>Logo_Brainar.png</normaloff>Logo_Brainar.png</iconset>
+              <normaloff>icons/Logo.png</normaloff>icons/Logo.png</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -147,13 +149,15 @@ background-color: rgb(0, 1, 16);
              </font>
             </property>
             <property name="styleSheet">
-             <string notr="true"/>
+             <string notr="true">background-color: rgb(38, 40, 75);
+border-radius:0px;
+border: 0px solid White;</string>
             </property>
             <property name="lineWidth">
              <number>0</number>
             </property>
             <property name="text">
-             <string>GBMAnalyzer</string>
+             <string> GBMAnalyzer</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -178,13 +182,13 @@ background-color: rgb(0, 1, 16);
             <property name="minimumSize">
              <size>
               <width>30</width>
-              <height>0</height>
+              <height>30</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>20</width>
-              <height>20</height>
+              <width>30</width>
+              <height>30</height>
              </size>
             </property>
             <property name="styleSheet">
@@ -198,7 +202,7 @@ border-radius:15px;
             </property>
             <property name="icon">
              <iconset>
-              <normaloff>../../../../Downloads/image (6).png</normaloff>../../../../Downloads/image (6).png</iconset>
+              <normaloff>icons/minimize.png</normaloff>icons/minimize.png</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -213,13 +217,13 @@ border-radius:15px;
             <property name="minimumSize">
              <size>
               <width>30</width>
-              <height>0</height>
+              <height>30</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>20</width>
-              <height>20</height>
+              <width>30</width>
+              <height>30</height>
              </size>
             </property>
             <property name="styleSheet">
@@ -233,7 +237,7 @@ border-radius:15px;
             </property>
             <property name="icon">
              <iconset>
-              <normaloff>../../../../Downloads/image (3).png</normaloff>../../../../Downloads/image (3).png</iconset>
+              <normaloff>icons/resize.png</normaloff>icons/resize.png</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -248,7 +252,7 @@ border-radius:15px;
             <property name="minimumSize">
              <size>
               <width>30</width>
-              <height>20</height>
+              <height>30</height>
              </size>
             </property>
             <property name="maximumSize">
@@ -260,7 +264,7 @@ border-radius:15px;
             <property name="styleSheet">
              <string notr="true">font: 87 12pt &quot;Arial Black&quot;;
 color: rgb(255, 255, 255);
-border-radius:20px;
+border-radius:15px;
 </string>
             </property>
             <property name="text">
@@ -268,7 +272,7 @@ border-radius:20px;
             </property>
             <property name="icon">
              <iconset>
-              <normaloff>../../../../Downloads/image (4).png</normaloff>../../../../Downloads/image (4).png</iconset>
+              <normaloff>icons/fullscreen.png</normaloff>icons/fullscreen.png</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -283,7 +287,7 @@ border-radius:20px;
             <property name="minimumSize">
              <size>
               <width>30</width>
-              <height>20</height>
+              <height>30</height>
              </size>
             </property>
             <property name="maximumSize">
@@ -295,7 +299,7 @@ border-radius:20px;
             <property name="styleSheet">
              <string notr="true">font: 87 10pt &quot;Arial Black&quot;;
 color: rgb(255, 255, 255);
-border-radius:10px;
+border-radius:15px;
 </string>
             </property>
             <property name="text">
@@ -303,7 +307,7 @@ border-radius:10px;
             </property>
             <property name="icon">
              <iconset>
-              <normaloff>../../../../Downloads/image (5).png</normaloff>../../../../Downloads/image (5).png</iconset>
+              <normaloff>icons/close.png</normaloff>icons/close.png</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -401,7 +405,17 @@ border-radius:10px;
 border: 1px solid White;</string>
                 </property>
                 <property name="text">
-                 <string>IMPORT</string>
+                 <string> IMPORT</string>
+                </property>
+                <property name="icon">
+                 <iconset>
+                  <normaloff>icons/import.png</normaloff>icons/import.png</iconset>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>20</width>
+                  <height>20</height>
+                 </size>
                 </property>
                 <property name="checkable">
                  <bool>false</bool>
@@ -414,6 +428,35 @@ border: 1px solid White;</string>
                 </property>
                 <property name="flat">
                  <bool>false</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="tools_button">
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>80</height>
+                 </size>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">font: 87 10pt &quot;Arial Black&quot;;
+color: rgb(255, 255, 255);
+border-radius:10px;
+border: 1px solid White;</string>
+                </property>
+                <property name="text">
+                 <string> TOOLS</string>
+                </property>
+                <property name="icon">
+                 <iconset>
+                  <normaloff>icons/tools2.png</normaloff>icons/tools2.png</iconset>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>20</width>
+                  <height>20</height>
+                 </size>
                 </property>
                </widget>
               </item>
@@ -456,25 +499,6 @@ border: 1px solid White;</string>
                </widget>
               </item>
               <item>
-               <widget class="QPushButton" name="tools_button">
-                <property name="maximumSize">
-                 <size>
-                  <width>16777215</width>
-                  <height>80</height>
-                 </size>
-                </property>
-                <property name="styleSheet">
-                 <string notr="true">font: 87 10pt &quot;Arial Black&quot;;
-color: rgb(255, 255, 255);
-border-radius:10px;
-border: 1px solid White;</string>
-                </property>
-                <property name="text">
-                 <string>TOOLS</string>
-                </property>
-               </widget>
-              </item>
-              <item>
                <widget class="QPushButton" name="patient_info_button">
                 <property name="maximumSize">
                  <size>
@@ -489,7 +513,17 @@ border-radius:10px;
 border: 1px solid White;</string>
                 </property>
                 <property name="text">
-                 <string>PATIENT INFO</string>
+                 <string> PATIENT INFO</string>
+                </property>
+                <property name="icon">
+                 <iconset>
+                  <normaloff>icons/info.png</normaloff>icons/info.png</iconset>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>20</width>
+                  <height>20</height>
+                 </size>
                 </property>
                </widget>
               </item>
@@ -497,8 +531,8 @@ border: 1px solid White;</string>
                <widget class="QPushButton" name="reset_button">
                 <property name="maximumSize">
                  <size>
-                  <width>100</width>
-                  <height>25</height>
+                  <width>20</width>
+                  <height>20</height>
                  </size>
                 </property>
                 <property name="layoutDirection">
@@ -507,11 +541,15 @@ border: 1px solid White;</string>
                 <property name="styleSheet">
                  <string notr="true">font: 87 8pt &quot;Arial&quot;;
 color: rgb(255, 255, 255);
-border-radius:5px;
-border: 1px solid White;</string>
+border-radius:10px;
+</string>
                 </property>
                 <property name="text">
-                 <string> RESET </string>
+                 <string/>
+                </property>
+                <property name="icon">
+                 <iconset>
+                  <normaloff>icons/reset.png</normaloff>icons/reset.png</iconset>
                 </property>
                </widget>
               </item>
@@ -538,33 +576,42 @@ border-radius:15px;
                 </property>
                 <property name="icon">
                  <iconset>
-                  <normaloff>../../../../Downloads/image (9).png</normaloff>../../../../Downloads/image (9).png</iconset>
+                  <normaloff>icons/back.png</normaloff>icons/back.png</iconset>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>25</width>
+                  <height>25</height>
+                 </size>
                 </property>
                </widget>
               </item>
-              <item>
-               <widget class="QLabel" name="import_label">
+              <item alignment="Qt::AlignHCenter">
+               <widget class="QPushButton" name="pushButton_2">
                 <property name="maximumSize">
                  <size>
-                  <width>16777215</width>
+                  <width>40</width>
                   <height>40</height>
                  </size>
-                </property>
-                <property name="contextMenuPolicy">
-                 <enum>Qt::NoContextMenu</enum>
                 </property>
                 <property name="styleSheet">
                  <string notr="true">font: 87 12pt &quot;Arial Black&quot;;
 color: rgb(255, 255, 255);
 background-color: rgb(101, 87, 180);
-border-radius:10px;
-</string>
+border-radius:20px;</string>
                 </property>
                 <property name="text">
-                 <string>IMPORT</string>
+                 <string/>
                 </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
+                <property name="icon">
+                 <iconset>
+                  <normaloff>icons/import.png</normaloff>icons/import.png</iconset>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
                 </property>
                </widget>
               </item>
@@ -640,15 +687,21 @@ border-radius:15px;</string>
                 </property>
                 <property name="icon">
                  <iconset>
-                  <normaloff>../../../../Downloads/image (9).png</normaloff>../../../../Downloads/image (9).png</iconset>
+                  <normaloff>icons/back.png</normaloff>icons/back.png</iconset>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>25</width>
+                  <height>25</height>
+                 </size>
                 </property>
                </widget>
               </item>
-              <item>
-               <widget class="QLabel" name="import_label_2">
+              <item alignment="Qt::AlignHCenter">
+               <widget class="QPushButton" name="pushButton_3">
                 <property name="maximumSize">
                  <size>
-                  <width>16777215</width>
+                  <width>40</width>
                   <height>40</height>
                  </size>
                 </property>
@@ -656,14 +709,20 @@ border-radius:15px;</string>
                  <string notr="true">font: 87 12pt &quot;Arial Black&quot;;
 color: rgb(255, 255, 255);
 background-color: rgb(101, 87, 180);
-border-radius:10px;
-</string>
+border-radius:20px;</string>
                 </property>
                 <property name="text">
-                 <string>IMPORT</string>
+                 <string/>
                 </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
+                <property name="icon">
+                 <iconset>
+                  <normaloff>icons/import.png</normaloff>icons/import.png</iconset>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
                 </property>
                </widget>
               </item>
@@ -707,7 +766,7 @@ border-radius:15px;</string>
                 </property>
                 <property name="icon">
                  <iconset>
-                  <normaloff>../../../../Downloads/image (11).png</normaloff>../../../../Downloads/image (11).png</iconset>
+                  <normaloff>icons/forward.png</normaloff>icons/forward.png</iconset>
                 </property>
                 <property name="iconSize">
                  <size>
@@ -739,15 +798,21 @@ border-radius:15px;</string>
                 </property>
                 <property name="icon">
                  <iconset>
-                  <normaloff>../../../../Downloads/image (9).png</normaloff>../../../../Downloads/image (9).png</iconset>
+                  <normaloff>icons/back.png</normaloff>icons/back.png</iconset>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>25</width>
+                  <height>25</height>
+                 </size>
                 </property>
                </widget>
               </item>
-              <item>
-               <widget class="QLabel" name="import_label_3">
+              <item alignment="Qt::AlignHCenter">
+               <widget class="QPushButton" name="pushButton_6">
                 <property name="maximumSize">
                  <size>
-                  <width>16777215</width>
+                  <width>40</width>
                   <height>40</height>
                  </size>
                 </property>
@@ -755,14 +820,20 @@ border-radius:15px;</string>
                  <string notr="true">font: 87 12pt &quot;Arial Black&quot;;
 color: rgb(255, 255, 255);
 background-color: rgb(101, 87, 180);
-border-radius:10px;
-</string>
+border-radius:20px;</string>
                 </property>
                 <property name="text">
-                 <string>IMPORT</string>
+                 <string/>
                 </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
+                <property name="icon">
+                 <iconset>
+                  <normaloff>icons/import.png</normaloff>icons/import.png</iconset>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
                 </property>
                </widget>
               </item>
@@ -809,7 +880,7 @@ border-radius:15px;</string>
                 </property>
                 <property name="icon">
                  <iconset>
-                  <normaloff>../../../../Downloads/image (11).png</normaloff>../../../../Downloads/image (11).png</iconset>
+                  <normaloff>icons/forward.png</normaloff>icons/forward.png</iconset>
                 </property>
                 <property name="iconSize">
                  <size>
@@ -841,15 +912,21 @@ border-radius:15px;</string>
                 </property>
                 <property name="icon">
                  <iconset>
-                  <normaloff>../../../../Downloads/image (9).png</normaloff>../../../../Downloads/image (9).png</iconset>
+                  <normaloff>icons/back.png</normaloff>icons/back.png</iconset>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>25</width>
+                  <height>25</height>
+                 </size>
                 </property>
                </widget>
               </item>
-              <item>
-               <widget class="QLabel" name="import_label_4">
+              <item alignment="Qt::AlignHCenter">
+               <widget class="QPushButton" name="pushButton_4">
                 <property name="maximumSize">
                  <size>
-                  <width>16777215</width>
+                  <width>40</width>
                   <height>40</height>
                  </size>
                 </property>
@@ -857,14 +934,20 @@ border-radius:15px;</string>
                  <string notr="true">font: 87 12pt &quot;Arial Black&quot;;
 color: rgb(255, 255, 255);
 background-color: rgb(101, 87, 180);
-border-radius:10px;
-</string>
+border-radius:20px;</string>
                 </property>
                 <property name="text">
-                 <string>IMPORT</string>
+                 <string/>
                 </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
+                <property name="icon">
+                 <iconset>
+                  <normaloff>icons/import.png</normaloff>icons/import.png</iconset>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
                 </property>
                </widget>
               </item>
@@ -911,7 +994,7 @@ border-radius:15px;</string>
                 </property>
                 <property name="icon">
                  <iconset>
-                  <normaloff>../../../../Downloads/image (11).png</normaloff>../../../../Downloads/image (11).png</iconset>
+                  <normaloff>icons/forward.png</normaloff>icons/forward.png</iconset>
                 </property>
                 <property name="iconSize">
                  <size>
@@ -943,15 +1026,21 @@ border-radius:15px;</string>
                 </property>
                 <property name="icon">
                  <iconset>
-                  <normaloff>../../../../Downloads/image (9).png</normaloff>../../../../Downloads/image (9).png</iconset>
+                  <normaloff>icons/back.png</normaloff>icons/back.png</iconset>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>25</width>
+                  <height>25</height>
+                 </size>
                 </property>
                </widget>
               </item>
-              <item>
-               <widget class="QLabel" name="import_label_5">
+              <item alignment="Qt::AlignHCenter">
+               <widget class="QPushButton" name="pushButton_5">
                 <property name="maximumSize">
                  <size>
-                  <width>16777215</width>
+                  <width>40</width>
                   <height>40</height>
                  </size>
                 </property>
@@ -959,14 +1048,20 @@ border-radius:15px;</string>
                  <string notr="true">font: 87 12pt &quot;Arial Black&quot;;
 color: rgb(255, 255, 255);
 background-color: rgb(101, 87, 180);
-border-radius:10px;
-</string>
+border-radius:20px;</string>
                 </property>
                 <property name="text">
-                 <string>IMPORT</string>
+                 <string/>
                 </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
+                <property name="icon">
+                 <iconset>
+                  <normaloff>icons/import.png</normaloff>icons/import.png</iconset>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
                 </property>
                </widget>
               </item>
@@ -1013,7 +1108,7 @@ border-radius:15px;</string>
                 </property>
                 <property name="icon">
                  <iconset>
-                  <normaloff>../../../../Downloads/image (10).png</normaloff>../../../../Downloads/image (10).png</iconset>
+                  <normaloff>icons/finish.png</normaloff>icons/finish.png</iconset>
                 </property>
                 <property name="iconSize">
                  <size>
@@ -1268,7 +1363,7 @@ border: 2px solid White;
                   </property>
                   <property name="icon">
                    <iconset>
-                    <normaloff>../../../../Downloads/image (1).png</normaloff>../../../../Downloads/image (1).png</iconset>
+                    <normaloff>icons/open.png</normaloff>icons/open.png</iconset>
                   </property>
                   <property name="iconSize">
                    <size>
@@ -1300,7 +1395,7 @@ border: 2px solid White;</string>
                   </property>
                   <property name="icon">
                    <iconset>
-                    <normaloff>../../../../Downloads/image (2).png</normaloff>../../../../Downloads/image (2).png</iconset>
+                    <normaloff>icons/closemenu.png</normaloff>icons/closemenu.png</iconset>
                   </property>
                   <property name="iconSize">
                    <size>
@@ -1346,7 +1441,7 @@ font: 87 8pt &quot;Arial Black&quot;;</string>
                      </property>
                      <property name="icon">
                       <iconset>
-                       <normaloff>../../../../Downloads/image (8).png</normaloff>../../../../Downloads/image (8).png</iconset>
+                       <normaloff>icons/chain.png</normaloff>icons/chain.png</iconset>
                      </property>
                     </widget>
                    </item>
@@ -1368,7 +1463,7 @@ font: 87 8pt &quot;Arial Black&quot;;</string>
                      </property>
                      <property name="icon">
                       <iconset>
-                       <normaloff>../../../../Downloads/image (7).png</normaloff>../../../../Downloads/image (7).png</iconset>
+                       <normaloff>icons/unchain.png</normaloff>icons/unchain.png</iconset>
                      </property>
                     </widget>
                    </item>
@@ -1619,7 +1714,7 @@ background-color: rgb(0, 1, 16);
                 <enum>QFrame::NoFrame</enum>
                </property>
                <property name="currentIndex">
-                <number>0</number>
+                <number>1</number>
                </property>
                <widget class="QWidget" name="tools_menu">
                 <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -1641,7 +1736,7 @@ font: 87 8pt &quot;Arial Black&quot;;</string>
                    </property>
                    <property name="icon">
                     <iconset>
-                     <normaloff>../../../../Downloads/image.png</normaloff>../../../../Downloads/image.png</iconset>
+                     <normaloff>icons/closetools.png</normaloff>icons/closetools.png</iconset>
                    </property>
                    <property name="iconSize">
                     <size>
@@ -1660,60 +1755,166 @@ font: 87 8pt &quot;Arial Black&quot;;</string>
                    </property>
                   </widget>
                  </item>
-                 <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
-                  <widget class="QLabel" name="label_27">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
+                 <item>
+                  <layout class="QHBoxLayout" name="horizontalLayout_4">
+                   <property name="spacing">
+                    <number>0</number>
                    </property>
-                   <property name="minimumSize">
-                    <size>
-                     <width>260</width>
-                     <height>40</height>
-                    </size>
-                   </property>
-                   <property name="maximumSize">
-                    <size>
-                     <width>16777215</width>
-                     <height>40</height>
-                    </size>
-                   </property>
-                   <property name="styleSheet">
-                    <string notr="true">font: 87 12pt &quot;Arial Black&quot;;
+                   <item alignment="Qt::AlignHCenter">
+                    <widget class="QLabel" name="tools_label">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="minimumSize">
+                      <size>
+                       <width>210</width>
+                       <height>40</height>
+                      </size>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>16777215</width>
+                       <height>40</height>
+                      </size>
+                     </property>
+                     <property name="styleSheet">
+                      <string notr="true">font: 87 12pt &quot;Arial Black&quot;;
 color: rgb(255, 255, 255);
 background-color: rgb(101, 87, 180);
 border-radius:10px;
 </string>
-                   </property>
-                   <property name="text">
-                    <string>TOOLS</string>
-                   </property>
-                   <property name="alignment">
-                    <set>Qt::AlignCenter</set>
-                   </property>
-                  </widget>
+                     </property>
+                     <property name="text">
+                      <string>TOOLS</string>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                    </widget>
+                   </item>
+                   <item alignment="Qt::AlignRight">
+                    <widget class="QPushButton" name="patient_info_switch">
+                     <property name="minimumSize">
+                      <size>
+                       <width>40</width>
+                       <height>40</height>
+                      </size>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>40</width>
+                       <height>40</height>
+                      </size>
+                     </property>
+                     <property name="styleSheet">
+                      <string notr="true">font: 87 10pt &quot;Arial Black&quot;;
+color: rgb(255, 255, 255);
+border-radius:20px;
+</string>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                     <property name="icon">
+                      <iconset>
+                       <normaloff>icons/info.png</normaloff>icons/info.png</iconset>
+                     </property>
+                     <property name="iconSize">
+                      <size>
+                       <width>40</width>
+                       <height>40</height>
+                      </size>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
                  </item>
                  <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
-                  <widget class="QLabel" name="label_9">
+                  <widget class="QPushButton" name="tumor_size_button_show">
                    <property name="minimumSize">
                     <size>
-                     <width>260</width>
+                     <width>160</width>
                      <height>30</height>
                     </size>
                    </property>
                    <property name="maximumSize">
                     <size>
+                     <width>160</width>
+                     <height>30</height>
+                    </size>
+                   </property>
+                   <property name="layoutDirection">
+                    <enum>Qt::RightToLeft</enum>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true">font: 87 8pt &quot;Arial Black&quot;;
+color: rgb(255, 255, 255);
+border-radius:10px;
+border: 1px solid White;</string>
+                   </property>
+                   <property name="text">
+                    <string>TUMOR SIZE</string>
+                   </property>
+                   <property name="icon">
+                    <iconset>
+                     <normaloff>icons/toggledown.png</normaloff>icons/toggledown.png</iconset>
+                   </property>
+                  </widget>
+                 </item>
+                 <item alignment="Qt::AlignHCenter">
+                  <widget class="QPushButton" name="tumor_size_button_hide">
+                   <property name="minimumSize">
+                    <size>
+                     <width>160</width>
+                     <height>30</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>160</width>
+                     <height>30</height>
+                    </size>
+                   </property>
+                   <property name="layoutDirection">
+                    <enum>Qt::RightToLeft</enum>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true">font: 87 8pt &quot;Arial Black&quot;;
+color: rgb(255, 255, 255);
+border-radius:10px;
+border: 1px solid White;</string>
+                   </property>
+                   <property name="text">
+                    <string>TUMOR SIZE</string>
+                   </property>
+                   <property name="icon">
+                    <iconset>
+                     <normaloff>icons/toggleup.png</normaloff>icons/toggleup.png</iconset>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLabel" name="tumor_size_label">
+                   <property name="minimumSize">
+                    <size>
                      <width>260</width>
-                     <height>50</height>
+                     <height>20</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>16777215</width>
+                     <height>20</height>
                     </size>
                    </property>
                    <property name="styleSheet">
                     <string notr="true">font: 87 8pt &quot;Arial Black&quot;;
 background-color: rgb(0, 1, 16);
 color: rgb(255, 255, 255);
-border-radius:15px;
+border-radius:10px;
 </string>
                    </property>
                    <property name="text">
@@ -1785,7 +1986,7 @@ border-radius:10px;
                       </size>
                      </property>
                      <property name="styleSheet">
-                      <string notr="true">font: 87 6pt &quot;Arial Black&quot;;
+                      <string notr="true">font: 87 8pt &quot;Arial Black&quot;;
 background-color: rgb(0, 1, 16);
 color: rgb(255, 255, 255);
 border-radius:10px;
@@ -1820,11 +2021,10 @@ border-radius:10px;
                       </size>
                      </property>
                      <property name="styleSheet">
-                      <string notr="true">font: 87 6pt &quot;Arial Black&quot;;
+                      <string notr="true">font: 87 8pt &quot;Arial Black&quot;;
 background-color: rgb(0, 1, 16);
 color: rgb(255, 255, 255);
 border-radius:10px;
-
 </string>
                      </property>
                      <property name="text">
@@ -1898,7 +2098,7 @@ border-radius:10px;
                       </size>
                      </property>
                      <property name="styleSheet">
-                      <string notr="true">font: 87 6pt &quot;Arial Black&quot;;
+                      <string notr="true">font: 87 8pt &quot;Arial Black&quot;;
 background-color: rgb(0, 1, 16);
 color: rgb(255, 255, 255);
 border-radius:10px;
@@ -1934,7 +2134,7 @@ border-radius:10px;
                       </size>
                      </property>
                      <property name="styleSheet">
-                      <string notr="true">font: 87 6pt &quot;Arial Black&quot;;
+                      <string notr="true">font: 87 8pt &quot;Arial Black&quot;;
 background-color: rgb(0, 1, 16);
 color: rgb(255, 255, 255);
 border-radius:10px;
@@ -2046,10 +2246,11 @@ border-radius:10px;
                       </size>
                      </property>
                      <property name="styleSheet">
-                      <string notr="true">font: 87 6pt &quot;Arial Black&quot;;
+                      <string notr="true">font: 87 8pt &quot;Arial Black&quot;;
 background-color: rgb(0, 1, 16);
 color: rgb(255, 255, 255);
 border-radius:10px;
+
 </string>
                      </property>
                      <property name="text">
@@ -2121,7 +2322,7 @@ border-radius:10px;
                       </size>
                      </property>
                      <property name="styleSheet">
-                      <string notr="true">font: 87 6pt &quot;Arial Black&quot;;
+                      <string notr="true">font: 87 8pt &quot;Arial Black&quot;;
 background-color: rgb(0, 1, 16);
 color: rgb(255, 255, 255);
 border-radius:10px;
@@ -2150,7 +2351,7 @@ border-radius:10px;
                       </size>
                      </property>
                      <property name="styleSheet">
-                      <string notr="true">font: 87 6pt &quot;Arial Black&quot;;
+                      <string notr="true">font: 87 8pt &quot;Arial Black&quot;;
 background-color: rgb(0, 1, 16);
 color: rgb(255, 255, 255);
 border-radius:10px;
@@ -2185,7 +2386,7 @@ border-radius:10px;
                     <number>0</number>
                    </property>
                    <property name="sizeConstraint">
-                    <enum>QLayout::SetNoConstraint</enum>
+                    <enum>QLayout::SetMaximumSize</enum>
                    </property>
                    <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
                     <widget class="QPushButton" name="brightness_button_show">
@@ -2207,6 +2408,9 @@ border-radius:10px;
                        <height>30</height>
                       </size>
                      </property>
+                     <property name="layoutDirection">
+                      <enum>Qt::RightToLeft</enum>
+                     </property>
                      <property name="styleSheet">
                       <string notr="true">font: 87 8pt &quot;Arial Black&quot;;
 color: rgb(255, 255, 255);
@@ -2215,6 +2419,10 @@ border: 1px solid White;</string>
                      </property>
                      <property name="text">
                       <string>ADJUST BRIGHTNESS</string>
+                     </property>
+                     <property name="icon">
+                      <iconset>
+                       <normaloff>icons/toggledown.png</normaloff>icons/toggledown.png</iconset>
                      </property>
                     </widget>
                    </item>
@@ -2238,6 +2446,9 @@ border: 1px solid White;</string>
                        <height>30</height>
                       </size>
                      </property>
+                     <property name="layoutDirection">
+                      <enum>Qt::RightToLeft</enum>
+                     </property>
                      <property name="styleSheet">
                       <string notr="true">font: 87 8pt &quot;Arial Black&quot;;
 color: rgb(255, 255, 255);
@@ -2247,6 +2458,10 @@ border: 1px solid White;
                      </property>
                      <property name="text">
                       <string>ADJUST BRIGHTNESS</string>
+                     </property>
+                     <property name="icon">
+                      <iconset>
+                       <normaloff>icons/toggleup.png</normaloff>icons/toggleup.png</iconset>
                      </property>
                     </widget>
                    </item>
@@ -2328,7 +2543,7 @@ border-radius:10px;
                     <number>0</number>
                    </property>
                    <property name="sizeConstraint">
-                    <enum>QLayout::SetNoConstraint</enum>
+                    <enum>QLayout::SetMaximumSize</enum>
                    </property>
                    <property name="bottomMargin">
                     <number>20</number>
@@ -2347,6 +2562,9 @@ border-radius:10px;
                        <height>30</height>
                       </size>
                      </property>
+                     <property name="layoutDirection">
+                      <enum>Qt::RightToLeft</enum>
+                     </property>
                      <property name="styleSheet">
                       <string notr="true">font: 87 8pt &quot;Arial Black&quot;;
 color: rgb(255, 255, 255);
@@ -2355,6 +2573,10 @@ border: 1px solid White;</string>
                      </property>
                      <property name="text">
                       <string>ADJUST CONTRAST</string>
+                     </property>
+                     <property name="icon">
+                      <iconset>
+                       <normaloff>icons/toggledown.png</normaloff>icons/toggledown.png</iconset>
                      </property>
                     </widget>
                    </item>
@@ -2372,6 +2594,9 @@ border: 1px solid White;</string>
                        <height>30</height>
                       </size>
                      </property>
+                     <property name="layoutDirection">
+                      <enum>Qt::RightToLeft</enum>
+                     </property>
                      <property name="styleSheet">
                       <string notr="true">font: 87 8pt &quot;Arial Black&quot;;
 color: rgb(255, 255, 255);
@@ -2380,6 +2605,10 @@ border: 1px solid White;</string>
                      </property>
                      <property name="text">
                       <string>ADJUST CONTRAST</string>
+                     </property>
+                     <property name="icon">
+                      <iconset>
+                       <normaloff>icons/toggleup.png</normaloff>icons/toggleup.png</iconset>
                      </property>
                     </widget>
                    </item>
@@ -2561,7 +2790,7 @@ font: 87 8pt &quot;Arial Black&quot;;</string>
                    </property>
                    <property name="icon">
                     <iconset>
-                     <normaloff>../../../../Downloads/image.png</normaloff>../../../../Downloads/image.png</iconset>
+                     <normaloff>icons/closetools.png</normaloff>icons/closetools.png</iconset>
                    </property>
                    <property name="iconSize">
                     <size>
@@ -2572,38 +2801,86 @@ font: 87 8pt &quot;Arial Black&quot;;</string>
                   </widget>
                  </item>
                  <item>
-                  <widget class="QLabel" name="patient_label">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
+                  <layout class="QHBoxLayout" name="horizontalLayout_12">
+                   <property name="spacing">
+                    <number>0</number>
                    </property>
-                   <property name="maximumSize">
-                    <size>
-                     <width>16777215</width>
-                     <height>40</height>
-                    </size>
+                   <property name="sizeConstraint">
+                    <enum>QLayout::SetMinimumSize</enum>
                    </property>
-                   <property name="styleSheet">
-                    <string notr="true">font: 87 12pt &quot;Arial Black&quot;;
+                   <item alignment="Qt::AlignLeft">
+                    <widget class="QPushButton" name="tools_switch">
+                     <property name="maximumSize">
+                      <size>
+                       <width>40</width>
+                       <height>40</height>
+                      </size>
+                     </property>
+                     <property name="styleSheet">
+                      <string notr="true">font: 87 10pt &quot;Arial Black&quot;;
+color: rgb(255, 255, 255);
+border-radius:20px;
+border: 2px solid White;</string>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                     <property name="icon">
+                      <iconset>
+                       <normaloff>icons/tools2.png</normaloff>icons/tools2.png</iconset>
+                     </property>
+                     <property name="iconSize">
+                      <size>
+                       <width>40</width>
+                       <height>30</height>
+                      </size>
+                     </property>
+                    </widget>
+                   </item>
+                   <item alignment="Qt::AlignHCenter">
+                    <widget class="QLabel" name="patient_label">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="minimumSize">
+                      <size>
+                       <width>210</width>
+                       <height>0</height>
+                      </size>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>16777215</width>
+                       <height>40</height>
+                      </size>
+                     </property>
+                     <property name="styleSheet">
+                      <string notr="true">font: 87 12pt &quot;Arial Black&quot;;
 color: rgb(255, 255, 255);
 background-color: rgb(101, 87, 180);
 border-radius:10px;
 </string>
-                   </property>
-                   <property name="text">
-                    <string>PATIENT INFO</string>
-                   </property>
-                   <property name="alignment">
-                    <set>Qt::AlignCenter</set>
-                   </property>
-                  </widget>
+                     </property>
+                     <property name="text">
+                      <string>PATIENT INFO</string>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
                  </item>
                  <item>
                   <layout class="QVBoxLayout" name="patient_data">
                    <item>
                     <layout class="QHBoxLayout" name="horizontalLayout_6">
+                     <property name="sizeConstraint">
+                      <enum>QLayout::SetMaximumSize</enum>
+                     </property>
                      <item>
                       <layout class="QVBoxLayout" name="verticalLayout_10">
                        <property name="topMargin">

@@ -32,14 +32,36 @@ def x_to_nii(fname, output_name, is_dicom):
         
         return file_path, aux_directory
 
-def normalize_img(img):
+def normalize_img(img, min_intensity = None, max_intensity = None):
 
     img_cv2 = cv2.cvtColor(img, cv2.COLOR_GRAY2RGB)
-    min_intensity = np.min(img_cv2)
-    max_intensity = np.max(img_cv2)
+    if min_intensity == None:
+        min_intensity = np.min(img_cv2)
+        max_intensity = np.max(img_cv2)
     norm_img = (img_cv2 - min_intensity) * (255.0 / (max_intensity - min_intensity))
 
     return norm_img, img_cv2
+
+def minmax_matrix(imgs):
+    minmax_list = []
+    
+    # Iterar sobre cada modalidad de resonancia magnética
+    for modality in imgs:
+        minmax = []
+        
+        # Convertir cada slice a RGB y calcular min y max
+        for slice_img in modality:
+            rgb_img = cv2.cvtColor(slice_img, cv2.COLOR_GRAY2RGB)
+            
+            # Calcular valores mínimos y máximos del slice convertido
+            min_value = np.min(rgb_img)
+            max_value = np.max(rgb_img)
+            minmax.append([min_value, max_value])
+        
+        # Añadir la lista de pares minmax a la lista principal
+        minmax_list.append(minmax)
+    
+    return minmax_list
 
 def calculate_volumes(img):
 

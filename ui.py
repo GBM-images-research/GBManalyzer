@@ -1,7 +1,7 @@
 # Importar las clases y módulos necesarios de PyQt5 para crear la interfaz de usuario
 from PyQt5.QtWidgets import QMainWindow, QAction, QScrollBar, QFileDialog, QInputDialog, QMessageBox, QPushButton, QProgressDialog, QSizeGrip, QCheckBox, QGraphicsView, QGraphicsScene, QGraphicsPixmapItem
 from PyQt5 import uic
-from PyQt5.QtCore import Qt, QPropertyAnimation, QEasingCurve
+from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap, QImage
 
 # Importar módulos estándar de Python
@@ -40,6 +40,7 @@ class UI(QMainWindow):
             
         # Inicializar lista para almacenar imágenes numpy
         self.np_imgs = [None] * 4  # Se inicializa con 4 elementos para las 4 modalidades
+        self.minmax_values = [None] * 4
         for view in self.views:
             self.add_zoom_functionality(view)
 
@@ -77,7 +78,10 @@ class UI(QMainWindow):
         self.contrast_button_show.clicked.connect(self.show_contrast_menu)
         self.brightness_button_hide.clicked.connect(self.hide_brightness_menu)
         self.contrast_button_hide.clicked.connect(self.hide_contrast_menu)
-
+        self.tumor_size_button_show.clicked.connect(self.show_tumor_size_menu)
+        self.tumor_size_button_hide.clicked.connect(self.hide_tumor_size_menu)
+        self.patient_info_switch.clicked.connect(self.switch_to_patient_info)
+        self.tools_switch.clicked.connect(self.switch_to_tools)
         self.chain_button.clicked.connect(self.chain_scrollbars)
         self.unchain_button.clicked.connect(self.unchain_scrollbars)
         self.chain_button.hide()
@@ -150,6 +154,7 @@ class UI(QMainWindow):
         self.s_button.hide()
         self.patient_info_button.hide()
         self.tools_button.hide()
+        self.tools_switch.hide()
 
         self.minimize_button.clicked.connect(self.control_bt_minimizar)		
         self.normal_button.clicked.connect(self.control_bt_normal)
@@ -200,6 +205,7 @@ class UI(QMainWindow):
         self.set_progress_dialog()
         self.thread[1] = ButtonPreprocess(self.aux_directory, self.preprocess_images_folder)
         self.thread[1].processing_finished.connect(self.update_preprocessing_images)
+        self.thread[1].processing_finished.connect(self.calculate_minmax)
         self.thread[1].processing_finished.connect(self.p_button.hide)
         self.thread[1].processing_finished.connect(self.s_button.show)
         self.thread[1].processing_finished.connect(self.tools_button.show)
@@ -355,9 +361,12 @@ class UI(QMainWindow):
         view.setScene(scene)
         view.fitInView(scene.itemsBoundingRect(), Qt.KeepAspectRatio)
 
-    def show_image(self, np_img, current_value):
+    def show_image(self, np_img, current_value, index):
         # Convertir la imagen de numpy a formato RGB
-        norm_img, img_cv2 = normalize_img(np_img)
+        if self.minmax_values[0] == None:
+            norm_img, img_cv2 = normalize_img(np_img)
+        else:    
+            norm_img, img_cv2 = normalize_img(np_img, self.minmax_values[index][current_value][0], self.minmax_values[index][current_value][1])
         scaled_img = norm_img.copy()
 
         # Aplicar el ajuste de contraste a toda la imagen   
@@ -370,9 +379,12 @@ class UI(QMainWindow):
         
         return self.convert_np_to_pixmap(scaled_img)
 
-    def adjust_brightness(self, np_img, current_value, brightness_value):
+    def adjust_brightness(self, np_img, current_value, brightness_value, index):
         # Convertir la imagen de numpy a formato RGB
-        norm_img, img_cv2 = normalize_img(np_img)
+        if np.any(self.minmax_values == None):
+            norm_img, img_cv2 = normalize_img(np_img)
+        else:    
+            norm_img, img_cv2 = normalize_img(np_img, self.minmax_values[index][current_value][0], self.minmax_values[index][current_value][1])
         scaled_img = norm_img.copy()
 
         # Aplicar el ajuste de contraste a toda la imagen   
@@ -385,9 +397,12 @@ class UI(QMainWindow):
         
         return self.convert_np_to_pixmap(scaled_img)
     
-    def adjust_contrast(self, np_img, current_value, min_value, max_value):
+    def adjust_contrast(self, np_img, current_value, min_value, max_value, index):
         # Convertir la imagen de numpy a formato RGB
-        norm_img, img_cv2 = normalize_img(np_img)
+        if np.any(self.minmax_values == None):
+            norm_img, img_cv2 = normalize_img(np_img)
+        else:    
+            norm_img, img_cv2 = normalize_img(np_img, self.minmax_values[index][current_value][0], self.minmax_values[index][current_value][1])
         norm_img = np.clip(norm_img, 0, 255).astype(np.uint8)
         
         # Ajustar contraste como imadjust de MATLAB
@@ -415,6 +430,10 @@ class UI(QMainWindow):
         pixmap = QPixmap.fromImage(q_image)
         
         return pixmap
+    
+    def calculate_minmax(self):
+        self.minmax_values = minmax_matrix(self.np_imgs)
+        print(self.minmax_values)
 
     def show_volumes(self):
         # Calcular los volúmenes
@@ -508,15 +527,15 @@ class UI(QMainWindow):
 
         if self.checkboxes_brightness[index].isChecked():
             brightness_value = self.brightness_slider.value() / 100.0
-            return self.adjust_brightness(current_slice, current_value, brightness_value)
+            return self.adjust_brightness(current_slice, current_value, brightness_value, index)
 
         if self.checkboxes_contrast[index].isChecked():
             min_value = self.min_contrast_slider.value() 
             max_value = self.max_contrast_slider.value() 
-            return self.adjust_contrast(current_slice, current_value, min_value, max_value)
+            return self.adjust_contrast(current_slice, current_value, min_value, max_value, index)
 
         else:
-            return self.show_image(current_slice, current_value)
+            return self.show_image(current_slice, current_value, index)
 
     def onCheckboxStateChanged(self):
         if self.show_tumor.isChecked():
@@ -591,6 +610,7 @@ class UI(QMainWindow):
 
     def reset_labels(self):
         self.np_imgs = [None] * 4
+        self.minmax_values = [None] * 4
         self.chain_button.hide()
         self.unchain_button.hide()
         for button in self.next_buttons:
@@ -602,18 +622,28 @@ class UI(QMainWindow):
             scrollbar.hide()
 
     def reset_workflow(self):
-        self.hide_brightness_menu()
-        self.hide_contrast_menu()
-        self.import_button.show()
-        self.p_button.hide()
-        self.s_button.hide()
-        self.patient_info_button.hide()
-        self.reset_button.hide()
-        self.tools_button.hide()
-        self.close_tools_menu()
-        self.close_patient_info_menu
-        self.reset_labels()
-        self.load_main_menu()
+        reply = QMessageBox.question(self, 'Confirmar Reset',
+                                    "¿Está seguro de que quiere resetear la sesión?",
+                                    QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        
+        if reply == QMessageBox.Yes:
+            self.hide_brightness_menu()
+            self.hide_contrast_menu()
+            self.show_tumor.setChecked(False)
+            self.import_button.show()
+            self.p_button.hide()
+            self.s_button.hide()
+            self.patient_info_button.hide()
+            self.reset_button.hide()
+            self.tools_button.hide()
+            self.tools_switch.hide()
+            self.close_tools_menu()
+            self.close_patient_info_menu()
+            self.reset_labels()
+            self.load_main_menu()
+        else:
+            # Si el usuario selecciona "No", no se hace nada
+            pass
 
     def load_main_menu(self):
         self.menu.setCurrentWidget(self.main_menu)
@@ -638,7 +668,10 @@ class UI(QMainWindow):
         self.close_menu.hide()
         self.open_menu.show()
         self.viz_menu.show()
-        self.label_9.hide()
+        self.tumor_size_button_show.hide()
+        self.tumor_size_button_hide.hide()
+        self.tumor_size_label.hide()
+        self.tools_switch.show()
         self.label_10.hide()
         self.label_11.hide()
         self.label_12.hide()
@@ -659,7 +692,8 @@ class UI(QMainWindow):
         self.close_menu.hide()
         self.open_menu.show()
         self.viz_menu.show()
-        self.label_9.show()
+        self.tumor_size_button_hide.show()
+        self.tumor_size_label.show()
         self.label_10.show()
         self.label_11.show()
         self.label_12.show()
@@ -687,7 +721,7 @@ class UI(QMainWindow):
             self.set_image(index, is_dicom=True)
             if self.np_imgs[index - 1] is not None:
                 self.next_buttons[index - 1].setEnabled(True)
-                if index >= 2:
+                if index == 2:
                     self.chain_button.show()
         elif self.selected_option == "NIfTI":
             # Realizar acciones específicas para cargar imágenes NIfTI
@@ -695,7 +729,7 @@ class UI(QMainWindow):
             if self.np_imgs[index - 1] is not None:
                 self.next_buttons[index].setEnabled(True)
                 self.chain_button.show()
-                if index >= 2:
+                if index == 2:
                     self.chain_button.show()
         else:
             pass
@@ -732,6 +766,8 @@ class UI(QMainWindow):
         self.brightness_button_hide.hide()
         self.contrast_button_show.show()
         self.contrast_button_hide.hide()
+        self.tumor_size_button_show.hide()
+        self.tumor_size_button_hide.hide()
         self.brightness_slider.hide()
         for checkbox in self.checkboxes_brightness:
             checkbox.hide()
@@ -769,6 +805,23 @@ class UI(QMainWindow):
             checkbox.show()
         self.contrast_button_show.hide()
         self.contrast_button_hide.show()
+
+    def show_tumor_size_menu(self):
+        self.tumor_size_label.show()
+        self.label_10.show()
+        self.label_11.show()
+        self.label_12.show()
+        self.label_15.show()
+        self.label_17.show()
+        self.label_20.show()
+        self.label_21.show()
+        self.label_22.show()
+        self.edema_vol.show()
+        self.et_vol.show()
+        self.core_vol.show()
+        self.necrosis_vol.show()
+        self.tumor_size_button_show.hide()
+        self.tumor_size_button_hide.show()
         
     def hide_brightness_menu(self):
         for checkbox in self.checkboxes_brightness:
@@ -789,4 +842,25 @@ class UI(QMainWindow):
         self.contrast_button_show.show()
         self.contrast_button_hide.hide()  
 
+    def hide_tumor_size_menu(self):
+        self.tumor_size_label.hide()
+        self.label_10.hide()
+        self.label_11.hide()
+        self.label_12.hide()
+        self.label_15.hide()
+        self.label_17.hide()
+        self.label_20.hide()
+        self.label_21.hide()
+        self.label_22.hide()
+        self.edema_vol.hide()
+        self.et_vol.hide()
+        self.core_vol.hide()
+        self.necrosis_vol.hide()
+        self.tumor_size_button_show.show()
+        self.tumor_size_button_hide.hide()
 
+    def switch_to_patient_info(self):
+        self.stackedWidget.setCurrentWidget(self.patient_info_menu)
+
+    def switch_to_tools(self):
+        self.stackedWidget.setCurrentWidget(self.tools_menu)
