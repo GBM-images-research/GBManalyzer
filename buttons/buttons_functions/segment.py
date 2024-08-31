@@ -7,6 +7,7 @@ from monai.transforms import (
 )
 from monai.networks.nets import SegResNet
 from monai.inferers import sliding_window_inference
+from utils import *
 
 import torch
 import torch.nn.parallel
@@ -50,7 +51,7 @@ class Segment:
             )
         return _compute(input)
     
-    def create_model(self, path="models"):
+    def create_model(self, path=resource_path("models")):
         device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
         model = SegResNet(
             blocks_down=[1, 2, 2, 4],  # 4

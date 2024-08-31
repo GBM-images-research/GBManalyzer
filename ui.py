@@ -8,6 +8,7 @@ from PyQt5.QtGui import QPixmap, QImage
 import os
 import numpy as np
 import ants
+import pydicom
 
 #Importar módulos de la app
 from utils import *
@@ -21,7 +22,7 @@ class UI(QMainWindow):
         super(UI, self).__init__()
         # Cargar la interfaz de usuario desde el archivo .ui
         #uic.loadUi("GUIv2.ui", self)
-        uic.loadUi("GUIv2.ui", self)
+        uic.loadUi(resource_path('GUIv2.ui'), self)
 
         '''
         Inicializar listas para almacenar etiquetas, acciones y barras de desplazamiento, hacemos un manejo de numeros con excepcion de

@@ -5,11 +5,13 @@ import ants
 from PyQt5.QtCore import QThread, pyqtSignal
 from antspynet.utilities import brain_extraction
 from buttons.buttons_functions.preprocess import Preprocess
+from utils import *
 
 class ButtonPreprocess(QThread):
 
     processing_finished = pyqtSignal()
-    atlas_path_t1 = "templates" #acá hay que ver si dejamos directamente el atlas en el ejecutable y lo llamamos o como hacemos
+    
+    atlas_path_t1 = resource_path("templates") 
 
     def __init__(self, aux_directory, images_folder):
         super(ButtonPreprocess,self).__init__()

@@ -1,9 +1,14 @@
 import dicom2nifti
 import os
+import sys
 import shutil
 import numpy as np
 import cv2
-import pydicom
+
+# Get absolute path to resource, works for dev and for PyInstaller.
+def resource_path(relative_path):
+    base_path = getattr(sys, 'MEIPASS', os.path.dirname(os.path.abspath(__file__)))
+    return os.path.join(base_path, relative_path)
 
 # Función para verificar si una carpeta contiene archivos DICOM
 def dcm_check(carpeta):
