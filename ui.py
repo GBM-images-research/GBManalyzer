@@ -448,17 +448,23 @@ class UI(QMainWindow):
     
     def show_patient_info(self):
         # Calcular los volúmenes
-        dicom_files = [f for f in os.listdir(self.fname) if f.lower().endswith('.dcm')]
-        dicom_path = os.path.join(self.fname, dicom_files[0])
-        self.image_slice = pydicom.dcmread(dicom_path)
-        patient_info = get_patient_info(self.image_slice)
-        print(patient_info['Name'])
-        # Actualizar los labels con los valores calculados
-        self.name_label.setText(f"{patient_info['Name']}")
-        self.id_label.setText(f"{patient_info['ID']}")
-        self.birth_label.setText(f"{patient_info['Birth']}")
-        self.sex_label.setText(f"{patient_info['Sex']}")
-        self.date_label.setText(f"{patient_info['Date']}")
+        try:
+            dicom_files = [f for f in os.listdir(self.fname) if f.lower().endswith('.dcm')]
+            dicom_path = os.path.join(self.fname, dicom_files[0])
+            self.image_slice = pydicom.dcmread(dicom_path)
+            patient_info = get_patient_info(self.image_slice)
+            # Actualizar los labels con los valores calculados
+            self.name_label.setText(f"{patient_info['Name']}")
+            self.id_label.setText(f"{patient_info['ID']}")
+            self.birth_label.setText(f"{patient_info['Birth']}")
+            self.sex_label.setText(f"{patient_info['Sex']}")
+            self.date_label.setText(f"{patient_info['Date']}")
+
+        except Exception:
+            self.update_labels_nii()
+
+        # Verificar si algún label quedó vacío y asignar "None" si es necesario
+        self.update_labels()
 
     def close_progress_dialog(self):
         # Cerrar el diálogo de progreso cuando el procesamiento haya terminado
@@ -728,8 +734,7 @@ class UI(QMainWindow):
             # Realizar acciones específicas para cargar imágenes NIfTI
             self.set_image(index, is_dicom=False)
             if self.np_imgs[index - 1] is not None:
-                self.next_buttons[index].setEnabled(True)
-                self.chain_button.show()
+                self.next_buttons[index - 1].setEnabled(True)
                 if index == 2:
                     self.chain_button.show()
         else:
@@ -865,3 +870,24 @@ class UI(QMainWindow):
 
     def switch_to_tools(self):
         self.stackedWidget.setCurrentWidget(self.tools_menu)
+
+    def set_nii_label(self,label):
+        label.setText('Unknown')
+
+    def update_labels_nii(self):
+        self.set_nii_label(self.name_label)
+        self.set_nii_label(self.id_label)
+        self.set_nii_label(self.birth_label)
+        self.set_nii_label(self.sex_label)
+        self.set_nii_label(self.date_label)
+
+    def check_and_set_label(self, label):
+        if label.text().strip() == '':
+            label.setText('Unknown')
+
+    def update_labels(self):
+        self.check_and_set_label(self.name_label)
+        self.check_and_set_label(self.id_label)
+        self.check_and_set_label(self.birth_label)
+        self.check_and_set_label(self.sex_label)
+        self.check_and_set_label(self.date_label)
