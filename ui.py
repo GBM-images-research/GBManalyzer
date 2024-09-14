@@ -6,6 +6,7 @@ from PyQt5.QtGui import QPixmap, QImage
 
 # Importar módulos estándar de Python
 import os
+import shutil
 import numpy as np
 import ants
 import pydicom
@@ -109,11 +110,7 @@ class UI(QMainWindow):
         self.t2_button.clicked.connect(lambda: self.load_image(3))
         self.next_button_3.clicked.connect(self.load_flair)
         self.flair_button.clicked.connect(lambda: self.load_image(4))
-        self.next_button_4.clicked.connect(self.load_main_menu)
-        self.next_button_4.clicked.connect(self.import_button.hide)
-        self.next_button_4.clicked.connect(self.p_button.show)
-        self.next_button_4.clicked.connect(self.patient_info_button.show)
-        self.next_button_4.clicked.connect(self.reset_button.show)
+        self.next_button_4.clicked.connect(self.handle_load_options)
         for button in self.next_buttons:
             button.setEnabled(False)
 
@@ -160,7 +157,7 @@ class UI(QMainWindow):
         self.minimize_button.clicked.connect(self.control_bt_minimizar)		
         self.normal_button.clicked.connect(self.control_bt_normal)
         self.maximize_button.clicked.connect(self.control_bt_maximizar)
-        self.close_button.clicked.connect(lambda: self.close())
+        self.close_button.clicked.connect(self.handle_close_button)
 
         # Mostrar la ventana
         self.show()
@@ -270,15 +267,27 @@ class UI(QMainWindow):
             self.fname = QFileDialog.getExistingDirectory(self, "Open File", " ", QFileDialog.ShowDirsOnly)
             if self.fname:
                 if dcm_check(self.fname):
+                    # Validar modalidad
+                    dicom_files = [pydicom.dcmread(os.path.join(self.fname, f)) for f in os.listdir(self.fname) if f.endswith('.dcm')]
+                    ds = dicom_files[0]  # Asumiendo que la validación se hace con el primer archivo DICOM
+
+                    if not check_modality(ds, index):
+                        reply = QMessageBox.question(self, "Modalidad no verificada",
+                                                    "Según la información del archivo DICOM, no se puede asegurar que el mismo sea de la modalidad correspondiente. ¿Deseas continuar?",
+                                                    QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+
+                        if reply == QMessageBox.No:
+                            return  
+
                     # Convertir los archivos DICOM a NIfTI
-                    file_path, self.aux_directory = x_to_nii(self.fname, output_name, is_dicom = True)
+                    file_path, self.aux_directory = x_to_nii(self.fname, output_name, is_dicom=True)
                     self.set_image_in_view(file_path, index)
                 else:
                     QMessageBox.warning(self, "Directorio no válido", "El directorio no contiene archivos .dcm")
         else:
             # Obtener el archivo NIfTI
             self.fname = QFileDialog.getOpenFileName(self, "Open File", " ", "NifTI Files (*.nii *nii.gz)")
-            file_path, self.aux_directory = x_to_nii(self.fname[0], output_name, is_dicom = False)
+            file_path, self.aux_directory = x_to_nii(self.fname[0], output_name, is_dicom=False)
             if self.fname[0]:  # Comprobar si se seleccionó un archivo
                 self.set_image_in_view(self.fname[0], index)
 
@@ -721,6 +730,10 @@ class UI(QMainWindow):
         self.menu.setCurrentWidget(self.import_t1)
         print(f"Opción seleccionada: {option}")
 
+        if option == "NIfTI":
+            QMessageBox.information(self, "Advertencia",
+                                    "Ud. ha seleccionado la opción NifTI. Estos archivos no contienen información que permita validar si la modalidad que Ud. ingresa en cada campo es la correcta. Asegúrese de eso antes de continuar.")
+
     def load_image(self, index):
         print(f"Index: {index}")
         if self.selected_option == "DICOM":
@@ -891,3 +904,24 @@ class UI(QMainWindow):
         self.check_and_set_label(self.birth_label)
         self.check_and_set_label(self.sex_label)
         self.check_and_set_label(self.date_label)
+
+    def handle_load_options(self):
+        reply = QMessageBox.question(self, "Advertencia",
+                                    "¿Está seguro de que desea continuar?",
+                                    QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+
+        if reply == QMessageBox.Yes:
+            self.load_main_menu()
+            self.import_button.hide()
+            self.p_button.show()
+            self.patient_info_button.show()
+            self.reset_button.show()
+
+    def handle_close_button(self):
+        nifti_folder = os.path.join(os.getcwd(), "NifTI files")
+
+        if os.path.exists(nifti_folder) and os.path.isdir(nifti_folder):
+            shutil.rmtree(nifti_folder)  # Eliminar la carpeta y su contenido
+
+        # Cerrar la aplicación
+        self.close()

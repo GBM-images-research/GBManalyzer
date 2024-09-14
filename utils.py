@@ -125,3 +125,26 @@ def get_patient_info(ds):
         'Duration': ds.StudyTime
     }
     return patient_info
+
+def is_t1(ds):
+    return any(term in ds.SeriesDescription.upper() for term in ['T1', 'FSPGR', 'RAGE']) and not any(term in ds.SeriesDescription.upper() for term in ['GD', 'GAD', 'POST']) and (float(ds.get('RepetitionTime', 0)) < 2000 and float(ds.get('EchoTime', 0)) < 20)
+
+def is_t1c(ds):
+    return any(term in ds.SeriesDescription.upper() for term in ['T1', 'FSPGR', 'RAGE']) and any(term in ds.SeriesDescription.upper() for term in ['GD', 'GAD', 'POST']) and float(ds.get('RepetitionTime', 0)) < 2000 and float(ds.get('EchoTime', 0)) < 20
+
+def is_t2(ds):
+    return any(term in ds.SeriesDescription.upper() for term in ['T2', 'FSE']) and 2000 <= float(ds.get('RepetitionTime', 0)) < 6000 and float(ds.get('EchoTime', 0)) < 120
+
+def is_flair(ds):
+    return 'FLAIR' in ds.SeriesDescription.upper() and float(ds.get('RepetitionTime', 0)) >= 6000 and float(ds.get('EchoTime', 0)) >= 120 
+
+def check_modality(ds, index):
+    if index == 1 and not is_t1(ds):
+        return False
+    elif index == 2 and not is_t1c(ds):
+        return False
+    elif index == 3 and not is_t2(ds):
+        return False
+    elif index == 4 and not is_flair(ds):
+        return False
+    return True
