@@ -56,12 +56,14 @@ class UI(QMainWindow):
 
         # Conectar el slider de contraste a la función de actualización de imágenes
         self.brightness_slider.valueChanged.connect(self.update_images_based_on_checkboxes)
-        self.brightness_slider.setRange(0,100)
+        self.reset_brightness_button.clicked.connect(self.resetBrightness)
+        self.brightness_slider.setRange(0,200)
         self.brightness_slider.setValue(100)        
         self.min_contrast_slider.valueChanged.connect(self.update_images_based_on_checkboxes)
         self.min_contrast_slider.valueChanged.connect(self.ensure_position)
         self.max_contrast_slider.valueChanged.connect(self.update_images_based_on_checkboxes)
         self.max_contrast_slider.valueChanged.connect(self.ensure_position)
+        self.reset_contrast_button.clicked.connect(self.resetContrast)
         self.min_contrast_slider.setRange(0,255)
         self.min_contrast_slider.setValue(0)
         self.max_contrast_slider.setRange(1,255)
@@ -337,7 +339,7 @@ class UI(QMainWindow):
         self.progress_dialog.show()
 
     def set_image_in_view(self, fname, img_index):
-        ants_img = ants.image_read(fname, reorient='IAL')
+        ants_img = ants.image_read(fname, reorient='SAR')
         self.np_imgs[img_index - 1] = ants.ANTsImage.numpy(ants_img)
         scrollbar = self.scrollbars[img_index - 1]
         scrollbar.setMinimum(0)
@@ -347,9 +349,9 @@ class UI(QMainWindow):
         self.update_graphics_view(self.views[img_index - 1], pixmap)
 
     def show_segmented_image_in_view(self, fname_img, fname_tumor, img_index):
-        tumor_img = ants.image_read(fname_tumor, reorient='IAL')
+        tumor_img = ants.image_read(fname_tumor, reorient='SAR')
         self.tumor_np_img = ants.ANTsImage.numpy(tumor_img)
-        original_img = ants.image_read(fname_img, reorient='IAL')
+        original_img = ants.image_read(fname_img, reorient='SAR')
         original_img_np = ants.ANTsImage.numpy(original_img)
         overlay_data = original_img_np.copy()
         overlay_data[self.tumor_np_img >= 4] = 255
@@ -560,8 +562,19 @@ class UI(QMainWindow):
             self.update_preprocessing_images()
 
     def ensure_position(self):
-        if self.max_contrast_slider.value() < self.min_contrast_slider.value():
-            self.max_contrast_slider.setValue(self.min_contrast_slider.value())
+        min_value = self.min_contrast_slider.value()
+        max_value = self.max_contrast_slider.value()
+        
+        # Si el valor de min es mayor al de max, arrastra a max
+        if min_value > max_value:
+            self.max_contrast_slider.setValue(min_value)
+        
+        # Si el valor de max es menor al de min, arrastra a min
+        if max_value < min_value:
+            self.min_contrast_slider.setValue(max_value)
+
+        self.min_label.setText(f"{self.min_contrast_slider.value()}")
+        self.max_label.setText(f"{self.max_contrast_slider.value()}")
 
     def control_bt_minimizar(self):
         self.showMinimized()		
@@ -771,6 +784,10 @@ class UI(QMainWindow):
     def resetBrightness(self):
         self.brightness_slider.setValue(100)
 
+    def resetContrast(self):
+        self.min_contrast_slider.setValue(0)
+        self.max_contrast_slider.setValue(255)
+
     def disableImportButton(self):
         self.import_button.setEnabled(False)
 
@@ -796,6 +813,8 @@ class UI(QMainWindow):
         self.max_label.hide()
         self.min_contrast_slider.hide()
         self.max_contrast_slider.hide()
+        self.reset_brightness_button.hide()
+        self.reset_contrast_button.hide()
 
     def show_brightness_menu(self):
         for checkbox in self.checkboxes_contrast:
@@ -810,6 +829,8 @@ class UI(QMainWindow):
             checkbox.show()
         self.brightness_button_show.hide()
         self.brightness_button_hide.show()
+        self.reset_brightness_button.show()
+        self.reset_contrast_button.hide()
 
     def show_contrast_menu(self):
         for checkbox in self.checkboxes_brightness:
@@ -824,6 +845,8 @@ class UI(QMainWindow):
             checkbox.show()
         self.contrast_button_show.hide()
         self.contrast_button_hide.show()
+        self.reset_brightness_button.hide()
+        self.reset_contrast_button.show()
 
     def show_tumor_size_menu(self):
         self.tumor_size_label.show()
@@ -849,6 +872,7 @@ class UI(QMainWindow):
         self.brightness_slider.hide()
         self.brightness_button_show.show()
         self.brightness_button_hide.hide()
+        self.reset_brightness_button.hide()
 
     def hide_contrast_menu(self):
         for checkbox in self.checkboxes_contrast:
@@ -859,7 +883,8 @@ class UI(QMainWindow):
         self.min_contrast_slider.hide()
         self.max_contrast_slider.hide()
         self.contrast_button_show.show()
-        self.contrast_button_hide.hide()  
+        self.contrast_button_hide.hide() 
+        self.reset_contrast_button.hide() 
 
     def hide_tumor_size_menu(self):
         self.tumor_size_label.hide()
@@ -925,3 +950,5 @@ class UI(QMainWindow):
 
         # Cerrar la aplicación
         self.close()
+
+    

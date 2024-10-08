@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1141</width>
-    <height>595</height>
+    <height>646</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -1714,7 +1714,7 @@ background-color: rgb(0, 1, 16);
                 <enum>QFrame::NoFrame</enum>
                </property>
                <property name="currentIndex">
-                <number>1</number>
+                <number>0</number>
                </property>
                <widget class="QWidget" name="tools_menu">
                 <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -2477,6 +2477,25 @@ border: 1px solid White;
                        </property>
                       </widget>
                      </item>
+                     <item>
+                      <widget class="QPushButton" name="reset_brightness_button">
+                       <property name="minimumSize">
+                        <size>
+                         <width>0</width>
+                         <height>20</height>
+                        </size>
+                       </property>
+                       <property name="styleSheet">
+                        <string notr="true">font: 87 8pt &quot;Arial Black&quot;;
+color: rgb(255, 255, 255);
+border-radius:5px;
+border: 1px solid White;</string>
+                       </property>
+                       <property name="text">
+                        <string>RESET</string>
+                       </property>
+                      </widget>
+                     </item>
                     </layout>
                    </item>
                    <item>
@@ -2630,13 +2649,15 @@ border: 1px solid White;</string>
                        </property>
                        <property name="styleSheet">
                         <string notr="true">font: 87 6pt &quot;Arial Black&quot;;
-color: rgb(255, 255, 255);
 background-color: rgb(0, 1, 16);
-border-radius:10px;
+color: rgb(255, 255, 255);
+border-radius:5px;
+
+
 </string>
                        </property>
                        <property name="text">
-                        <string>MIN</string>
+                        <string>0</string>
                        </property>
                        <property name="alignment">
                         <set>Qt::AlignCenter</set>
@@ -2681,11 +2702,12 @@ border-radius:10px;
                         <string notr="true">font: 87 6pt &quot;Arial Black&quot;;
 background-color: rgb(0, 1, 16);
 color: rgb(255, 255, 255);
-border-radius:10px;
+border-radius:5px;
+
 </string>
                        </property>
                        <property name="text">
-                        <string>MAX</string>
+                        <string>255</string>
                        </property>
                        <property name="alignment">
                         <set>Qt::AlignCenter</set>
@@ -2709,6 +2731,19 @@ border-radius:10px;
                       </widget>
                      </item>
                     </layout>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="reset_contrast_button">
+                     <property name="styleSheet">
+                      <string notr="true">font: 87 8pt &quot;Arial Black&quot;;
+color: rgb(255, 255, 255);
+border-radius:5px;
+border: 1px solid White;</string>
+                     </property>
+                     <property name="text">
+                      <string>RESET</string>
+                     </property>
+                    </widget>
                    </item>
                    <item>
                     <layout class="QHBoxLayout" name="horizontalLayout_14">
